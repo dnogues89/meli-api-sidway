@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  meli-api-autos:
+    container_name: meli-api-autos
+    image: meli-api-autos:v1
+    volumes:
+      - ../db.sqlite3:/app/db.sqlite3
+      - ./media:/app/media
+      - ./static:/app/static
+    ports:
+      - "8000:8000"
+    networks:
+      - orange-network
+
+networks:
+  orange-network:
+    driver: bridge
