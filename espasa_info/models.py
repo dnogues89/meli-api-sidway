@@ -14,3 +14,7 @@ class CRM(models.Model):
     ofertas = models.CharField(max_length=100,default=0,null=True,blank=True)
     oferta_min = models.CharField(max_length=100,default=0,null=True,blank=True)
     oferta_max = models.CharField(max_length=100,default=0,null=True,blank=True)
+    
+    class Meta:
+        verbose_name = 'Actualizar Stock y precios'
+        verbose_name_plural = 'Actualizar Stock y precios'

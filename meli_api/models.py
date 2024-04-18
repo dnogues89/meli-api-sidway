@@ -65,7 +65,7 @@ class Modelo(models.Model):
     anio = models.IntegerField(verbose_name = 'Año')
     g_atributos = models.ForeignKey(GrupoAtributos, null = True, blank = True, on_delete = models.SET_NULL)
     g_imagenes = models.ForeignKey(GrupoImagenes, null = True, blank = True, on_delete = models.SET_NULL)
-    categoria = models.CharField(max_length = 30, choices = {'silver': "Silver",'gold':'Gold'})
+    categoria = models.CharField(max_length = 30, choices = {'silver': "Silver",'gold':'Gold','gold_premium':"Gold Premium"})
     desc_meli = models.TextField()
     stock = models.IntegerField(default = 0)
     precio = models.IntegerField(default = 0)

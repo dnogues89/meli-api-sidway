@@ -26,8 +26,8 @@ class CRMAdmin(admin.ModelAdmin):
                 obj.precio_tx = str(item[5])
                 obj.stock = str(item[6])
                 obj.ofertas = str(item[7])
-                obj.oferta_min = str(item[8])
-                obj.oferta_max = str(item[9])
+                obj.oferta_min = str(item[8]).split('.')[0] if item[8] is not None else 0
+                obj.oferta_max = str(item[9]).split('.')[0] if item[9] is not None else 0
                 obj.save()
             except:
                     
@@ -40,8 +40,8 @@ class CRMAdmin(admin.ModelAdmin):
                     precio_tx = item[5],
                     stock = item[6],
                     ofertas = item[7],
-                    oferta_min = item[8],
-                    oferta_max = item[9]
+                    oferta_min = str(item[8]).split('.')[0] if item[8] is not None else 0,
+                    oferta_max = str(item[9]).split('.')[0] if item[8] is not None else 0
                 ).save()
             
         return qs

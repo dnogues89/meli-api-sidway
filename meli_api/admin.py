@@ -8,6 +8,8 @@ from .apicon import MeliAPI
 from django.utils.html import format_html
 from django.utils import timezone
 
+from espasa_info.models import CRM
+
 # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
 
 def resp_ok(resp, name):
@@ -77,8 +79,10 @@ class PublicacionAdmin(admin.ModelAdmin):
     def cat(self,obj):
         if obj.categoria == 'silver':
             return 'Plata'
-        else:
+        elif obj.categoria == 'gold':
             return 'Oro'
+        else:
+            return 'Oro Premium'
 
     @admin.action(description='Pausar / Activar')
     def pausar(self,request,objetos):
@@ -153,6 +157,17 @@ class ModeloAdmin(admin.ModelAdmin):
     list_display = ('unidad','anio','precio','categoria','stock','publicaciones')
     list_editable = ('precio','categoria')
     actions = ('publicar',)
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        models_set = [x.codigo for x in qs]
+        crm_set = [x.codigo for x in CRM.objects.all()]
+        dif = set(crm_set) - set(models_set)
+        for item in dif:
+            _ = Modelo.objects.create(
+                
+            )
+        return qs
 
     def unidad(self,obj):
         return f'{obj.codigo} | {obj.descripcion}'
