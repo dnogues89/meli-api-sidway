@@ -5,11 +5,12 @@ RUN curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list > /etc/apt
 
 RUN apt-get update && apt-get install -y build-essential
 
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
+
 RUN pip install --upgrade pip
 
 RUN apt-get install unixodbc unixodbc-dev -y
 
-RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
 
 COPY . /app
 
