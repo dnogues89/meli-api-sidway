@@ -2,6 +2,7 @@ from typing import Any, Iterable
 from django.db import models
 from core.settings import BASE_DIR
 from django.utils import timezone
+from multiple_upload.models import Image
 
 # Create your models here.
 def convertir_precio(obj):
@@ -48,29 +49,10 @@ class GrupoAtributos(models.Model):
     def __str__(self) -> str:
         return self.nombre
 
-class Imagen(models.Model):
-    codigo = models.CharField(max_length = 10)
-    nombre = models.CharField(max_length = 30)
-    imagen = models.ImageField(null=True, blank=True)
-    url = models.CharField(max_length = 100, blank=True, null = True)
-    
-    def __str__(self) -> str:
-        return self.nombre
-    
-    def delete(self):
-        if self.imagen:
-            self.imagen.delete()
-        return super().delete()
-    
-    def save(self):
-        super().save()
-        if self.imagen:
-            self.url = f'{self.imagen.url}'
-            return super().save()
     
 class GrupoImagenes(models.Model):
     nombre = models.CharField(max_length = 30)
-    imagenes = models.ManyToManyField(Imagen)
+    imagenes = models.ManyToManyField(Image)
     video = models.CharField(max_length=100, default='')
     
     def __str__(self) -> str:

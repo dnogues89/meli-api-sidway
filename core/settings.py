@@ -26,9 +26,9 @@ SECRET_KEY = 'django-insecure-5no$d8**(7s&_95l9b=@t#bgnbo^38&2p+fb)z(&u#a-lsqeh1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["meli.dnoguesdev.com.ar"]
+ALLOWED_HOSTS = ["meli.dnoguesdev.com.ar","*"]
 
-CSRF_TRUSTED_ORIGINS = ['http://*.dnoguesdev.com.ar', 'https://*.dnoguesdev.com.ar']
+# CSRF_TRUSTED_ORIGINS = ['http://*.dnoguesdev.com.ar', 'https://*.dnoguesdev.com.ar']
 
 # Application definition
 
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'multiple_upload',
     'meli_api'
 ]
 
@@ -57,7 +58,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -120,9 +121,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, 'docu_reventas/static'),)
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static')
+]
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type

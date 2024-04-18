@@ -139,16 +139,14 @@ class PublicacionAdmin(admin.ModelAdmin):
                 break
             self.message_user(request,f'Publicacion {obj.pub_id} actualizada a {precio}')
                     
-            
-        
 
-@admin.register(Imagen)
-class ImagenAdmin(admin.ModelAdmin):
-    list_display = ('codigo','nombre')
 
 @admin.register(GrupoImagenes)
 class GrupoImagenesAdmin(admin.ModelAdmin):
-    list_display = ('nombre',)
+    list_display = ('nombre','cargar_imagenes')
+
+    def cargar_imagenes(self,obj):
+        return format_html('<a href="http://127.0.0.1:8000/upload/upload" target=_blank>{}</a>', 'Subir Imagenes')
 
 @admin.register(Modelo)
 class ModeloAdmin(admin.ModelAdmin):

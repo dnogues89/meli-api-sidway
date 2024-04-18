@@ -5,3 +5,4 @@ db.sqlite3
 asd.json
 /bot/key.py
 /core/email_settings.py
+*/migrations/
