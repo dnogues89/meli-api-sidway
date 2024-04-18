@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y build-essential
 
 RUN pip install --upgrade pip
 
-RUN apt-get install unixodbc unixodbc-dev
+RUN apt-get install unixodbc unixodbc-dev -y
 
 COPY . /app
 
