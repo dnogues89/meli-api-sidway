@@ -6,3 +6,4 @@ asd.json
 /bot/key.py
 /core/email_settings.py
 */migrations/
+/espasa_info/espasa_conn.py

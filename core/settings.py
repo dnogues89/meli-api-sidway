@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'multiple_upload',
-    'meli_api'
+    'meli_api',
+    'espasa_info'
 ]
 
 MIDDLEWARE = [
