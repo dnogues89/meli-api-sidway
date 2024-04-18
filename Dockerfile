@@ -9,6 +9,8 @@ RUN pip install --upgrade pip
 
 RUN apt-get install unixodbc unixodbc-dev -y
 
+RUN ACCEPT_EULA=Y apt-get install -y msodbcsql17
+
 COPY . /app
 
 RUN rm /app/db.sqlite3
