@@ -7,3 +7,4 @@ asd.json
 /core/email_settings.py
 */migrations/00*
 /espasa_info/espasa_conn.py
+*/media/
