@@ -7,6 +7,7 @@ from .publicaciones import ArmarPublicacion
 from .apicon import MeliAPI
 from django.utils.html import format_html
 from django.utils import timezone
+from django.urls import reverse
 
 
 # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
@@ -149,7 +150,8 @@ class GrupoImagenesAdmin(admin.ModelAdmin):
     list_display = ('codigo','nombre','cantidad','cargar_imagenes')
 
     def cargar_imagenes(self,obj):
-        return format_html('<a href="http://127.0.0.1:8000/upload/upload" target=_blank>{}</a>', 'Subir Imagenes')
+        url = reverse('File_Uploads')
+        return format_html('<a href="{}" target=_blank>{}</a>',url, 'Subir Imagenes')
 
     def cantidad(self,obj):
         return obj.imagenes.count()
