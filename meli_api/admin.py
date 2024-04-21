@@ -8,7 +8,6 @@ from .apicon import MeliAPI
 from django.utils.html import format_html
 from django.utils import timezone
 
-from espasa_info.models import CRM
 
 # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
 
@@ -147,30 +146,29 @@ class PublicacionAdmin(admin.ModelAdmin):
 
 @admin.register(GrupoImagenes)
 class GrupoImagenesAdmin(admin.ModelAdmin):
-    list_display = ('nombre','cargar_imagenes')
+    list_display = ('codigo','nombre','cantidad','cargar_imagenes')
 
     def cargar_imagenes(self,obj):
         return format_html('<a href="http://127.0.0.1:8000/upload/upload" target=_blank>{}</a>', 'Subir Imagenes')
 
+    def cantidad(self,obj):
+        return obj.imagenes.count()
+
 @admin.register(Modelo)
 class ModeloAdmin(admin.ModelAdmin):
-    list_display = ('unidad','anio','precio','categoria','stock','publicaciones')
+    list_display = ('anio','unidad','precio','categoria','publicaciones')
     list_editable = ('precio','categoria')
     actions = ('publicar',)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        models_set = [x.codigo for x in qs]
-        crm_set = [x.codigo for x in CRM.objects.all()]
-        dif = set(crm_set) - set(models_set)
-        for item in dif:
-            _ = Modelo.objects.create(
-                
-            )
         return qs
 
     def unidad(self,obj):
-        return f'{obj.codigo} | {obj.descripcion}'
+        try:
+            return f'{obj.espasa_db.codigo} | {obj.espasa_db.desc}'
+        except:
+            return ''
     
     def publicaciones(self,obj):
         return Publicacion.objects.filter(modelo = obj, activa = True).count()

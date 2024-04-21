@@ -16,7 +16,7 @@ class ArmarPublicacion():
       imagenes = []
       for imagen in self.modelo.g_imagenes.imagenes.all():
         imagenes.append({
-          'source':imagen.url
+          'source':f"https://meli.dnoguesdev.com.ar/{imagen.pic.url}"
         })
       return imagenes
 
@@ -38,7 +38,7 @@ class ArmarPublicacion():
 
         "location": {
             "address_line": "Triunvirato, 3661",
-            "zip_code": "",
+            "zip_code": "1427",
             "city": {
             "id": "TUxBQ0NBUGZlZG1sYQ"
             }

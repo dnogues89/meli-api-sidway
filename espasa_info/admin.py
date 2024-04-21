@@ -11,7 +11,7 @@ def model_text(text):
 # Register your models here.
 @admin.register(CRM)
 class CRMAdmin(admin.ModelAdmin):
-    list_display = ['codigo','modelo','stock']
+    list_display = ['codigo','desc','stock']
     
     def get_queryset(self,request):
         qs = super().get_queryset(request)
@@ -19,7 +19,7 @@ class CRMAdmin(admin.ModelAdmin):
         for item in conn.get_info():
             try:
                 obj = CRM.objects.get(codigo = item[0])
-                obj.modelo = str(item[1])
+                obj.desc = str(item[1])
                 obj.familia = str(item[2])
                 obj.precio_lista = str(item[3])
                 obj.impuestos_internos = str(item[4])
@@ -33,7 +33,7 @@ class CRMAdmin(admin.ModelAdmin):
                     
                 obj = CRM.objects.create(
                     codigo = item[0],
-                    modelo = item[1],
+                    desc = item[1],
                     familia = item[2],
                     precio_lista = item[3],
                     impuestos_internos = item[4],

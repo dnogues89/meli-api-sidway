@@ -3,6 +3,7 @@ from django.db import models
 from core.settings import BASE_DIR
 from django.utils import timezone
 from multiple_upload.models import Image
+from espasa_info.models import CRM
 
 # Create your models here.
 def convertir_precio(obj):
@@ -51,27 +52,33 @@ class GrupoAtributos(models.Model):
 
     
 class GrupoImagenes(models.Model):
+    codigo = models.CharField(max_length=10, default='')
     nombre = models.CharField(max_length = 30)
-    imagenes = models.ManyToManyField(Image)
-    video = models.CharField(max_length=100, default='')
+    imagenes = models.ManyToManyField(Image, blank=True)
+    video = models.CharField(max_length=100, default='', null=True, blank=True)
     
     def __str__(self) -> str:
-        return self.nombre
+        return f'{self.codigo} | {self.nombre}'
+
+    def delete(self,*args, **kwargs) -> tuple[int, dict[str, int]]:
+        for item in self.imagenes.all():
+            item.pic.delete()
+        
+        super().delete()
     
 
 class Modelo(models.Model):
-    codigo = models.CharField(max_length = 10)
     descripcion = models.CharField(max_length = 50)
     anio = models.IntegerField(verbose_name = 'Año')
     g_atributos = models.ForeignKey(GrupoAtributos, null = True, blank = True, on_delete = models.SET_NULL)
     g_imagenes = models.ForeignKey(GrupoImagenes, null = True, blank = True, on_delete = models.SET_NULL)
     categoria = models.CharField(max_length = 30, choices = {'silver': "Silver",'gold':'Gold','gold_premium':"Gold Premium"})
     desc_meli = models.TextField()
-    stock = models.IntegerField(default = 0)
     precio = models.IntegerField(default = 0)
+    espasa_db = models.ForeignKey(CRM, null=True, blank=True, on_delete=models.SET_NULL)
     
     def __str__(self) -> str:
-        return f'{self.codigo} | {self.descripcion}'
+        return f'{self.descripcion}'
     
 class Publicacion(models.Model):
     pub_id = models.CharField(max_length = 100)
