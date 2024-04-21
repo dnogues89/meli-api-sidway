@@ -5,5 +5,5 @@ db.sqlite3
 asd.json
 /bot/key.py
 /core/email_settings.py
-*/migrations/000*
+*/migrations/00*
 /espasa_info/espasa_conn.py
