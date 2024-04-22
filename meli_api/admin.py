@@ -17,9 +17,9 @@ def resp_ok(resp, name):
         return True
     else:
         try:
-            Errores.objects.create(name=name,error=resp.json()).save()
+            Errores.objects.create(name=f'{name} | {resp.status_code}',error=resp.json()).save()
         except:
-            Errores.objects.create(name=name,error=resp.text).save()
+            Errores.objects.create(name=f'{name} | {resp.status_code}',error=resp.text).save()
         return False
 
 
