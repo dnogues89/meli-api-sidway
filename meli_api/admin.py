@@ -58,8 +58,7 @@ class PublicacionAdmin(admin.ModelAdmin):
             self.message_user(request,f'Publicaciones sincronizadas')
         else:
             self.message_user(request,f'Publicaciones no sincronizadas', level="ERROR")
-            
-    
+              
     def creado(self,obj):
         return obj.f_creado.strftime("%d/%m/%y") 
         
@@ -158,9 +157,23 @@ class GrupoImagenesAdmin(admin.ModelAdmin):
 
 @admin.register(Modelo)
 class ModeloAdmin(admin.ModelAdmin):
-    list_display = ('anio','unidad','precio','categoria','publicaciones')
+    list_display = ('unidad','anio','precio','precio_crm','categoria','publicaciones','cargar_imagenes','cant_imagenes')
     list_editable = ('precio','categoria')
     actions = ('publicar',)
+
+    def precio_crm(self,obj):
+        return obj.espasa_db.precio_tx
+    
+    def cant_imagenes(self,obj):
+        try:
+            return obj.g_imagenes.imagenes.count()
+        except:
+            return 0
+
+    def cargar_imagenes(self,obj):
+        url = reverse('File_Uploads')
+        return format_html("<a href='#' onclick=\"window.open('{}', 'Probando', 'width='+screen.width/2+',height='+screen.height/2); return false;\">{}</a>", url, 'Subir Imagenes')
+        # return format_html('<a href="{}" target=_blank>{}</a>',url, 'Subir Imagenes')
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
@@ -183,7 +196,7 @@ class ModeloAdmin(admin.ModelAdmin):
             print(resp.status_code)
             if resp_ok(resp,'Publicar Auto'):
                 resp = resp.json()
-                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink']).save()
+                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], espasa_db=obj.espasa_db).save()
                 desc = api.cambiar_desc(resp['id'] , obj.desc_meli)
                 print(desc.status_code, desc.text)
                 

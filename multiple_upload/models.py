@@ -1,5 +1,7 @@
 from typing import Any
 from django.db import models
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
 # Create your models here.
 class Image(models.Model):
@@ -10,7 +12,7 @@ class Image(models.Model):
     
     def __str__(self) -> str:
         return f'{self.model_code} | {self.model}'
-
-    def delete(self,*args,**kwargs):
-        self.pic.delete()
-        super().delete(*args,**kwargs)
+    
+@receiver(pre_delete, sender=Image)
+def image_delete(sender, instance, **kwargs):
+    instance.pic.delete(False)

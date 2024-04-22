@@ -15,15 +15,15 @@
     <title>Multiple File Uploads</title>
 </head>
 <body>
-    <div class="container center">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="formFile" class="form-label">Upload Files Here</label>
-              {{form}}
-            </div>
-            <button type="submit" class="btn btn-outline-primary ">Submit</button>
-        </form>
-    </div>
+    <h1>¡Formulario enviado con éxito!</h1>
+    <!-- Tu mensaje de confirmación aquí -->
+
+    <!-- Script para cerrar la ventana después de un breve período de tiempo -->
+    <script>
+        // Este script cerrará la ventana actual después de que la página se haya cargado
+        window.onload = function() {
+            window.close();
+        };
+    </script>
 </body>
 </html>

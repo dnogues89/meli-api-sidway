@@ -26,6 +26,9 @@ def fileupload(request):
             image_ins.save()
             g_imagenes.imagenes.add(image_ins)
         g_imagenes.save()
-        return redirect('admin:index')
+        return redirect('Confirmacion')
     context = {'form': form}
     return render(request, "upload.html", context)
+
+def confirmacion(request):
+    return render(request, 'confirmacion.html')

@@ -94,6 +94,7 @@ class Publicacion(models.Model):
     modelo = models.ForeignKey(Modelo, on_delete = models.SET_NULL, null = True, blank = True)
     url = models.URLField(default='sinurl.com.ar')
     sincronizado = models.BooleanField(default=False)
+    espasa_db = models.ForeignKey(CRM, null=True, blank=True, on_delete=models.SET_NULL)
     
     def __str__(self) -> str:
         return self.pub_id
