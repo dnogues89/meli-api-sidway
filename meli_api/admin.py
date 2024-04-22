@@ -157,8 +157,8 @@ class GrupoImagenesAdmin(admin.ModelAdmin):
 
 @admin.register(Modelo)
 class ModeloAdmin(admin.ModelAdmin):
-    list_display = ('unidad','anio','precio','precio_crm','categoria','publicaciones','cargar_imagenes','cant_imagenes')
-    list_editable = ('precio','categoria')
+    list_display = ('unidad','anio','precio','precio_crm','categoria','publicaciones','cargar_imagenes','g_imagenes','cant_imagenes')
+    list_editable = ('precio','categoria','g_imagenes')
     actions = ('publicar',)
 
     def precio_crm(self,obj):
@@ -173,7 +173,6 @@ class ModeloAdmin(admin.ModelAdmin):
     def cargar_imagenes(self,obj):
         url = reverse('File_Uploads')
         return format_html("<a href='#' onclick=\"window.open('{}', 'Probando', 'width='+screen.width/2+',height='+screen.height/2); return false;\">{}</a>", url, 'Subir Imagenes')
-        # return format_html('<a href="{}" target=_blank>{}</a>',url, 'Subir Imagenes')
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

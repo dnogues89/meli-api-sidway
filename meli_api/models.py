@@ -62,7 +62,7 @@ class GrupoImagenes(models.Model):
 
     def delete(self,*args, **kwargs) -> tuple[int, dict[str, int]]:
         for item in self.imagenes.all():
-            item.pic.delete()
+            item.delete()
         
         super().delete()
     
@@ -71,7 +71,7 @@ class Modelo(models.Model):
     descripcion = models.CharField(max_length = 50)
     anio = models.IntegerField(verbose_name = 'Año')
     g_atributos = models.ForeignKey(GrupoAtributos, null = True, blank = True, on_delete = models.SET_NULL)
-    g_imagenes = models.ForeignKey(GrupoImagenes, null = True, blank = True, on_delete = models.SET_NULL)
+    g_imagenes = models.ForeignKey(GrupoImagenes, null = True, blank = True, on_delete = models.SET_NULL, verbose_name='Grp Img')
     categoria = models.CharField(max_length = 30, choices = {'silver': "Silver",'gold':'Gold','gold_premium':"Gold Premium"})
     desc_meli = models.TextField()
     precio = models.IntegerField(default = 0)
@@ -79,6 +79,7 @@ class Modelo(models.Model):
     
     def __str__(self) -> str:
         return f'{self.descripcion}'
+
     
 class Publicacion(models.Model):
     pub_id = models.CharField(max_length = 100)
