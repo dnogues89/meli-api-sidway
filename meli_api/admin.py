@@ -13,7 +13,7 @@ from django.urls import reverse
 # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
 
 def resp_ok(resp, name):
-    if resp.status_code == 200 or resp.status_code == 402:
+    if resp.status_code == 200 or resp.status_code == 402 or resp.status_code == 201:
         return True
     else:
         try:
