@@ -203,7 +203,7 @@ class ModeloAdmin(admin.ModelAdmin):
             print(resp.status_code)
             if resp_ok(resp,'Publicar Auto'):
                 resp = resp.json()
-                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], espasa_db=obj.espasa_db).save()
+                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink']).save()
                 desc = api.cambiar_desc(resp['id'] , obj.desc_meli)
                 print(desc.status_code, desc.text)
                 
