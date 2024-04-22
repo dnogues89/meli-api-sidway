@@ -157,12 +157,15 @@ class GrupoImagenesAdmin(admin.ModelAdmin):
 
 @admin.register(Modelo)
 class ModeloAdmin(admin.ModelAdmin):
-    list_display = ('unidad','anio','precio','precio_crm','categoria','publicaciones','cargar_imagenes','g_imagenes','cant_imagenes')
+    list_display = ('anio','unidad','precio','precio_crm','categoria','publicaciones','cargar_imagenes','g_imagenes','cant_imagenes')
     list_editable = ('precio','categoria','g_imagenes')
     actions = ('publicar',)
 
     def precio_crm(self,obj):
-        return obj.espasa_db.precio_tx
+        try:
+            return obj.espasa_db.precio_tx if obj.espasa_db.ofertas == 0 else obj.espasa_db.oferta_min
+        except:
+            return 0
     
     def cant_imagenes(self,obj):
         try:

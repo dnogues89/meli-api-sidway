@@ -4,6 +4,7 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from .models import CRM
 from .espasa_conn import EspasaDataBase
+from meli_api.models import Modelo
 
 def model_text(text):
     return str(text).replace('(','').replace(')','').replace("'","")
@@ -29,6 +30,12 @@ class CRMAdmin(admin.ModelAdmin):
                 obj.oferta_min = str(item[8]).split('.')[0] if item[8] is not None else 0
                 obj.oferta_max = str(item[9]).split('.')[0] if item[9] is not None else 0
                 obj.save()
+                if str(item[6]) != '0':
+                    try:
+                        _ = Modelo.objects.get(espasa_db__codigo = item[0])
+                    except:
+                        _ = Modelo.objects.create(espasa_db = obj, descripcion = str(item[1]), anio = f"20{str(item[1]).split('MY')[-1].split(' ')[0]}").save()
+                
             except:
                     
                 obj = CRM.objects.create(
@@ -43,5 +50,10 @@ class CRMAdmin(admin.ModelAdmin):
                     oferta_min = str(item[8]).split('.')[0] if item[8] is not None else 0,
                     oferta_max = str(item[9]).split('.')[0] if item[8] is not None else 0
                 ).save()
-            
+                if str(item[6]) != '0':
+                    try:
+                        _ = Modelo.objects.get(espasa_db__codigo = item[0])
+                    except:
+                        _ = Modelo.objects.create(espasa_db = obj, descripcion = str(item[1]), anio = f"20{str(item[1]).split('MY')[-1].split(' ')[0]}").save()
+                           
         return qs
