@@ -68,8 +68,8 @@ class GrupoImagenes(models.Model):
     
 
 class Modelo(models.Model):
-    descripcion = models.CharField(max_length = 50)
-    anio = models.IntegerField(verbose_name = 'Año')
+    descripcion = models.CharField(max_length = 50,blank=True, null=True)
+    anio = models.IntegerField(verbose_name = 'Año',blank=True, null=True)
     g_atributos = models.ForeignKey(GrupoAtributos, null = True, blank = True, on_delete = models.SET_NULL)
     g_imagenes = models.ForeignKey(GrupoImagenes, null = True, blank = True, on_delete = models.SET_NULL, verbose_name='Grp Img')
     categoria = models.CharField(max_length = 30, choices = {'silver': "Silver",'gold':'Gold','gold_premium':"Gold Premium"})

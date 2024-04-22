@@ -142,8 +142,6 @@ class PublicacionAdmin(admin.ModelAdmin):
                 break
             self.message_user(request,f'Publicacion {obj.pub_id} actualizada a {precio}')
                     
-
-
 @admin.register(GrupoImagenes)
 class GrupoImagenesAdmin(admin.ModelAdmin):
     list_display = ('codigo','nombre','cantidad','cargar_imagenes')
@@ -157,8 +155,9 @@ class GrupoImagenesAdmin(admin.ModelAdmin):
 
 @admin.register(Modelo)
 class ModeloAdmin(admin.ModelAdmin):
-    list_display = ('unidad','anio','precio','precio_crm','categoria','publicaciones','cargar_imagenes','g_imagenes','cant_imagenes')
+    list_display = ('unidad','anio','precio','precio_crm','categoria','publicaciones','cargar_imagenes','c_img','c_atrib')
     list_editable = ('precio','categoria','g_imagenes')
+    search_fields = ['descripcion']
     actions = ('publicar',)
 
     def precio_crm(self,obj):
@@ -167,15 +166,21 @@ class ModeloAdmin(admin.ModelAdmin):
         except:
             return 0
     
-    def cant_imagenes(self,obj):
+    def c_img(self,obj):
         try:
             return obj.g_imagenes.imagenes.count()
         except:
             return 0
 
+    def c_atrib(self,obj):
+        try:
+            return obj.g_atributos.atributos.count()
+        except:
+            return 0
+
     def cargar_imagenes(self,obj):
         url = reverse('File_Uploads')
-        return format_html("<a href='#' onclick=\"window.open('{}', 'Probando', 'width='+screen.width/2+',height='+screen.height/2); return false;\">{}</a>", url, 'Subir Imagenes')
+        return format_html("<a href='#' onclick=\"window.open('{}', 'Probando', 'width='+screen.width/2+',height='+screen.height/2); return false;\">{}</a>", url, 'Ir')
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
