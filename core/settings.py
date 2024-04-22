@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["meli.dnoguesdev.com.ar",'*']
 
+CSRF_TRUSTED_ORIGINS = ['http://dnoguesdev.com.ar', 'https://dnoguesdev.com.ar', 'http://*.dnoguesdev.com.ar', 'https://*.dnoguesdev.com.ar']
+
 # CSRF_TRUSTED_ORIGINS = ['http://*.dnoguesdev.com.ar', 'https://*.dnoguesdev.com.ar']
 
 # Application definition
