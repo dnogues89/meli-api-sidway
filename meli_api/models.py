@@ -46,7 +46,7 @@ class GrupoAtributos(models.Model):
     nombre = models.CharField(max_length = 100)
     atributos = models.ManyToManyField(Atributo, blank=True)
     pub_to_copy = models.CharField(max_length=50, help_text='Publicacion a copiar atributos, ej MLA12345', verbose_name='Copy ID')
-    video_id = models.CharField(max_length=200, null=True,blank=True)
+    video_id = models.CharField(max_length=200, null=True,blank=True, default='')
     
     def __str__(self) -> str:
         return self.nombre
