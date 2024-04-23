@@ -241,6 +241,7 @@ class GrupoAtributosAdmin(admin.ModelAdmin):
                         apend = Atributo.objects.create(nombre = at['name'] ,id_att=at['id'],value=at['value_name']).save()     
                     apend = Atributo.objects.get(id_att=at['id'],value=at['value_name'])
                     obj.atributos.add(apend)
+                obj.video_id = resp.json()['video_id'] 
             obj.save()
 
         self.message_user(
