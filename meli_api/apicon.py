@@ -143,5 +143,23 @@ class MeliAPI():
         
         return response  
         
-    def estadisticas(self,pub_id):
-        pass
+    def views_by_item(self, item, desde, hasta):
+        url = f"https://api.mercadolibre.com/items/visits?ids={item}&date_from={desde}&date_to={hasta}"
+        headers = {
+        'Authorization': f'Bearer {self.data.access_token}',
+        } 
+
+        response = requests.request("GET", url, headers=headers)
+
+        return response
+    
+    def phone_by_items(self, items:list, hasta):
+        url = f"https://api.mercadolibre.com/items/contacts/phone_views/time_window?ids={items}&last=30&unit=day&ending={hasta}"
+
+        headers = {
+        'Authorization': f'Bearer {self.data.access_token}',
+        } 
+
+        response = requests.request("GET", url, headers=headers)
+
+        return response
