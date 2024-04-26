@@ -271,8 +271,8 @@ class ModeloAdmin(admin.ModelAdmin):
                 resp = resp.json()
                 stats = PubStats.objects.create(pub_id = resp['id']).save()
                 pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], stats = stats).save()
-                resp = api.cambiar_desc(resp['id'] , obj.desc_meli)
-                if resp_ok(resp,f'Cambiando desc | {pub.pub_id}'):
+                desc = api.cambiar_desc(resp['id'] , obj.desc_meli)
+                if resp_ok(desc,f'Cambiando desc | {resp['id']}'):
                     self.message_user(
                         request,
                         f"{obj.descripcion} | Publicado {resp['permalink']}"
