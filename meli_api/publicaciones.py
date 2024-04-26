@@ -46,12 +46,12 @@ class ArmarPublicacion():
         "seller_contact": {
           "contact": "",
           "other_info": "",
-          "country_code": "54",
-          "area_code": "011",
-          "phone": "66531292",
-          "country_code2": "",
+          "country_code": "",
+          "area_code": "",
+          "phone": "",
+          "country_code2": "54",
           "area_code2": "",
-          "phone2": "",
+          "phone2": "91123149614",
           "email": "dnogues@espasa.com.ar",
           "webpage": ""
         },
