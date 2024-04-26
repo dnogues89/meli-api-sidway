@@ -43,10 +43,22 @@ class ArmarPublicacion():
             "id": "TUxBQ0NBUGZlZG1sYQ"
             }
         },
-        
+        "seller_contact": {
+          "contact": "",
+          "other_info": "",
+          "country_code": "54",
+          "area_code": "011",
+          "phone": "66531292",
+          "country_code2": "",
+          "area_code2": "",
+          "phone2": "",
+          "email": "dnogues@espasa.com.ar",
+          "webpage": ""
+        },
         
         "attributes": self.atributes()
         }
+
         
         return json
     
