@@ -33,14 +33,47 @@ class ErroresAdmin(admin.ModelAdmin):
 
 @admin.register(Publicacion)
 class PublicacionAdmin(admin.ModelAdmin):
-    list_display=('titulo_short','pub_id', 'cat','precio', 'creado','actualizado','activa','visualizaciones','clics_tel','ver','sincronizado')
+    list_display=('titulo_short','pub_id', 'cat','precio','crm', 'creado','actualizado','activa','visualizaciones','clics_tel','ver','sincronizado')
     list_editable =('precio',)
     actions = ('pausar','eliminar','actualizar_precio','sinconizar_meli')
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
     
-    @admin.action(description='Sincronizar pubs con Meli')
-    def sinconizar_meli(self,request,obj):
+    def crm(self,obj):
+        try:
+            return obj.modelo.espasa_db.precio_tx if obj.modelo.espasa_db.precio_tx == '0' else obj.modelo.espasa_db.oferta_min
+        except:
+            return 0
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
         api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
+        hasta = timezone.now().date().strftime('%Y-%m-%dT00:00:00.000')
+        
+        #contacto tel
+        lista_pubs = [x.pub_id for x in qs]
+        resp = api.phone_by_items(','.join(lista_pubs),hasta)
+        if resp_ok(resp, 'Obtener clicks en telefonos'):
+            for item in resp.json():
+                try:
+                    pub = qs.get(pub_id = item['item_id'])
+                    pub.clics_tel = item['total']
+                    pub.save()
+                except:
+                    pass
+
+        #Vistas
+        for item in qs:
+            desde = item.f_creado.strftime('%Y-%m-%dT00:00:00.000-00:00')
+            resp = api.views_by_item(item.pub_id,desde,hasta)
+            if resp_ok(resp, f'Get {item.pub_id} views'):
+                item.visualizaciones = int(resp.json()[0]['total_visits'])
+            item.save()
+        return qs
+       
+    @admin.action(description='Sincronizar pubs con Meli')
+    def sinconizar_meli(self,request,objetos):
+        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
+        #Creo publicaciones si es necesario
         resp = api.items_by_id(MeliCon.objects.get(name = 'API Dnogues').user_id)
         if resp_ok(resp,'Buscando Publicaciones'):
             pubs_meli = resp.json()['results']
@@ -49,16 +82,29 @@ class PublicacionAdmin(admin.ModelAdmin):
                 resp = api.consulta_pub(obj)
                 if resp_ok(resp,'Consulta publicacion'):
                     resp = resp.json()
-                    Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = True, url = resp['permalink'],sincronizado = True).save()
+                    activa = True if resp['status'] == 'active' else False
+                    try:
+                        Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, modelo = modelo).save()
+                    except:
+                        Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True).save()
 
-            for id in set(pubs_django) - set(pubs_meli):
-                item = Publicacion.objects.get(pub_id = id)
-                item.sincronizado = False
-                item.save()
-            self.message_user(request,f'Publicaciones sincronizadas')
-        else:
-            self.message_user(request,f'Publicaciones no sincronizadas', level="ERROR")
-              
+        for obj in objetos:
+            resp = api.consulta_pub(obj)
+            if resp_ok(resp, f'Consultando publicacion | {obj.pub_id}'):
+                resp = resp.json()
+                #Precio
+                if resp['price'] != convertir_precio(obj):
+                    precio = convertir_precio(obj)
+                    if precio == 0:
+                        self.message_user(request,f'Precio invalido {precio}', level='ERROR')
+                        break
+                    resp = api.actualizar_precio(obj.pub_id,str(precio))
+                    if resp_ok(resp,'Camio Precio') == False:
+                        self.message_user(request,f'No se actualizo el precio {resp.text}', level='ERROR')
+                        break
+                    self.message_user(request,f'Publicacion {obj.pub_id} actualizada a {precio}')
+                            
+                           
     def creado(self,obj):
         return obj.f_creado.strftime("%d/%m/%y") 
         
