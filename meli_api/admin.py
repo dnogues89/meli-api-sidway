@@ -23,8 +23,42 @@ def resp_ok(resp, name):
         return False
 
 
-       
+
+    
 # Register your models here.
+@admin.register(PubStats)
+class PubStatsAdmin(admin.ModelAdmin):
+    list_display = ('pub_id','views','clics_tel')
+    
+    def get_queryset(self, request):
+        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
+        #Creo publicaciones si es necesario
+        resp = api.items_by_id(MeliCon.objects.get(name = 'API Dnogues').user_id)
+        if resp_ok(resp,'Buscando Publicaciones'):
+            pubs_meli = resp.json()['results']
+            pubs_django = [obj.pub_id for obj in  Publicacion.objects.all()]
+            for obj in set(pubs_meli) - set(pubs_django):
+                resp = api.consulta_pub(obj)
+                if resp_ok(resp,'Consulta publicacion'):
+                    resp = resp.json()
+                    activa = True if resp['status'] == 'active' else False
+                    try:
+                        stats = PubStats.objects.create(pub_id = resp['id']).save()
+                        modelo = Modelo.objects.get(pub_id__iexact = resp['id'])
+                        Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, modelo = modelo, stats=stats).save()
+                    except:
+                        stats = PubStats.objects.create(pub_id = resp['id'])
+                        Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, stats=stats).save()
+
+        
+        
+        
+        qs = Publicacion.objects.exclude(stats__isnull=True)
+        
+        
+        return qs
+
+
 @admin.register(Errores)
 class ErroresAdmin(admin.ModelAdmin):
     list_display = ('name','fecha','error')
@@ -249,14 +283,16 @@ class ModeloAdmin(admin.ModelAdmin):
             print(resp.status_code)
             if resp_ok(resp,'Publicar Auto'):
                 resp = resp.json()
-                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink']).save()
-                desc = api.cambiar_desc(resp['id'] , obj.desc_meli)
-                print(desc.status_code, desc.text)
-                
-                self.message_user(
-                    request,
-                    f"{obj.descripcion} | Publicado {resp['permalink']}"
-                )
+                stats = PubStats.objects.create(pub_id = resp['id']).save()
+                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], stats = stats).save()
+                resp = api.cambiar_desc(resp['id'] , obj.desc_meli)
+                if resp_ok(resp,f'Cambiando desc | {resp[id]}'):
+                    self.message_user(
+                        request,
+                        f"{obj.descripcion} | Publicado {resp['permalink']}"
+                    )
+                else:
+                    self.message_user(request,f'{str(resp.text)}',level='ERROR')
             else:
                 self.message_user(request,f'{str(resp.text)}',level='ERROR')
     

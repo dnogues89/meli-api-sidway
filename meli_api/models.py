@@ -81,7 +81,11 @@ class Modelo(models.Model):
     def __str__(self) -> str:
         return f'{self.descripcion}'
 
-    
+class PubStats(models.Model):
+    pub_id = models.CharField(max_length=100) 
+    views = models.IntegerField(default = 0, verbose_name='vistas')
+    clics_tel = models.IntegerField(default = 0, verbose_name='boton tel')
+
 class Publicacion(models.Model):
     pub_id = models.CharField(max_length = 100)
     titulo = models.CharField(max_length = 100)
@@ -95,6 +99,7 @@ class Publicacion(models.Model):
     clics_tel = models.IntegerField(default = 0, verbose_name='boton tel')
     modelo = models.ForeignKey(Modelo, on_delete = models.SET_NULL, null = True, blank = True)
     url = models.URLField(default='sinurl.com.ar')
+    stats = models.ForeignKey(PubStats, on_delete=models.SET_NULL, null=True)
     sincronizado = models.BooleanField(default=False)
     
     def __str__(self) -> str:
@@ -104,3 +109,4 @@ class Publicacion(models.Model):
         precio = convertir_precio(self)
         self.precio = "$ {:,.0f}".format(precio).replace(",", ".")
         super().save()
+        
