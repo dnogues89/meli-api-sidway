@@ -67,7 +67,7 @@ class ErroresAdmin(admin.ModelAdmin):
 
 @admin.register(Publicacion)
 class PublicacionAdmin(admin.ModelAdmin):
-    list_display=('titulo_short','pub_id', 'cat','precio','crm', 'creado','actualizado','activa','visualizaciones','clics_tel','ver','sincronizado')
+    list_display=('titulo_short','pub_id', 'cat','precio','crm', 'creado','actualizado','activa','ver','sincronizado')
     list_editable =('precio',)
     actions = ('pausar','eliminar','actualizar_precio','sinconizar_meli')
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
@@ -107,21 +107,7 @@ class PublicacionAdmin(admin.ModelAdmin):
     @admin.action(description='Sincronizar pubs con Meli')
     def sinconizar_meli(self,request,objetos):
         api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
-        #Creo publicaciones si es necesario
-        resp = api.items_by_id(MeliCon.objects.get(name = 'API Dnogues').user_id)
-        if resp_ok(resp,'Buscando Publicaciones'):
-            pubs_meli = resp.json()['results']
-            pubs_django = [obj.pub_id for obj in  Publicacion.objects.all()]
-            for obj in set(pubs_meli) - set(pubs_django):
-                resp = api.consulta_pub(obj)
-                if resp_ok(resp,'Consulta publicacion'):
-                    resp = resp.json()
-                    activa = True if resp['status'] == 'active' else False
-                    try:
-                        Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, modelo = modelo).save()
-                    except:
-                        Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True).save()
-
+        
         for obj in objetos:
             resp = api.consulta_pub(obj)
             if resp_ok(resp, f'Consultando publicacion | {obj.pub_id}'):

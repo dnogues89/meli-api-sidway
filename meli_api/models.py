@@ -95,8 +95,6 @@ class Publicacion(models.Model):
     f_creado = models.DateTimeField(auto_now_add=True)
     f_actualizacion = models.DateTimeField(blank=True, null=True,default=timezone.now)
     activa = models.BooleanField(null = True, blank = True)
-    visualizaciones = models.IntegerField(default = 0, verbose_name='vistas')
-    clics_tel = models.IntegerField(default = 0, verbose_name='boton tel')
     modelo = models.ForeignKey(Modelo, on_delete = models.SET_NULL, null = True, blank = True)
     url = models.URLField(default='sinurl.com.ar')
     stats = models.ForeignKey(PubStats, on_delete=models.SET_NULL, null=True)
