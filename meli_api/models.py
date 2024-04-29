@@ -4,6 +4,7 @@ from core.settings import BASE_DIR
 from django.utils import timezone
 from multiple_upload.models import Image
 from espasa_info.models import CRM
+from .apicon import MeliAPI
 
 # Create your models here.
 def convertir_precio(obj):
@@ -14,6 +15,17 @@ def convertir_precio(obj):
             return int(obj.precio.replace('$','').replace('.','').strip())
         except:
             return 0
+
+def resp_ok(resp, name):
+    if resp.status_code == 200 or resp.status_code == 402 or resp.status_code == 201:
+        return True
+    else:
+        try:
+            Errores.objects.create(name=f'{name} | {resp.status_code}',error=resp.json()).save()
+        except:
+            Errores.objects.create(name=f'{name} | {resp.status_code}',error=resp.text).save()
+        return False
+
         
 class Errores(models.Model):
     fecha = models.DateTimeField(auto_now_add=True)
@@ -77,10 +89,29 @@ class Modelo(models.Model):
     desc_meli = models.TextField()
     precio = models.IntegerField(default = 0)
     espasa_db = models.ForeignKey(CRM, null=True, blank=True, on_delete=models.SET_NULL)
-    pub_to_copy = models.CharField(max_length=50, help_text='Publicacion a copiar atributos, ej MLA12345', verbose_name='Copy ID')
+    pub_to_copy = models.CharField(max_length=50, help_text='Publicacion a copiar atributos, ej MLA12345', verbose_name='Copy ID', null=True, blank=True)
+    video_id = models.CharField(max_length=200, null=True,blank=True, default='')
+    atributos = models.ManyToManyField(Atributo, blank=True)
+    
     
     def __str__(self) -> str:
         return f'{self.descripcion}'
+    
+    def save(self, *args, **kwargs):
+        super().save()
+        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
+        if self.pub_to_copy != "" or self.pub_to_copy == None and self.atributos.count() == 0:
+            resp = api.consulta_pub(self.pub_to_copy)
+            if resp_ok(resp, 'Consultar Atributos'):
+                for at in resp.json()['attributes']:
+                    try:
+                        apend = Atributo.objects.get(id_att=at['id'],value=at['value_name'])
+                    except:
+                        apend = Atributo.objects.create(nombre = at['name'] ,id_att=at['id'],value=at['value_name']).save()     
+                    apend = Atributo.objects.get(id_att=at['id'],value=at['value_name'])
+                    self.atributos.add(apend)
+                self.video_id = resp.json()['video_id'] 
+            self.save()
 
 class PubStats(models.Model):
     pub_id = models.CharField(max_length=100) 
