@@ -49,12 +49,32 @@ class PubStatsAdmin(admin.ModelAdmin):
                     except:
                         stats = PubStats.objects.create(pub_id = resp['id'])
                         Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, stats=stats).save()
+            
+        
+        
+        
+        qs = Publicacion.objects.all()
+        hasta = timezone.now().date().strftime('%Y-%m-%dT00:00:00.000')
+        #contacto tel
+        lista_pubs = [x.pub_id for x in qs]
+        resp = api.phone_by_items(','.join(lista_pubs),hasta)
+        if resp_ok(resp, 'Obtener clicks en telefonos'):
+            for item in resp.json():
+                try:
+                    pub = qs.get(pub_id = item['item_id'])
+                    pub.clics_tel = item['total']
+                    pub.save()
+                except:
+                    pass
 
-        
-        
-        
-        qs = Publicacion.objects.exclude(stats__isnull=True)
-        
+        #Vistas
+        for item in qs:
+            desde = item.f_creado.strftime('%Y-%m-%dT00:00:00.000-00:00')
+            resp = api.views_by_item(item.pub_id,desde,hasta)
+            if resp_ok(resp, f'Get {item.pub_id} views'):
+                item.visualizaciones = int(resp.json()[0]['total_visits'])
+            item.save()
+            
         
         return qs
 
@@ -80,28 +100,28 @@ class PublicacionAdmin(admin.ModelAdmin):
     
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
-        hasta = timezone.now().date().strftime('%Y-%m-%dT00:00:00.000')
+        # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
+        # hasta = timezone.now().date().strftime('%Y-%m-%dT00:00:00.000')
         
-        #contacto tel
-        lista_pubs = [x.pub_id for x in qs]
-        resp = api.phone_by_items(','.join(lista_pubs),hasta)
-        if resp_ok(resp, 'Obtener clicks en telefonos'):
-            for item in resp.json():
-                try:
-                    pub = qs.get(pub_id = item['item_id'])
-                    pub.clics_tel = item['total']
-                    pub.save()
-                except:
-                    pass
+        # #contacto tel
+        # lista_pubs = [x.pub_id for x in qs]
+        # resp = api.phone_by_items(','.join(lista_pubs),hasta)
+        # if resp_ok(resp, 'Obtener clicks en telefonos'):
+        #     for item in resp.json():
+        #         try:
+        #             pub = qs.get(pub_id = item['item_id'])
+        #             pub.clics_tel = item['total']
+        #             pub.save()
+        #         except:
+        #             pass
 
-        #Vistas
-        for item in qs:
-            desde = item.f_creado.strftime('%Y-%m-%dT00:00:00.000-00:00')
-            resp = api.views_by_item(item.pub_id,desde,hasta)
-            if resp_ok(resp, f'Get {item.pub_id} views'):
-                item.visualizaciones = int(resp.json()[0]['total_visits'])
-            item.save()
+        # #Vistas
+        # for item in qs:
+        #     desde = item.f_creado.strftime('%Y-%m-%dT00:00:00.000-00:00')
+        #     resp = api.views_by_item(item.pub_id,desde,hasta)
+        #     if resp_ok(resp, f'Get {item.pub_id} views'):
+        #         item.visualizaciones = int(resp.json()[0]['total_visits'])
+        #     item.save()
         return qs
        
     @admin.action(description='Sincronizar pubs con Meli')

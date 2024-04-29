@@ -77,6 +77,7 @@ class Modelo(models.Model):
     desc_meli = models.TextField()
     precio = models.IntegerField(default = 0)
     espasa_db = models.ForeignKey(CRM, null=True, blank=True, on_delete=models.SET_NULL)
+    pub_to_copy = models.CharField(max_length=50, help_text='Publicacion a copiar atributos, ej MLA12345', verbose_name='Copy ID')
     
     def __str__(self) -> str:
         return f'{self.descripcion}'
