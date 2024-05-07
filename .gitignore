@@ -3,6 +3,7 @@
 
 /images/static/*
 asd.json
+db.sqlite3
 /bot/key.py
 /core/email_settings.py
 */migrations/00*
