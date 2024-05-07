@@ -94,7 +94,7 @@ class PublicacionAdmin(admin.ModelAdmin):
     
     def crm(self,obj):
         try:
-            return obj.modelo.espasa_db.precio_tx if obj.modelo.espasa_db.precio_tx == '0' else obj.modelo.espasa_db.oferta_min
+            return obj.modelo.espasa_db.precio_tx if obj.modelo.espasa_db.ofertas == '0' else obj.modelo.espasa_db.oferta_min
         except:
             return 0
     
@@ -248,7 +248,7 @@ class ModeloAdmin(admin.ModelAdmin):
 
     def precio_crm(self,obj):
         try:
-            return obj.espasa_db.precio_tx if obj.espasa_db.ofertas == 0 else obj.espasa_db.oferta_min
+            return obj.espasa_db.precio_tx if obj.espasa_db.ofertas == "0" else obj.espasa_db.oferta_min
         except:
             return 0
     
