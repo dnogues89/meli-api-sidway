@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import ImagesForm
 from .models import Image
-from meli_api.models import GrupoImagenes
+from meli_api.models import GrupoImagenes, Modelo
 
 # Create your views here.
 def index(request):
@@ -26,6 +26,15 @@ def fileupload(request):
             image_ins.save()
             g_imagenes.imagenes.add(image_ins)
         g_imagenes.save()
+        
+        #Unir a un modelo
+        try:
+            modelo = Modelo.objects.get(espasa_db__codigo__iexact = g_imagenes.codigo)
+            modelo.g_imagenes = g_imagenes
+            modelo.save()
+        except:
+            pass
+        
         return redirect('Confirmacion')
     context = {'form': form}
     return render(request, "upload.html", context)
