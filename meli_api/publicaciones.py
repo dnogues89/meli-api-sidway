@@ -29,7 +29,7 @@ class ArmarPublicacion():
         "marketplace" 
         ], 
         "pictures": self.imagenes(),
-        "video_id": self.modelo.g_atributos.video_id,
+        "video_id": self.modelo.video_id,
         "category_id": "MLA1744",
         "price": str(self.modelo.precio),
         "currency_id": "ARS",
