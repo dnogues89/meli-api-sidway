@@ -127,6 +127,10 @@ class Modelo(models.Model):
                 self.video_id = resp.json()['video_id'] 
             g_att.save()
             self.g_atributos = g_att
+            my = Atributo.objects.filter(id_att = 'VEHICLE_YEAR')
+            for item in my:
+                item.value = timezone.now().year
+                item.save()
             super().save()               
         
         
