@@ -6,3 +6,7 @@ import json
 # Create your views here.
 def mis_pubs(request):
     return HttpResponse('Archivo no encontrado.')
+
+def update_stats(request):
+    
+    return HttpResponse('Archivo no encontrado.')
