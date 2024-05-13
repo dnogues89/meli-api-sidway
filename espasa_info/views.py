@@ -6,6 +6,40 @@ from meli_api.models import Modelo
 
 # Create your views here.
 def update_espasa_db(request):
+    desc_meli = """
+    CONSULTE POR TODOS LOS MODELOS ." EL MEJOR PRECIO DEL PAÍS STOCK PERMANENTE " PRECIOS REALES ....
+
+""PAGAMOS MAS TU USADO""
+
+--------------------------------------------------------------
+
+(de menor, igual y hasta mayor valor)
+
+Aceptamos 2 autos por compra de 0 Km
+
+Financiamos la diferencia tasa 0%
+--------------------------------------------------------------
+
+ESPASA SA Concesionario Oficial VW
+
+N1 en ventas, 20 años consecutivos !!
+
+CASA CENTRAL, Triunvirato 3661 CABA
+
+
+-------------------------------------------------------------
+
+Abierto de Lunes a sabado de 9hs a 19hs !!
+
+
+-------------------------------------------------------------
+
+El mayor stock permanente del mercado;
+
+Entrega inmediata, colores a elección !!!!
+
+Superamos cualquier presupuesto escrito !
+    """
     conn = EspasaDataBase()
     for item in conn.get_info():
         try:
@@ -25,7 +59,7 @@ def update_espasa_db(request):
                 try:
                     _ = Modelo.objects.get(espasa_db__codigo = item[0])
                 except:
-                    _ = Modelo.objects.create(espasa_db = obj, descripcion = str(item[1]), anio = f"20{str(item[1]).split('MY')[-1].split(' ')[0]}").save()
+                    _ = Modelo.objects.create(espasa_db = obj, descripcion = str(item[1]), anio = f"20{str(item[1]).split('MY')[-1].split(' ')[0]}", desc_meli=desc_meli).save()
             
         except:
                 
@@ -46,7 +80,7 @@ def update_espasa_db(request):
                 try:
                     _ = Modelo.objects.get(espasa_db__codigo = item[0])
                 except:
-                    _ = Modelo.objects.create(espasa_db = obj, descripcion = str(item[1]), anio = f"20{str(item[1]).split('MY')[-1].split(' ')[0]}").save()
+                    _ = Modelo.objects.create(espasa_db = obj, descripcion = str(item[1]), anio = f"20{str(item[1]).split('MY')[-1].split(' ')[0]}",desc_meli=desc_meli).save()
         
         to_delete = Modelo.objects.filter(espasa_db__isnull=True)
         for item in to_delete:
