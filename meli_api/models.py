@@ -139,6 +139,9 @@ class PubStats(models.Model):
     pub_id = models.CharField(max_length=100) 
     views = models.IntegerField(default = 0, verbose_name='vistas')
     clics_tel = models.IntegerField(default = 0, verbose_name='boton tel')
+    
+    def __str__(self) -> str:
+        return self.pub_id
 
 class Publicacion(models.Model):
     pub_id = models.CharField(max_length = 100)

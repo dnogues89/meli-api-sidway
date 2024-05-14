@@ -29,34 +29,6 @@ def resp_ok(resp, name):
 @admin.register(PubStats)
 class PubStatsAdmin(admin.ModelAdmin):
     list_display = ('pub_id','views','clics_tel')
-    
-    def get_queryset(self, request):
-        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
-        #Creo publicaciones si es necesario
-        resp = api.items_by_id(MeliCon.objects.get(name = 'API Dnogues').user_id)
-        if resp_ok(resp,'Buscando Publicaciones'):
-            pubs_meli = resp.json()['results']
-            pubs_django = [obj.pub_id for obj in  Publicacion.objects.all()]
-            for obj in set(pubs_meli) - set(pubs_django):
-                resp = api.consulta_pub(obj)
-                if resp_ok(resp,'Consulta publicacion'):
-                    resp = resp.json()
-                    activa = True if resp['status'] == 'active' else False
-                    try:
-                        stats = PubStats.objects.create(pub_id = resp['id']).save()
-                        modelo = Modelo.objects.get(pub_id__iexact = resp['id'])
-                        Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, modelo = modelo, stats=stats).save()
-                    except:
-                        stats = PubStats.objects.create(pub_id = resp['id'])
-                        Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, stats=stats).save()
-            
-        
-        
-        
-        qs = Publicacion.objects.exclude(stats__isnull=True)
-        
-        
-        return qs
 
 
 @admin.register(Errores)
@@ -119,7 +91,7 @@ class PublicacionAdmin(admin.ModelAdmin):
                         self.message_user(request,f'Precio invalido {precio}', level='ERROR')
                         break
                     resp = api.actualizar_precio(obj.pub_id,str(precio))
-                    if resp_ok(resp,'Camio Precio') == False:
+                    if resp_ok(resp,'Cambio Precio') == False:
                         self.message_user(request,f'No se actualizo el precio {resp.text}', level='ERROR')
                         break
                     self.message_user(request,f'Publicacion {obj.pub_id} actualizada a {precio}')
