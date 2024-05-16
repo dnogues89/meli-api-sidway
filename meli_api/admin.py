@@ -229,6 +229,21 @@ class ModeloAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
+        obj = MeliCon.objects.get(name = 'API Dnogues')
+        api = MeliAPI(obj)
+        if api.get_user_me().json()['message'] == 'invalid_token':
+            print('estoy aca')
+            resp = MeliAPI(obj).renew_token()
+            if resp_ok(resp, 'Renovar token'):
+                obj.access_token = resp.json()['access_token']
+                obj.refresh_secret = resp.json()['refresh_token']
+                self.message_user(request,f'Access Token renovado{resp.text}')
+            else:
+                self.message_user(
+                    request,
+                    f'{str(resp.text)}', level="ERROR"
+                )
+            obj.save()    
         return qs
 
     def unidad(self,obj):
