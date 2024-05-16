@@ -193,8 +193,8 @@ class MeliAPI():
         
         return response  
     
-    def leads(self, user_id):
-        url = f"https://api.mercadolibre.com/vis/users/{user_id}/leads/buyers"
+    def leads(self, user_id, desde = "$DATE_FROM"):
+        url = f"https://api.mercadolibre.com/vis/users/{user_id}/leads/buyers?dateFrom="
         
         headers = {
         'Authorization': f'Bearer {self.data.access_token}',

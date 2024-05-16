@@ -8,5 +8,6 @@ class Lead(models.Model):
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
     phone = models.CharField(max_length=100)
-    date = models.DateTimeField(auto_created=True)
-    to_crm = models.CharField(max_length=100)
+    date = models.DateTimeField(auto_created=True, null=True, blank=True)
+    to_crm = models.BooleanField(default=False)
+    contactos = models.IntegerField(default=0)
