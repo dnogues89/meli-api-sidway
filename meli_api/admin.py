@@ -50,31 +50,6 @@ class PublicacionAdmin(admin.ModelAdmin):
         except:
             return 0
     
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
-        # hasta = timezone.now().date().strftime('%Y-%m-%dT00:00:00.000')
-        
-        # #contacto tel
-        # lista_pubs = [x.pub_id for x in qs]
-        # resp = api.phone_by_items(','.join(lista_pubs),hasta)
-        # if resp_ok(resp, 'Obtener clicks en telefonos'):
-        #     for item in resp.json():
-        #         try:
-        #             pub = qs.get(pub_id = item['item_id'])
-        #             pub.clics_tel = item['total']
-        #             pub.save()
-        #         except:
-        #             pass
-
-        # #Vistas
-        # for item in qs:
-        #     desde = item.f_creado.strftime('%Y-%m-%dT00:00:00.000-00:00')
-        #     resp = api.views_by_item(item.pub_id,desde,hasta)
-        #     if resp_ok(resp, f'Get {item.pub_id} views'):
-        #         item.visualizaciones = int(resp.json()[0]['total_visits'])
-        #     item.save()
-        return qs
        
     @admin.action(description='Sincronizar pubs con Meli')
     def sinconizar_meli(self,request,objetos):
@@ -231,19 +206,22 @@ class ModeloAdmin(admin.ModelAdmin):
         qs = super().get_queryset(request)
         obj = MeliCon.objects.get(name = 'API Dnogues')
         api = MeliAPI(obj)
-        if api.get_user_me().json()['message'] == 'invalid_token':
-            print('estoy aca')
-            resp = MeliAPI(obj).renew_token()
-            if resp_ok(resp, 'Renovar token'):
-                obj.access_token = resp.json()['access_token']
-                obj.refresh_secret = resp.json()['refresh_token']
-                self.message_user(request,f'Access Token renovado{resp.text}')
-            else:
-                self.message_user(
-                    request,
-                    f'{str(resp.text)}', level="ERROR"
-                )
-            obj.save()    
+        try:
+            if api.get_user_me().json()['message'] == 'invalid_token':
+                print('estoy aca')
+                resp = MeliAPI(obj).renew_token()
+                if resp_ok(resp, 'Renovar token'):
+                    obj.access_token = resp.json()['access_token']
+                    obj.refresh_secret = resp.json()['refresh_token']
+                    self.message_user(request,f'Access Token renovado{resp.text}')
+                else:
+                    self.message_user(
+                        request,
+                        f'{str(resp.text)}', level="ERROR"
+                    )
+                obj.save()
+        except:
+            pass
         return qs
 
     def unidad(self,obj):
