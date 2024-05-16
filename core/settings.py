@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'multiple_upload',
     'meli_api',
-    'espasa_info'
+    'espasa_info',
+    'lead'
 ]
 
 MIDDLEWARE = [

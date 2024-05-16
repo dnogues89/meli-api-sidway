@@ -29,54 +29,6 @@ def resp_ok(resp, name):
 @admin.register(PubStats)
 class PubStatsAdmin(admin.ModelAdmin):
     list_display = ('pub_id','views','clics_tel')
-    
-    def get_queryset(self, request):
-        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
-        #Creo publicaciones si es necesario
-        resp = api.items_by_id(MeliCon.objects.get(name = 'API Dnogues').user_id)
-        if resp_ok(resp,'Buscando Publicaciones'):
-            pubs_meli = resp.json()['results']
-            pubs_django = [obj.pub_id for obj in  Publicacion.objects.all()]
-            for obj in set(pubs_meli) - set(pubs_django):
-                resp = api.consulta_pub(obj)
-                if resp_ok(resp,'Consulta publicacion'):
-                    resp = resp.json()
-                    activa = True if resp['status'] == 'active' else False
-                    try:
-                        stats = PubStats.objects.create(pub_id = resp['id']).save()
-                        modelo = Modelo.objects.get(pub_id__iexact = resp['id'])
-                        Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, modelo = modelo, stats=stats).save()
-                    except:
-                        stats = PubStats.objects.create(pub_id = resp['id'])
-                        Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, stats=stats).save()
-            
-        
-        
-        
-        qs = Publicacion.objects.all()
-        hasta = timezone.now().date().strftime('%Y-%m-%dT00:00:00.000')
-        #contacto tel
-        lista_pubs = [x.pub_id for x in qs]
-        resp = api.phone_by_items(','.join(lista_pubs),hasta)
-        if resp_ok(resp, 'Obtener clicks en telefonos'):
-            for item in resp.json():
-                try:
-                    pub = qs.get(pub_id = item['item_id'])
-                    pub.clics_tel = item['total']
-                    pub.save()
-                except:
-                    pass
-
-        #Vistas
-        for item in qs:
-            desde = item.f_creado.strftime('%Y-%m-%dT00:00:00.000-00:00')
-            resp = api.views_by_item(item.pub_id,desde,hasta)
-            if resp_ok(resp, f'Get {item.pub_id} views'):
-                item.visualizaciones = int(resp.json()[0]['total_visits'])
-            item.save()
-            
-        
-        return qs
 
 
 @admin.register(Errores)
@@ -98,31 +50,6 @@ class PublicacionAdmin(admin.ModelAdmin):
         except:
             return 0
     
-    def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
-        # hasta = timezone.now().date().strftime('%Y-%m-%dT00:00:00.000')
-        
-        # #contacto tel
-        # lista_pubs = [x.pub_id for x in qs]
-        # resp = api.phone_by_items(','.join(lista_pubs),hasta)
-        # if resp_ok(resp, 'Obtener clicks en telefonos'):
-        #     for item in resp.json():
-        #         try:
-        #             pub = qs.get(pub_id = item['item_id'])
-        #             pub.clics_tel = item['total']
-        #             pub.save()
-        #         except:
-        #             pass
-
-        # #Vistas
-        # for item in qs:
-        #     desde = item.f_creado.strftime('%Y-%m-%dT00:00:00.000-00:00')
-        #     resp = api.views_by_item(item.pub_id,desde,hasta)
-        #     if resp_ok(resp, f'Get {item.pub_id} views'):
-        #         item.visualizaciones = int(resp.json()[0]['total_visits'])
-        #     item.save()
-        return qs
        
     @admin.action(description='Sincronizar pubs con Meli')
     def sinconizar_meli(self,request,objetos):
@@ -139,7 +66,7 @@ class PublicacionAdmin(admin.ModelAdmin):
                         self.message_user(request,f'Precio invalido {precio}', level='ERROR')
                         break
                     resp = api.actualizar_precio(obj.pub_id,str(precio))
-                    if resp_ok(resp,'Camio Precio') == False:
+                    if resp_ok(resp,'Cambio Precio') == False:
                         self.message_user(request,f'No se actualizo el precio {resp.text}', level='ERROR')
                         break
                     self.message_user(request,f'Publicacion {obj.pub_id} actualizada a {precio}')
@@ -241,10 +168,16 @@ class GrupoImagenesAdmin(admin.ModelAdmin):
 
 @admin.register(Modelo)
 class ModeloAdmin(admin.ModelAdmin):
-    list_display = ('unidad','anio','precio','precio_crm','categoria','publicaciones','cargar_imagenes','c_img','c_atrib')
-    list_editable = ('precio','categoria')
+    list_display = ('unidad','precio','precio_crm','categoria','publicaciones','stock','cargar_imagenes','c_img','c_atrib','pub_to_copy')
+    list_editable = ('precio','categoria','pub_to_copy')
     search_fields = ['descripcion']
     actions = ('publicar',)
+    
+    def stock(self,obj):
+        try:
+            return obj.espasa_db.stock
+        except:
+            return '-'
 
     def precio_crm(self,obj):
         try:
@@ -267,9 +200,28 @@ class ModeloAdmin(admin.ModelAdmin):
     def cargar_imagenes(self,obj):
         url = reverse('File_Uploads')
         return format_html("<a href='#' onclick=\"window.open('{}', 'Probando', 'width='+screen.width/2+',height='+screen.height/2); return false;\">{}</a>", url, 'Ir')
+    cargar_imagenes.short_description = 'Up/img'
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
+        obj = MeliCon.objects.get(name = 'API Dnogues')
+        api = MeliAPI(obj)
+        try:
+            if api.get_user_me().json()['message'] == 'invalid_token':
+                print('estoy aca')
+                resp = MeliAPI(obj).renew_token()
+                if resp_ok(resp, 'Renovar token'):
+                    obj.access_token = resp.json()['access_token']
+                    obj.refresh_secret = resp.json()['refresh_token']
+                    self.message_user(request,f'Access Token renovado{resp.text}')
+                else:
+                    self.message_user(
+                        request,
+                        f'{str(resp.text)}', level="ERROR"
+                    )
+                obj.save()
+        except:
+            pass
         return qs
 
     def unidad(self,obj):
@@ -280,6 +232,7 @@ class ModeloAdmin(admin.ModelAdmin):
     
     def publicaciones(self,obj):
         return Publicacion.objects.filter(modelo = obj, activa = True).count()
+    publicaciones.short_description = 'pubs'
 
     @admin.action(description='Publicar')
     def publicar(self,request,objetos):

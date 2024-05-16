@@ -163,3 +163,43 @@ class MeliAPI():
         response = requests.request("GET", url, headers=headers)
 
         return response
+    
+    def preguntas(self, user_id):
+        
+        url = f"https://api.mercadolibre.com/questions/search?seller_id={user_id}&api_version=4"
+        
+        headers = {
+        'Authorization': f'Bearer {self.data.access_token}',
+        } 
+
+        response = requests.request("GET", url, headers=headers)
+
+        return response
+    
+    def responder_pregunta(self, question_id, answer):
+        
+        url = f"https://api.mercadolibre.com/answers"
+        
+        headers = {
+        'Authorization': f'Bearer {self.data.access_token}',
+        }
+        
+        payload = json.dumps({
+                                "question_id": question_id, 
+                                "text":answer 
+                                })
+    
+        response = requests.request("POST", url, headers=headers, data=payload)
+        
+        return response  
+    
+    def leads(self, user_id, desde = "$DATE_FROM"):
+        url = f"https://api.mercadolibre.com/vis/users/{user_id}/leads/buyers?dateFrom="
+        
+        headers = {
+        'Authorization': f'Bearer {self.data.access_token}',
+        } 
+
+        response = requests.request("GET", url, headers=headers)
+
+        return response
