@@ -66,7 +66,7 @@ def sincro_meli(request):
                     activa = True if resp['status'] == 'active' else False
                     try:
                         stats = models.PubStats.objects.create(pub_id = resp['id']).save()
-                        modelo = models.Modelo.objects.get(pub_id__iexact = resp['id'])
+                        modelo = models.Modelo.objects.get(descripcion__iexact = resp['title'])
                         models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, modelo = modelo, stats=stats).save()
                     except:
                         stats = models.PubStats.objects.create(pub_id = resp['id'])

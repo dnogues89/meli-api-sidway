@@ -134,8 +134,6 @@ class PublicacionAdmin(admin.ModelAdmin):
             else:
                 self.message_user(request,f'{obj.pub_id} | La publicacion no se pudo cerrar ni eliminar\nError: {resp1.text}', level="ERROR")
 
-    @admin.action(description='Cambiar Precio')
-
     @admin.action(description='Sincronizar Publicaciones')
     def publicaciones_vendedor(self,request,objetos):
         api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
