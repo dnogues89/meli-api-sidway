@@ -39,17 +39,43 @@ class ErroresAdmin(admin.ModelAdmin):
 
 @admin.register(Publicacion)
 class PublicacionAdmin(admin.ModelAdmin):
-    list_display=('titulo_short','pub_id', 'cat','precio','crm', 'creado','actualizado','activa','ver','sincronizado')
+    list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','activa','ver','sincronizado')
     list_editable =('precio',)
     actions = ('pausar','eliminar','actualizar_precio','sinconizar_meli')
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
-    
+
+    def pub_vs_crm(self,obj):
+        try:
+            crm = obj.modelo.espasa_db.precio_tx if obj.modelo.espasa_db.ofertas == '0' else obj.modelo.espasa_db.oferta_min
+            crm = int(crm.replace("$","").replace(".",""))
+            pub = int(obj.precio.replace("$","").replace(".",""))
+            return "$ {:,.0f}".format(pub - crm).replace(",", ".")
+        except:
+            return 'Error'
+            
     def crm(self,obj):
         try:
             return obj.modelo.espasa_db.precio_tx if obj.modelo.espasa_db.ofertas == '0' else obj.modelo.espasa_db.oferta_min
         except:
             return 0
     
+    def stock(self,obj):
+        try:
+            return obj.modelo.espasa_db.stock
+        except:
+            return '-'
+    
+    def vistas(self,obj):
+        try:
+            return obj.stats.views
+        except:
+            return '-'
+     
+    def cont(self,obj):
+        try:
+            return obj.stats.clics_tel
+        except:
+            return '-'
        
     @admin.action(description='Sincronizar pubs con Meli')
     def sinconizar_meli(self,request,objetos):
@@ -74,12 +100,6 @@ class PublicacionAdmin(admin.ModelAdmin):
                            
     def creado(self,obj):
         return obj.f_creado.strftime("%d/%m/%y") 
-        
-    def actualizado(self,obj):
-        try:
-            return obj.f_actualizacion.strftime('%d/%m/%y')
-        except:
-            return ''
         
     def titulo_short(self,obj):
         return f"{obj.titulo.replace('Volkswagen','')[:15]}..." if len(obj.titulo.replace('Volkswagen','')) > 15 else obj.titulo.replace('Volkswagen','')
