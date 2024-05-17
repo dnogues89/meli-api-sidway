@@ -44,7 +44,7 @@ class ErroresAdmin(admin.ModelAdmin):
 class PublicacionAdmin(admin.ModelAdmin):
     list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','activa','ver','sincronizado')
     list_editable =('precio',)
-    actions = ('pausar','eliminar','actualizar_precio','sinconizar_meli')
+    actions = ('pausar','eliminar','sinconizar_meli')
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
 
     def pub_vs_crm(self,obj):
@@ -99,6 +99,8 @@ class PublicacionAdmin(admin.ModelAdmin):
                         self.message_user(request,f'No se actualizo el precio {resp.text}', level='ERROR')
                         break
                     self.message_user(request,f'Publicacion {obj.pub_id} actualizada a {precio}')
+                    obj.sincronizado = True
+                    obj.save()
                             
                            
     def creado(self,obj):
@@ -162,20 +164,7 @@ class PublicacionAdmin(admin.ModelAdmin):
         api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
         resp = api.items_por_usuario_categoria(api.data.user_id)
     
-    @admin.action(description='Actualizar Precio')
-    def actualizar_precio(self,request,objetos):
-        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
-        for obj in objetos:
-            precio = convertir_precio(obj)
-            if precio == 0:
-                self.message_user(request,f'Precio invalido {precio}', level='ERROR')
-                break
-            resp = api.actualizar_precio(obj.pub_id,str(precio))
-            if resp_ok(resp,'Camio Precio') == False:
-                self.message_user(request,f'No se actualizo el precio {resp.text}', level='ERROR')
-                break
-            self.message_user(request,f'Publicacion {obj.pub_id} actualizada a {precio}')
-                    
+               
 @admin.register(GrupoImagenes)
 class GrupoImagenesAdmin(admin.ModelAdmin):
     list_display = ('codigo','nombre','cantidad','cargar_imagenes')
