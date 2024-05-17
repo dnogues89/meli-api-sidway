@@ -11,7 +11,9 @@ def update_espasa_db():
     try:
         response = requests.get('http://meli.dnoguesdev.com.ar/espasa/update_db/')
         if response.status_code == 200:
+            print("Espasa db Update")
             print(response.text)
+            print()
     except:
         print("No se pudo conectar con Espasa db")
         print()
@@ -22,7 +24,9 @@ def answer_questions():
     try:
         response = requests.get('http://meli.dnoguesdev.com.ar/api/preguntas/')
         if response.status_code == 200:
+            print("apreguntas")
             print(response.text)
+            print()
     except:
         print("No se pudo responder preguntas")
         print()
@@ -32,7 +36,9 @@ def get_leads():
     try:
         response = requests.get('http://meli.dnoguesdev.com.ar/leads/get_leads/')
         if response.status_code == 200:
+            print("leads")
             print(response.text)
+            print()
     except:
         print("No se pudo sincrinizar leads")
         print()
@@ -43,13 +49,14 @@ def answer_questions():
     try:
         response = requests.get('http://meli.dnoguesdev.com.ar/api/get_stats/')
         if response.status_code == 200:
+            print("stats")
             print(response.text)
+            print()
     except:
         print("No se pudo conseguir los stats")
         print()
 
 
-update_espasa_db()
 
 
 while True:
