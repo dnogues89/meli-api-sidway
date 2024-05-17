@@ -1,0 +1,16 @@
+{% extends 'admin/base.html' %}
+{% load static %}
+{% load i18n %} 
+
+{% block title %}{{ title }} | {% trans 'Meli Espasa' %}{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="shortcut icon" type="image/png" href="{% static 'meli_espasa.ico' %}">
+{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">{% trans 'Mercado Libre API DNogues v1.0' %}</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
