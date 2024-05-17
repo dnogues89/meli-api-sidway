@@ -163,6 +163,6 @@ class Publicacion(models.Model):
     def save(self, *args, **kwargs):
         precio = convertir_precio(self)
         self.precio = "$ {:,.0f}".format(precio).replace(",", ".")
-        sincronizado = False
+        self.sincronizado = False
         super().save()
         
