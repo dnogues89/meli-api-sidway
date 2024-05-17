@@ -25,7 +25,7 @@ class Salesfroce():
         try:
             producto = f"{self.cliente.item_id.modelo.espasa_db.familia}"
         except:
-            producto = ""
+            producto = "Sin definir"
                 
             
         self.apellido = self.cliente.name
@@ -44,7 +44,7 @@ class Salesfroce():
             Teléfono: {str(self.telefono)[2:]}\n
             Origen: {self.origen}\n
             Concesionario: {self.concesionario}\n
-            Campaña: "Mercado Libre API"\n
+            Campaña: Mercado Libre API\n
             Comentario: {self.comentario}\n
             País:\n
             Provincia:\n
