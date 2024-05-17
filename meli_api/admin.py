@@ -10,6 +10,9 @@ from django.utils import timezone
 from django.urls import reverse
 
 
+admin.site.site_header = "Mercado Libre ESPASA DNogues"
+admin.site.site_title = "Meli Espasa"
+
 # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
 
 def resp_ok(resp, name):
