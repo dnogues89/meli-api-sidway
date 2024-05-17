@@ -4,7 +4,7 @@ from schedule import every,repeat
 import time
 
 
-@repeat(every().day.at('9:00'))
+@repeat(every().day.at('09:00'))
 @repeat(every().day.at('12:00'))
 @repeat(every().day.at('17:00'))
 def update_espasa_db():
