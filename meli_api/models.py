@@ -155,7 +155,7 @@ class Publicacion(models.Model):
     modelo = models.ForeignKey(Modelo, on_delete = models.SET_NULL, null = True, blank = True)
     url = models.URLField(default='sinurl.com.ar')
     stats = models.ForeignKey(PubStats, on_delete=models.SET_NULL, null=True)
-    sincronizado = models.BooleanField(default=False)
+    sincronizado = models.BooleanField(default=True)
     
     def __str__(self) -> str:
         return self.pub_id
@@ -163,5 +163,6 @@ class Publicacion(models.Model):
     def save(self, *args, **kwargs):
         precio = convertir_precio(self)
         self.precio = "$ {:,.0f}".format(precio).replace(",", ".")
+        sincronizado = False
         super().save()
         
