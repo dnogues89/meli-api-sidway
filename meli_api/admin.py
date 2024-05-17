@@ -45,6 +45,7 @@ class PublicacionAdmin(admin.ModelAdmin):
     list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','activa','ver','sincronizado')
     list_editable =('precio',)
     actions = ('pausar','eliminar','sinconizar_meli')
+    ordering = ['sincronizado','titulo']
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
 
     def pub_vs_crm(self,obj):

@@ -6,12 +6,15 @@ from multiple_upload.models import Image
 from espasa_info.models import CRM
 from .apicon import MeliAPI
 
+from django.db.models.signals import post_delete
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from .apicon import MeliAPI
 
 # Create your models here.
+
+
 def convertir_precio(obj):
     try:
         return int(obj.precio)
@@ -160,6 +163,8 @@ class Publicacion(models.Model):
     def __str__(self) -> str:
         return self.pub_id
     
+
+    
     def save(self, *args, **kwargs):
         precio = convertir_precio(self)
         self.precio = "$ {:,.0f}".format(precio).replace(",", ".")
@@ -171,3 +176,7 @@ class Publicacion(models.Model):
             pass
         super().save()
         
+@receiver(post_delete, sender=Publicacion)
+def delete_pubstats(sender, instance, **kwargs):
+    if instance.stats:
+        instance.stats.delete()
