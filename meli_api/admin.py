@@ -25,6 +25,21 @@ def resp_ok(resp, name):
             Errores.objects.create(name=f'{name} | {resp.status_code}',error=resp.text).save()
         return False
 
+def get_token():
+        obj = MeliCon.objects.get(name = 'API Dnogues')
+        api = MeliAPI(obj)
+        try:
+            if api.get_user_me().json()['message'] == 'invalid_token':
+                resp = MeliAPI(obj).renew_token()
+                if resp_ok(resp, 'Renovar token'):
+                    obj.access_token = resp.json()['access_token']
+                    obj.refresh_secret = resp.json()['refresh_token']
+                else:
+                    return False
+                obj.save()
+                return 'renovado'
+        except:
+            return False
 
 
     
@@ -215,24 +230,7 @@ class ModeloAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        obj = MeliCon.objects.get(name = 'API Dnogues')
-        api = MeliAPI(obj)
-        try:
-            if api.get_user_me().json()['message'] == 'invalid_token':
-                print('estoy aca')
-                resp = MeliAPI(obj).renew_token()
-                if resp_ok(resp, 'Renovar token'):
-                    obj.access_token = resp.json()['access_token']
-                    obj.refresh_secret = resp.json()['refresh_token']
-                    self.message_user(request,f'Access Token renovado{resp.text}')
-                else:
-                    self.message_user(
-                        request,
-                        f'{str(resp.text)}', level="ERROR"
-                    )
-                obj.save()
-        except:
-            pass
+        get_token()
         return qs
 
     def unidad(self,obj):

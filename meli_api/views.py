@@ -4,6 +4,7 @@ from . import models
 import json
 from meli_api.apicon import MeliAPI
 from django.utils import timezone
+from .admin import get_token
 
 # Create your views here.
 def mis_pubs(request):
@@ -44,6 +45,7 @@ def update_stats(request):
     return HttpResponse('Archivo no encontrado.')
 
 def preguntas(request):
+    get_token()
     api = MeliAPI(models.MeliCon.objects.get(name = 'API Dnogues'))
     resp = api.preguntas(api.data.user_id)
     if models.resp_ok(resp, 'Levantando preguntas'):
