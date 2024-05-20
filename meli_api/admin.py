@@ -169,9 +169,7 @@ class PublicacionAdmin(admin.ModelAdmin):
                 resp = api.pausar_eliminar_publicacion(obj.pub_id,'delete')
                 if resp.status_code == 200:
                     self.message_user(request,f'{obj.pub_id} | Publicacion Eliminada correctamente')
-                    stats = obj.stats()
                     obj.delete()
-                    stats.delete()
                 else:
                     self.message_user(request,f'{obj.pub_id} | Publicacion Cerrada, pero no se pudo eliminar\nError: {resp.text}', level="ERROR")
             else:
@@ -253,7 +251,8 @@ class ModeloAdmin(admin.ModelAdmin):
             print(resp.status_code)
             if resp_ok(resp,'Publicar Auto'):
                 resp = resp.json()
-                stats = PubStats.objects.create(pub_id = resp['id']).save()
+                stats = PubStats.objects.create(pub_id = resp['id'])
+                stats.save()
                 pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True).save()
                 desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
                 if resp_ok(desc,f"Cambiando desc | {resp['id']}"):
