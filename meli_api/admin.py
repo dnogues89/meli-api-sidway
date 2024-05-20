@@ -254,7 +254,7 @@ class ModeloAdmin(admin.ModelAdmin):
             if resp_ok(resp,'Publicar Auto'):
                 resp = resp.json()
                 stats = PubStats.objects.create(pub_id = resp['id']).save()
-                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], stats = stats).save()
+                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True).save()
                 desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
                 if resp_ok(desc,f"Cambiando desc | {resp['id']}"):
                     self.message_user(
