@@ -169,7 +169,9 @@ class PublicacionAdmin(admin.ModelAdmin):
                 resp = api.pausar_eliminar_publicacion(obj.pub_id,'delete')
                 if resp.status_code == 200:
                     self.message_user(request,f'{obj.pub_id} | Publicacion Eliminada correctamente')
+                    stats = obj.stats()
                     obj.delete()
+                    stats.delete()
                 else:
                     self.message_user(request,f'{obj.pub_id} | Publicacion Cerrada, pero no se pudo eliminar\nError: {resp.text}', level="ERROR")
             else:
