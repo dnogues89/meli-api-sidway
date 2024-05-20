@@ -61,4 +61,47 @@ class ArmarPublicacion():
 
         
         return json
+
+
+class Descripciones():
+  def __init__(self) -> None:
+    self.get_descripcion()
     
+  def get_descripcion(self):
+    desc = """
+    CONSULTE POR TODOS LOS MODELOS ." EL MEJOR PRECIO DEL PAÍS STOCK PERMANENTE " PRECIOS REALES ....
+
+""PAGAMOS MAS TU USADO""
+
+--------------------------------------------------------------
+
+(de menor, igual y hasta mayor valor)
+
+Aceptamos 2 autos por compra de 0 Km
+
+Financiamos la diferencia tasa 0%
+--------------------------------------------------------------
+
+ESPASA SA Concesionario Oficial VW
+
+N1 en ventas, 20 años consecutivos !!
+
+CASA CENTRAL, Triunvirato 3661 CABA
+
+
+-------------------------------------------------------------
+
+Abierto de Lunes a sabado de 9hs a 19hs !!
+
+
+-------------------------------------------------------------
+
+El mayor stock permanente del mercado;
+
+Entrega inmediata, colores a elección !!!!
+
+Superamos cualquier presupuesto escrito !
+    
+    """
+    
+    return desc

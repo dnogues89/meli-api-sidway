@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.db.models.query import QuerySet
 from django.http import HttpRequest
 from .models import *
-from .publicaciones import ArmarPublicacion
+from .publicaciones import ArmarPublicacion, Descripciones
 from .apicon import MeliAPI
 from django.utils.html import format_html
 from django.utils import timezone
@@ -253,11 +253,11 @@ class ModeloAdmin(admin.ModelAdmin):
                 resp = resp.json()
                 stats = PubStats.objects.create(pub_id = resp['id']).save()
                 pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], stats = stats).save()
-                desc = api.cambiar_desc(resp['id'] , obj.desc_meli)
+                desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
                 if resp_ok(desc,f"Cambiando desc | {resp['id']}"):
                     self.message_user(
                         request,
-                        f"{obj.descripcion} | Publicado {resp['permalink']}"
+                        f"{Descripciones().get_descripcion()} | Publicado {resp['permalink']}"
                     )
                 else:
                     self.message_user(request,f'{str(resp.text)}',level='ERROR')
