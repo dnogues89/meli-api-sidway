@@ -19,6 +19,7 @@ def get_leads(request):
                 
             try:
                 pub = models.Publicacion.objects.get(pub_id = lead['item_id'])
+                model = pub.modelo.descripcion
             except:
                 pub = None
                 
@@ -26,21 +27,22 @@ def get_leads(request):
                 item =Lead.objects.get(lead_id = lead['id'])
                 if item.contactos != len(lead['leads']):
                     item.contactos = len(lead['leads'])
-                    Salesfroce(item).send_data()
-                    item.to_crm = True
+                    # Salesfroce(item).send_data()
+                    # item.to_crm = True
                     item.save()
             except:
                 item = Lead.objects.create(
                     lead_id = lead['id'],
                     item_id = pub,
+                    modelo = model
                     name = lead['name'],
                     email = lead['email'],
                     phone = phone,
                     contactos = len(lead['leads'])
                 )
                 item.save()
-                Salesfroce(item).send_data()
-                item.to_crm = True
+                # Salesfroce(item).send_data()
+                # item.to_crm = True
                 item.save()
                 
                 
