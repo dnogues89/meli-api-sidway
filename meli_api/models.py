@@ -115,6 +115,7 @@ class Modelo(models.Model):
     
     def save(self,*args,**kwargs):
         super().save()
+        #Agregamos atributos a la publicacion haciendo una creacion de grupo de atributos
         if self.g_atributos == None and self.pub_to_copy != None:
             api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
             g_att = GrupoAtributos.objects.create(nombre = self.descripcion)
@@ -134,6 +135,14 @@ class Modelo(models.Model):
             for item in my:
                 item.value = timezone.now().year
                 item.save()
+        
+        #Adjuntar grupo de fotos si es que ya hay un grupo de fotos creado
+        if self.g_imagenes == None:
+            try:
+                g_imagenes = GrupoImagenes.objects.get(codigo = self.espasa_db.codigo)
+                self.g_imagenes = g_imagenes
+            except:
+                pass
             super().save()               
         
         
