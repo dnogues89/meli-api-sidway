@@ -43,7 +43,7 @@ def get_leads(request):
                     contactos = len(lead['leads'])
                 )
                 item.save()
-                if 'whatsapp'not in item:
+                if 'whatsapp'not in item.origen:
                     # Salesfroce(item).send_data()
                     # item.to_crm = True
                     item.save()
