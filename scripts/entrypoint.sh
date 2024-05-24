@@ -11,3 +11,4 @@ python manage.py migrate --no-input
 
 # Run Server
 python manage.py runserver 0.0.0.0:8000
+python schedul_requests.py
