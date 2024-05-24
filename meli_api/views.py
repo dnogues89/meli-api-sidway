@@ -75,7 +75,6 @@ def sincro_meli(request):
                         models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, modelo = modelo, stats=stats).save()
 
                     except:
-                        stats = models.PubStats.objects.create(pub_id = resp['id'])
                         models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, stats=stats).save()
 
                     item = models.Publicacion.objects.get(pub_id = resp['id'])
