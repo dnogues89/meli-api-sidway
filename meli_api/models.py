@@ -5,6 +5,7 @@ from django.utils import timezone
 from multiple_upload.models import Image
 from espasa_info.models import CRM
 from .apicon import MeliAPI
+from usuarios.models import Cuenta
 
 from django.db.models.signals import post_delete
 from django.db.models.signals import post_save
@@ -106,6 +107,7 @@ class Modelo(models.Model):
     categoria = models.CharField(max_length = 30, choices = {'silver': "Silver",'gold':'Gold','gold_premium':"Gold Premium"}, default='silver', null=True, blank=True)
     desc_meli = models.TextField(null=True, blank=True)
     precio = models.IntegerField(default = 0)
+    cuenta = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True, blank=True, default=None)
     espasa_db = models.ForeignKey(CRM, null=True, blank=True, on_delete=models.SET_NULL)
     pub_to_copy = models.CharField(max_length=50, help_text='Publicacion a copiar atributos, ej MLA12345', verbose_name='Copy ID', null=True, blank=True)
     video_id = models.CharField(max_length=200, null=True,blank=True, help_text='No tocar')
@@ -168,6 +170,7 @@ class Publicacion(models.Model):
     url = models.URLField(default='sinurl.com.ar')
     stats = models.ForeignKey(PubStats, on_delete=models.CASCADE, null=True)
     sincronizado = models.BooleanField(default=False)
+    cuenta = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True, blank=True, default=None)
     
     def __str__(self) -> str:
         return self.pub_id

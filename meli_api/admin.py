@@ -1,7 +1,4 @@
-from typing import Any
 from django.contrib import admin
-from django.db.models.query import QuerySet
-from django.http import HttpRequest
 from .models import *
 from .publicaciones import ArmarPublicacion, Descripciones
 from .apicon import MeliAPI
@@ -57,7 +54,7 @@ class ErroresAdmin(admin.ModelAdmin):
 
 @admin.register(Publicacion)
 class PublicacionAdmin(admin.ModelAdmin):
-    list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','activa','ver','sincronizado')
+    list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','cuenta','activa','ver','sincronizado')
     list_editable =('precio',)
     actions = ('pausar','eliminar','sinconizar_meli')
     ordering = ['sincronizado','titulo']
@@ -194,8 +191,8 @@ class GrupoImagenesAdmin(admin.ModelAdmin):
 
 @admin.register(Modelo)
 class ModeloAdmin(admin.ModelAdmin):
-    list_display = ('unidad','precio','precio_crm','categoria','publicaciones','stock','cargar_imagenes','c_img','c_atrib','pub_to_copy')
-    list_editable = ('precio','categoria','pub_to_copy')
+    list_display = ('unidad','precio','precio_crm','categoria','cuenta','publicaciones','stock','cargar_imagenes','c_img','c_atrib','pub_to_copy')
+    list_editable = ('precio','categoria','cuenta','pub_to_copy')
     search_fields = ['descripcion']
     actions = ('publicar',)
     

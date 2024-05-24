@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'multiple_upload',
     'meli_api',
     'espasa_info',
-    'lead'
+    'lead',
+    'usuarios'
 ]
 
 MIDDLEWARE = [
