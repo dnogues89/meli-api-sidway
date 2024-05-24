@@ -45,7 +45,7 @@ def get_leads():
 
 
 @repeat(every(5).minutes)
-def answer_questions():
+def get_stats():
     try:
         response = requests.get('http://meli.dnoguesdev.com.ar/api/get_stats/')
         if response.status_code == 200:
@@ -57,7 +57,10 @@ def answer_questions():
         print()
 
 
-
+update_espasa_db()
+answer_questions()
+get_leads()
+get_stats()
 
 while True:
     schedule.run_pending()
