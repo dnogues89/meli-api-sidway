@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from . import models
-import json
+
 from meli_api.apicon import MeliAPI
 from django.utils import timezone
 from .admin import get_token
+
+from usuarios.models import Cuenta
 
 # Create your views here.
 def mis_pubs(request):
@@ -60,26 +62,28 @@ def preguntas(request):
 
 def sincro_meli(request):
     api = MeliAPI(models.MeliCon.objects.get(name = 'API Dnogues'))
-    resp = api.items_by_id(models.MeliCon.objects.get(name = 'API Dnogues').user_id)
-    if models.resp_ok(resp,'Buscando Publicaciones'):
-            pubs_meli = resp.json()['results']
-            pubs_django = [obj.pub_id for obj in  models.Publicacion.objects.all()]
-            for obj in set(pubs_meli) - set(pubs_django):
-                resp = api.consulta_pub(obj)
-                if models.resp_ok(resp,'Consulta publicacion'):
-                    resp = resp.json()
-                    activa = True if resp['status'] == 'active' else False
-                    try:
-                        stats = models.PubStats.objects.create(pub_id = resp['id']).save()
-                        modelo = models.Modelo.objects.get(descripcion__iexact = resp['title'])
-                        models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, modelo = modelo, stats=stats).save()
+    cuentas = Cuenta.objects.all()
+    for cuenta in cuentas:
+        resp = api.items_by_id(cuenta.meli_id)
+        if models.resp_ok(resp,'Buscando Publicaciones'):
+                pubs_meli = resp.json()['results']
+                pubs_django = [obj.pub_id for obj in  models.Publicacion.objects.all()]
+                for obj in set(pubs_meli) - set(pubs_django):
+                    resp = api.consulta_pub(obj)
+                    if models.resp_ok(resp,'Consulta publicacion'):
+                        resp = resp.json()
+                        activa = True if resp['status'] == 'active' else False
+                        try:
+                            stats = models.PubStats.objects.create(pub_id = resp['id']).save()
+                            modelo = models.Modelo.objects.get(descripcion__iexact = resp['title'])
+                            models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, modelo = modelo, stats=stats, cuenta=cuenta).save()
 
-                    except:
-                        models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True).save()
+                        except:
+                            models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, cuenta=cuenta).save()
 
-                    item = models.Publicacion.objects.get(pub_id = resp['id'])
-                    stats = models.PubStats.objects.get(pub_id = resp['id'])
-                    item.f_creado = resp['date_created']
-                    item.stats = stats
-                    item.save()
+                        item = models.Publicacion.objects.get(pub_id = resp['id'])
+                        stats = models.PubStats.objects.get(pub_id = resp['id'])
+                        item.f_creado = resp['date_created']
+                        item.stats = stats
+                        item.save()
     return HttpResponse('Archivo no encontrado.')
