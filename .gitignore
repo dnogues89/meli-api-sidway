@@ -8,5 +8,6 @@ db.sqlite3
 /bot/key.py
 /core/email_settings.py
 */migrations/00*
+*/migrations/__pycache__
 /espasa_info/espasa_conn.py
 */media/
