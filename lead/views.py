@@ -87,7 +87,7 @@ def get_leads_dia_dia(requests):
     for desde, hasta in fechas_generadas:
         resp = api.leads(conn.user_id, desde, hasta)
         if models.resp_ok(resp,'Descargando Leads'):
-            if resp.json():
+            if 'results' in resp.json():
                 for lead in resp.json()['results']:
                     try:
                         phone = lead['phone']
