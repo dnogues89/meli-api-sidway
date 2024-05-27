@@ -9,6 +9,7 @@ class Cuenta(models.Model):
     token = models.CharField(max_length=300)
     refresh_secret = models.CharField(max_length=300)
     meli_id = models.CharField(max_length=10, null=True)
+    # salesforce_group = models.CharField(max_length=10, null=True, blank=True, default='')
     
     class Meta:
         verbose_name = 'Cuenta'
