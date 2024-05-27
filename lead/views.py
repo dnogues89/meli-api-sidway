@@ -20,9 +20,11 @@ def get_leads(request):
             try:
                 pub = models.Publicacion.objects.get(pub_id = lead['item_id'])
                 model = pub.modelo.descripcion
+                familia = pub.modelo.espasa_db.familia
             except:
                 pub = "-"
                 model = '-'
+                familia = '-'
                 
             try:
                 item =Lead.objects.get(lead_id = lead['id'])
@@ -33,8 +35,9 @@ def get_leads(request):
             except:
                 item = Lead.objects.create(
                     lead_id = lead['id'],
-                    item_id = pub,
+                    item_id = lead['item_id'],
                     modelo = model,
+                    familia = familia,
                     origen = " | ".join([x['channel'] for x in lead['leads']]),
                     date = lead['leads'][0]['created_at'],
                     name = lead['name'],

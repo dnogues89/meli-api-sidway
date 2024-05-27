@@ -18,12 +18,12 @@ class Salesfroce():
 
     def get_data(self):
         try:
-            comentario = f"{self.cliente.item_id.pub_id} | {self.cliente.item_id.titulo}"
+            comentario = f"{self.cliente.item_id} | {self.cliente.modelo}"
         except:
             comentario = ""
         
         try:
-            producto = f"{self.cliente.item_id.modelo.espasa_db.familia}"
+            producto = f"{self.cliente.familia}"
         except:
             producto = "Sin definir"
                 
