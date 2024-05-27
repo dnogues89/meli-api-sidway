@@ -71,7 +71,7 @@ def get_leads(request):
                 item.save()
             if 'whatsapp'not in item.origen:
                 # Salesfroce(item).send_data()
-                # item.to_crm = True
+                item.to_crm = True
                 item.save()
             
                 
