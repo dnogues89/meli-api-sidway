@@ -21,12 +21,12 @@ def get_leads(request):
                 pub = models.Publicacion.objects.get(pub_id = lead['item_id'])
                 model = pub.modelo.descripcion
             except:
-                pub = None
+                pub = "-"
                 
             try:
                 item =Lead.objects.get(lead_id = lead['id'])
                 if item.contactos != len(lead['leads']):
-                    origen = " | ".join([x['channel'] for x in lead['leads']])
+                    item.origen = " | ".join([x['channel'] for x in lead['leads']])
                     item.contactos = len(lead['leads'])
                     item.save()
             except:
@@ -35,6 +35,7 @@ def get_leads(request):
                     item_id = pub,
                     modelo = model,
                     origen = " | ".join([x['channel'] for x in lead['leads']]),
+                    date = lead['leads'][0]['created_at'],
                     name = lead['name'],
                     email = lead['email'],
                     phone = phone,
