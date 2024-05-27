@@ -87,38 +87,39 @@ def get_leads_dia_dia(requests):
     for desde, hasta in fechas_generadas:
         resp = api.leads(conn.user_id, desde, hasta)
         if models.resp_ok(resp,'Descargando Leads'):
-            for lead in resp.json()['results']:
-                try:
-                    phone = lead['phone']
-                except:
-                    phone = '1111111111'
-                    
-                try:
-                    pub = models.Publicacion.objects.get(pub_id = lead['item_id'])
-                    model = pub.modelo.descripcion
-                    familia = pub.modelo.espasa_db.familia
-                except:
-                    pub = "-"
-                    model = '-'
-                    familia = '-'
-                    
-                try:
-                    item =Lead.objects.get(lead_id = lead['id'])
-                    if item.contactos != len(lead['leads']):
-                        item.origen = " | ".join([x['channel'] for x in lead['leads']])
-                        item.contactos = len(lead['leads'])
-                        item.save()
-                except:
-                    item = Lead.objects.create(
-                        lead_id = lead['id'],
-                        item_id = lead['item_id'],
-                        modelo = model,
-                        familia = familia,
-                        origen = " | ".join([x['channel'] for x in lead['leads']]),
-                        date = lead['leads'][0]['created_at'],
-                        name = lead['name'],
-                        email = lead['email'],
-                        phone = phone,
-                        contactos = len(lead['leads'])
-                    )
-                    item.save() 
+            if resp.json():
+                for lead in resp.json()['results']:
+                    try:
+                        phone = lead['phone']
+                    except:
+                        phone = '1111111111'
+                        
+                    try:
+                        pub = models.Publicacion.objects.get(pub_id = lead['item_id'])
+                        model = pub.modelo.descripcion
+                        familia = pub.modelo.espasa_db.familia
+                    except:
+                        pub = "-"
+                        model = '-'
+                        familia = '-'
+                        
+                    try:
+                        item =Lead.objects.get(lead_id = lead['id'])
+                        if item.contactos != len(lead['leads']):
+                            item.origen = " | ".join([x['channel'] for x in lead['leads']])
+                            item.contactos = len(lead['leads'])
+                            item.save()
+                    except:
+                        item = Lead.objects.create(
+                            lead_id = lead['id'],
+                            item_id = lead['item_id'],
+                            modelo = model,
+                            familia = familia,
+                            origen = " | ".join([x['channel'] for x in lead['leads']]),
+                            date = lead['leads'][0]['created_at'],
+                            name = lead['name'],
+                            email = lead['email'],
+                            phone = phone,
+                            contactos = len(lead['leads'])
+                        )
+                        item.save() 
