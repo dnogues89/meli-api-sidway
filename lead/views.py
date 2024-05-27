@@ -3,10 +3,11 @@ from .models import Lead
 from meli_api.apicon import MeliAPI
 from meli_api import models
 from django.http import HttpResponse
-from .salesforce_lead import Salesfroce
+from .salesforce_lead import Salesfroce, convertir_numero
 
 from django.utils import timezone
 from datetime import timedelta
+
 
 
 def generar_fechas(inicio, fin):
@@ -87,13 +88,28 @@ def get_leads_dia_dia(requests):
     for desde, hasta in fechas_generadas:
         resp = api.leads(conn.user_id, desde, hasta)
         if models.resp_ok(resp,'Descargando Leads'):
-            if 'results' in resp.json():
+            if resp.json()['results'] != None:
                 for lead in resp.json()['results']:
                     try:
                         phone = lead['phone']
+                        phone = convertir_numero(lead['phone'])
                     except:
                         phone = '1111111111'
                         
+                    try:
+                        name = lead['name']
+                    except:
+                        name = 'Estimado'
+     
+                    try:
+                        mail = lead['email']
+                    except:
+                        mail = 'sin@mail.com'
+                    
+                    if phone == '1111111111' and mail == 'sin@mail.com':
+                        break
+                        
+                    
                     try:
                         pub = models.Publicacion.objects.get(pub_id = lead['item_id'])
                         model = pub.modelo.descripcion
@@ -117,9 +133,11 @@ def get_leads_dia_dia(requests):
                             familia = familia,
                             origen = " | ".join([x['channel'] for x in lead['leads']]),
                             date = lead['leads'][0]['created_at'],
-                            name = lead['name'],
-                            email = lead['email'],
+                            name = name,
+                            email = mail,
                             phone = phone,
                             contactos = len(lead['leads'])
                         )
-                        item.save() 
+                        item.save()
+                        
+        return HttpResponse(f'Done')

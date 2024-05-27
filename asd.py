@@ -77,3 +77,4 @@ def get_leads_dia_dia(requests):
                         contactos = len(lead['leads'])
                     )
                     item.save() 
+                    

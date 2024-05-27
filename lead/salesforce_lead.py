@@ -4,7 +4,7 @@ from django.core.mail import send_mail
 # from .models import Key
 
 def convertir_numero(numero):
-    numero = numero.replace('-15-','').replace(' ','').replace('-','')
+    numero = numero.replace('-15-','').replace(' ','').replace('-','').replace(')15', '').replace('(','').replace(')','')
     numero = numero if numero[0] != '0' else numero [1:]
     return numero
 
