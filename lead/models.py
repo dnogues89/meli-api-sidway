@@ -17,7 +17,7 @@ class Lead(models.Model):
     contactos = models.IntegerField(default=0)
     
 class Estadisticas(models.Model):
-    cuenta = models.CharField(default='Estadisticas LIMA')
+    cuenta = models.CharField(max_length=100,default='Estadisticas LIMA')
     hoy = models.IntegerField(default=0)
     ayer = models.IntegerField(default=0)
     ultimos_3_dias = models.IntegerField(default=0)
