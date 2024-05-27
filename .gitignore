@@ -7,6 +7,7 @@ asd.json
 db.sqlite3
 /bot/key.py
 /core/email_settings.py
+/core/db_postgres.py
 */migrations/00*
 */migrations/__pycache__
 /espasa_info/espasa_conn.py

@@ -89,6 +89,17 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'meli_app',
+#         'USER': 'meli_api',
+#         'PASSWORD': 'AVNS_FDG0ktuIIVl9i2cudeV',
+#         'HOST': 'bd-node-00-kamados-team.c.aivencloud.com',
+#         'PORT': '22008',
+#     }
+# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
