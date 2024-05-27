@@ -7,12 +7,12 @@ services:
     volumes:
       - ../db.sqlite3:/app/db.sqlite3
       - ./media:/app/media
-      - ./static:/app/static
-      - ./usuarios/migrations:/app/usuarios/migrations
-      - ./meli_api/migrations:/app/meli_api/migrations
-      - ./lead/migrations:/app/lead/migrations
-      - ./espasa_info/migrations:/app/espasa_info/migrations
-      - ./multiple_upload/migrations:/app/multiple_upload/migrations
+      - ../static:/app/static
+      - ../usuarios/migrations:/app/usuarios/migrations
+      - ../meli_api/migrations:/app/meli_api/migrations
+      - ../lead/migrations:/app/lead/migrations
+      - ../espasa_info/migrations:/app/espasa_info/migrations
+      - ../multiple_upload/migrations:/app/multiple_upload/migrations
     ports:
       - "8000:8000"
     networks:
