@@ -19,5 +19,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('get_leads/',views.get_leads, name='get_leads')
+    path('get_leads/',views.get_leads, name='get_leads'),
+    path('get_leads_dia/',views.get_leads_dia_dia, name='get_leads_dia')
 ]
