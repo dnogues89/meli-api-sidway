@@ -22,6 +22,7 @@ def get_leads(request):
                 model = pub.modelo.descripcion
             except:
                 pub = "-"
+                model = '-'
                 
             try:
                 item =Lead.objects.get(lead_id = lead['id'])
