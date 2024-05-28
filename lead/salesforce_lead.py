@@ -30,7 +30,7 @@ class Salesfroce():
             
         self.apellido = self.cliente.name
         self.email = self.cliente.email
-        self.telefono = convertir_numero(self.cliente.phone)
+        self.telefono = self.cliente.phone
         self.comentario = comentario
         self.producto = producto
     
