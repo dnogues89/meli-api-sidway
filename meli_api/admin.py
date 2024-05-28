@@ -191,8 +191,8 @@ class GrupoImagenesAdmin(admin.ModelAdmin):
 
 @admin.register(Modelo)
 class ModeloAdmin(admin.ModelAdmin):
-    list_display = ('unidad','precio','precio_crm','categoria','cuenta','publicaciones','stock','cargar_imagenes','c_img','c_atrib','pub_to_copy')
-    list_editable = ('precio','categoria','cuenta','pub_to_copy')
+    list_display = ('unidad','precio','precio_crm','categoria','cuenta','publicaciones','stock','g_imagenes','cargar_imagenes','c_img','c_atrib','pub_to_copy')
+    list_editable = ('precio','categoria','cuenta','pub_to_copy','g_imagenes')
     search_fields = ['descripcion']
     actions = ('publicar',)
     

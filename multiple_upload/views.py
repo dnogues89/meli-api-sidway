@@ -27,14 +27,6 @@ def fileupload(request):
             g_imagenes.imagenes.add(image_ins)
         g_imagenes.save()
         
-        #Unir a un modelo
-        try:
-            modelo = Modelo.objects.get(espasa_db__codigo__iexact = g_imagenes.codigo)
-            modelo.g_imagenes = g_imagenes
-            modelo.save()
-        except:
-            pass
-        
         return redirect('Confirmacion')
     context = {'form': form}
     return render(request, "upload.html", context)
