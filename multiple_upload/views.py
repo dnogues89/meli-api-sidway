@@ -14,11 +14,9 @@ def fileupload(request):
     form = ImagesForm(request.POST, request.FILES)
     if request.method == 'POST':
         images = request.FILES.getlist('pic')
-        try:
-            g_imagenes = GrupoImagenes.objects.get(codigo = form.data['model_code'])
-        except:
-            g_imagenes = GrupoImagenes.objects.create(codigo = form.data['model_code'], nombre = form.data['model']).save()
-        g_imagenes = GrupoImagenes.objects.get(codigo = form.data['model_code'])
+        
+        g_imagenes = GrupoImagenes.objects.create(codigo = form.data['model_code'], nombre = form.data['model']).save()
+            
         for image in images:
             print(form.data['model_code'])
             print(image)
