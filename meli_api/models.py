@@ -123,14 +123,14 @@ class Modelo(models.Model):
             g_att = GrupoAtributos.objects.create(nombre = self.descripcion)
             resp = api.consulta_pub(self.pub_to_copy)
             if resp_ok(resp, 'Consultar Atributos'):
+                self.video_id = resp.json()['video_id'] 
                 for at in resp.json()['attributes']:
                     try:
                         apend = Atributo.objects.get(id_att=at['id'],value=at['value_name'])
                     except:
                         apend = Atributo.objects.create(nombre = at['name'] ,id_att=at['id'],value=at['value_name']).save()     
-                    apend = Atributo.objects.get(id_att=at['id'],value=at['value_name'])
+                    apend = Atributo.objects.filter(id_att=at['id'],value=at['value_name'])[0]
                     g_att.atributos.add(apend)
-                self.video_id = resp.json()['video_id'] 
             g_att.save()
             self.g_atributos = g_att
             my = Atributo.objects.filter(id_att = 'VEHICLE_YEAR')
