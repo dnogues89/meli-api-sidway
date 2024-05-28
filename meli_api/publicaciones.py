@@ -37,23 +37,42 @@ class ArmarPublicacion():
         "available_quantity": "1",
 
         "location": {
-            "address_line": "Triunvirato, 3661",
-            "zip_code": "1427",
-            "city": {
-            "id": "TUxBQ0NBUGZlZG1sYQ"
-            }
-        },
+              "address_line": "",
+              "zip_code": "",
+              "neighborhood": {
+                "id": "TUxBQkJBTDMxMDZa",
+                "name": "Balvanera"
+              },
+              "city": {
+                "id": "TUxBQ0NBUGZlZG1sYQ",
+                "name": "Capital Federal"
+              },
+              "state": {
+                "id": "TUxBUENBUGw3M2E1",
+                "name": "Capital Federal"
+              },
+              "country": {
+                "id": "AR",
+                "name": "Argentina"
+              },
+              "latitude": -34.6101223,
+              "longitude": -58.4059406
+            },
         "seller_contact": {
           "contact": "",
           "other_info": "",
-          "country_code": "",
+          "country_code": "54",
           "area_code": "",
-          "phone": "",
+          "phone": "1123149614",
           "country_code2": "54",
           "area_code2": "",
-          "phone2": "91123149614",
+          "phone2": "1123149614",
           "email": "dnogues@espasa.com.ar",
           "webpage": ""
+        },
+          "geolocation": {
+          "latitude": -34.5816477,
+          "longitude": -58.4730812
         },
         
         "attributes": self.atributes()
