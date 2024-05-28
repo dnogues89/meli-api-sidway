@@ -70,10 +70,6 @@ class ArmarPublicacion():
           "email": "dnogues@espasa.com.ar",
           "webpage": ""
         },
-          "geolocation": {
-          "latitude": -34.5816477,
-          "longitude": -58.4730812
-        },
         
         "attributes": self.atributes()
         }
