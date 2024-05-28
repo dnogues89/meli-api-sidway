@@ -194,7 +194,7 @@ class MeliAPI():
         return response  
     
     def leads(self, user_id, desde = "",hasta=""):
-        url = f"https://api.mercadolibre.com/vis/users/{user_id}/leads/buyers?date_from={desde}&date_to={hasta}&limit=100"
+        url = f"https://api.mercadolibre.com/vis/users/{user_id}/leads/buyers?date_from={desde}&date_to={hasta}&limit=10"
         
         headers = {
         'Authorization': f'Bearer {self.data.access_token}',
