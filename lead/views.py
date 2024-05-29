@@ -8,7 +8,23 @@ from .salesforce_lead import Salesfroce, convertir_numero
 from django.utils import timezone
 from datetime import timedelta
 
-
+def limpiar_lead(lead):
+    try:
+        phone = lead['phone']
+    except:
+        phone = '1111111111'
+        
+    try:
+        name = lead['name']
+    except:
+        name = 'Estimado'
+    
+    try:
+        email = lead['email']
+    except:
+        email = 'sin@mail.com'
+        
+    return phone , name, email
 
 def generar_fechas(inicio, fin):
     # Convertimos las fechas a objetos datetime
@@ -32,23 +48,15 @@ def generar_fechas(inicio, fin):
 def get_leads(request):
     conn = models.MeliCon.objects.get(name = 'API Dnogues')
     api = MeliAPI(conn)
-    resp = api.leads(conn.user_id)
+    desde = Lead.objects.latest('date').date.strftime("%Y-%m-%d")
+    resp = api.leads(conn.user_id,desde)
+    print(resp)
     if models.resp_ok(resp,'Descargando Leads'):
         for lead in resp.json()['results']:
-            try:
-                phone = lead['phone']
-            except:
-                phone = '1111111111'
-                
-            try:
-                name = lead['name']
-            except:
-                name = 'Estimado'
+            phone , name, email = limpiar_lead(lead)
             
-            try:
-                email = lead['email']
-            except:
-                email = 'sin@mail.com'
+            if phone == '1111111111' and email == 'sin@mail.com':
+                break
             
             try:
                 pub = models.Publicacion.objects.get(pub_id = lead['item_id'])
@@ -80,7 +88,7 @@ def get_leads(request):
                 )
                 item.save()
             if 'whatsapp' not in item.origen and item.to_crm == False:
-                Salesfroce(item).send_data()
+                # Salesfroce(item).send_data()
                 item.to_crm = True
                 item.save()
             
