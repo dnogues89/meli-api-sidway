@@ -41,6 +41,11 @@ def get_leads(request):
                 phone = '1111111111'
                 
             try:
+                name = lead['name']
+            except:
+                name = 'Estimado'
+            
+            try:
                 pub = models.Publicacion.objects.get(pub_id = lead['item_id'])
                 model = pub.modelo.descripcion
                 familia = pub.modelo.espasa_db.familia
@@ -63,7 +68,7 @@ def get_leads(request):
                     familia = familia,
                     origen = " | ".join([x['channel'] for x in lead['leads']]),
                     date = lead['leads'][0]['created_at'],
-                    name = lead['name'],
+                    name = name,
                     email = lead['email'],
                     phone = phone,
                     contactos = len(lead['leads'])
