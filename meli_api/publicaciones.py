@@ -101,13 +101,9 @@ ESPASA SA Concesionario Oficial VW
 
 N1 en ventas, 20 años consecutivos !!
 
-CASA CENTRAL, Triunvirato 3661 CABA
-
-
 -------------------------------------------------------------
 
 Abierto de Lunes a sabado de 9hs a 19hs !!
-
 
 -------------------------------------------------------------
 
