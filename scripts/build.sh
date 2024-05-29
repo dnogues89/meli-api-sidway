@@ -6,6 +6,7 @@ cd /opt/Meli_api_autos/images
 
 echo "Mato docker instance"
 docker compose down
+docker system prune -af
 cd ..
 
 echo "Pull de Github"
