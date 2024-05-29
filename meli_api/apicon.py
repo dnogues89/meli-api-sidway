@@ -166,7 +166,7 @@ class MeliAPI():
     
     def preguntas(self, user_id):
         
-        url = f"https://api.mercadolibre.com/questions/search?seller_id={user_id}&api_version=4"
+        url = f"https://api.mercadolibre.com/questions/search?seller_id={user_id}&api_version=4&sort_fields=date_created&sort_types=DESC"
         
         headers = {
         'Authorization': f'Bearer {self.data.access_token}',
