@@ -54,7 +54,7 @@ class ErroresAdmin(admin.ModelAdmin):
 
 @admin.register(Publicacion)
 class PublicacionAdmin(admin.ModelAdmin):
-    list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','cuenta','activa','ver','sincronizado')
+    list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
     actions = ('pausar','eliminar','sinconizar_meli')
     ordering = ['sincronizado','titulo']
@@ -161,6 +161,9 @@ class PublicacionAdmin(admin.ModelAdmin):
     def eliminar(self,request,objetos):
         api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
         for obj in objetos:
+            if obj.banner ==True:
+                self.message_user(request,f'Es un banner No se va a', level="ERROR")
+                break
             resp1 = api.pausar_eliminar_publicacion(obj.pub_id,'closed')
             if resp1.status_code == 200:
                 resp = api.pausar_eliminar_publicacion(obj.pub_id,'delete')
