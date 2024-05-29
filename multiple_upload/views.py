@@ -3,13 +3,23 @@ from .forms import ImagesForm
 from .models import Image
 from meli_api.models import GrupoImagenes, Modelo
 
+#funcion para bloquear multiples botones
+import threading
+lock = threading.Lock()
+# Decorador para bloquear el acceso al endpoint
+def endpoint_lock(func):
+    def wrapper(*args, **kwargs):
+        with lock:
+            return func(*args, **kwargs)
+    return wrapper
+
 # Create your views here.
 def index(request):
     images = Image.objects.all()
     context = {'images': images}
     return render(request, "index.html", context)
 
-
+@endpoint_lock 
 def fileupload(request):
     form = ImagesForm(request.POST, request.FILES)
     if request.method == 'POST':
