@@ -111,7 +111,7 @@ class Modelo(models.Model):
     espasa_db = models.ForeignKey(CRM, null=True, blank=True, on_delete=models.SET_NULL)
     pub_to_copy = models.CharField(max_length=50, help_text='Publicacion a copiar atributos, ej MLA12345', verbose_name='Copy ID', null=True, blank=True)
     video_id = models.CharField(max_length=200, null=True,blank=True, help_text='No tocar')
-    banner = models.BooleanField(default=False)
+
     
     def __str__(self) -> str:
         return f'{self.descripcion}'
@@ -172,6 +172,7 @@ class Publicacion(models.Model):
     stats = models.ForeignKey(PubStats, on_delete=models.CASCADE, null=True)
     sincronizado = models.BooleanField(default=False)
     cuenta = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True, blank=True, default=None)
+    banner = models.BooleanField(default=False)
     
     def __str__(self) -> str:
         return self.pub_id
