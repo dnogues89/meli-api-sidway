@@ -36,7 +36,8 @@ class Salesfroce():
     
     def send_data(self):
         from_mail='pybotwhat@gmail.com'
-        asunto = 'Salesforce Web2Lead'
+        # asunto = 'Salesforce Web2Lead'
+        asunto = 'pruebas meli api'
         mensaje = f"""
             Nombre: \n
             Apellido: {self.apellido}\n
@@ -52,5 +53,6 @@ class Salesfroce():
             Código Postal:\n
             Producto: {self.producto}\n
             """
-        send_mail(asunto,mensaje,from_mail,['vw_emailtoleadservice@j-27sndpfxzeziihub3wz3ki0i9mngk47qm2qzpyudikkis5wmj3.f2-1j2mfeak.na173.apex.salesforce.com','dnogues@espasa.com.ar'])
+        # send_mail(asunto,mensaje,from_mail,['vw_emailtoleadservice@j-27sndpfxzeziihub3wz3ki0i9mngk47qm2qzpyudikkis5wmj3.f2-1j2mfeak.na173.apex.salesforce.com','dnogues@espasa.com.ar'])
+        send_mail(asunto,mensaje,from_mail,['dnogues@espasa.com.ar'])
     
