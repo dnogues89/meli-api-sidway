@@ -14,7 +14,7 @@ class ArmarPublicacion():
       
     def imagenes(self):
       imagenes = []
-      for imagen in self.modelo.g_imagenes.imagenes.all()[::-1]:
+      for imagen in self.modelo.g_imagenes.imagenes.all():
         imagenes.append({
           'source':f"https://meli.dnoguesdev.com.ar{imagen.pic.url}"
         })
