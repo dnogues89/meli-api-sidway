@@ -22,7 +22,7 @@ class ArmarPublicacion():
 
     def pub(self):    
         json = {
-        "title": self.modelo.descripcion,
+        "title": f'Volkswagen {self.modelo.descripcion}',
         "description": "Okm publicacion de prueba",
         "channels": 
         [
@@ -63,7 +63,7 @@ class ArmarPublicacion():
           "other_info": "",
           "country_code": "54",
           "area_code": "",
-          "phone": "1123149614",
+          "phone": "52787500",
           "country_code2": "54",
           "area_code2": "",
           "phone2": "1123149614",
@@ -84,34 +84,19 @@ class Descripciones():
     
   def get_descripcion(self):
     desc = """
-    CONSULTE POR TODOS LOS MODELOS ." EL MEJOR PRECIO DEL PAÍS STOCK PERMANENTE " PRECIOS REALES ....
 
-""PAGAMOS MAS TU USADO""
+Asesores Comerciales certificados por VW Argentina
 
---------------------------------------------------------------
-
-(de menor, igual y hasta mayor valor)
-
-Aceptamos 2 autos por compra de 0 Km
-
-Financiamos la diferencia tasa 0%
---------------------------------------------------------------
-
-ESPASA SA Concesionario Oficial VW
-
-N1 en ventas, 20 años consecutivos !!
-
--------------------------------------------------------------
-
-Abierto de Lunes a sabado de 9hs a 19hs !!
-
--------------------------------------------------------------
-
-El mayor stock permanente del mercado;
-
-Entrega inmediata, colores a elección !!!!
-
-Superamos cualquier presupuesto escrito !
+- Hasta agotar stock en OFERTA
+- Consecionario Oficial N°1 por 21 años consecutivos.
+- El mejor precio del Mercado Asegurado!
+- Acepto permuta por mayor o menor valor.
+- Entrega inmediata.
+- Disponibilidad de Colores.
+- Financiación exclusiva.
+- Estacionamiento gratuito.
+- Consulte por esta y otras versiones o modelos.
+- No incluye ningún gasto.
     
     """
     
