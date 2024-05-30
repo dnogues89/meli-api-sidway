@@ -90,3 +90,10 @@ def sincro_meli(request):
                         item.stats = stats
                         item.save()
     return HttpResponse('Archivo no encontrado.')
+
+def publicacion(request,publicacion):
+    try:
+        return HttpResponse(models.Publicacion.objects.get(pub_id = publicacion).titulo)
+    except:
+        return HttpResponse('Sin especificar')
+    

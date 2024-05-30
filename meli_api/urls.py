@@ -22,5 +22,7 @@ urlpatterns = [
     path('mis_pubs/',views.mis_pubs, name='mis_pubs'),
     path('get_stats/',views.update_stats, name='update_stats'),
     path('sincro_meli/',views.sincro_meli, name='sincro_meli'),
-    path('preguntas/',views.preguntas, name='preguntas')
+    path('preguntas/',views.preguntas, name='preguntas'),
+    path('publicacion/<str:publicacion>',views.publicacion, name='publicacion')
+    
 ]
