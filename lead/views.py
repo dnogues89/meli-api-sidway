@@ -50,7 +50,7 @@ def get_leads(request):
     api = MeliAPI(conn)
     desde = Lead.objects.latest('date').date.strftime("%Y-%m-%d")
     resp = api.leads(conn.user_id,desde)
-    print(resp)
+    print(desde)
     if models.resp_ok(resp,'Descargando Leads'):
         for lead in resp.json()['results']:
             phone , name, email = limpiar_lead(lead)
@@ -89,6 +89,7 @@ def get_leads(request):
                 item.save()
             if 'whatsapp' not in item.origen and item.to_crm == False:
                 if 'view' not in item.origen:
+                    print('mando')
                     Salesfroce(item).send_data()
                     item.to_crm = True
                     item.save()
@@ -96,7 +97,7 @@ def get_leads(request):
                 
     return HttpResponse(f'{resp.json()}')
 
-def get_leads_dia_dia(requests):
+# def get_leads_dia_dia(requests):
     conn = models.MeliCon.objects.get(name = 'API Dnogues')
     api = MeliAPI(conn)
     inicio = "2024-01-01"
