@@ -61,8 +61,8 @@ class ArmarPublicacion():
         "seller_contact": {
           "contact": "",
           "other_info": "",
-          "country_code": "54",
-          "area_code": "",
+          "country_code": "",
+          "area_code": "011",
           "phone": "52787500",
           "country_code2": "54",
           "area_code2": "",
