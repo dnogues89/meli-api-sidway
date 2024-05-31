@@ -230,6 +230,13 @@ class ModeloAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
+        for obj in qs:
+            try:
+                obj.precio = convertir_precio2(obj.espasa_db.precio_tx) if obj.espasa_db.ofertas == "0" else convertir_precio2(obj.espasa_db.oferta_min)
+                obj.save()
+            except:
+                print('pase')
+                pass
         get_token()
         return qs
 
@@ -264,7 +271,7 @@ class ModeloAdmin(admin.ModelAdmin):
                     self.message_user(request,f'{str(resp.text)}',level='ERROR')
             else:
                 self.message_user(request,f'{str(resp.text)}',level='ERROR')
-    
+  
 @admin.register(Atributo)
 class AtributoAdmin(admin.ModelAdmin):
     list_display = ('nombre','id_att','value')

@@ -14,6 +14,14 @@ from django.dispatch import receiver
 from .apicon import MeliAPI
 
 # Create your models here.
+def convertir_precio2(precio):
+    try:
+        return int(precio)
+    except:
+        try:
+            return int(precio.replace('$','').replace('.','').strip())
+        except:
+            return 0
 
 
 def convertir_precio(obj):
@@ -104,7 +112,7 @@ class Modelo(models.Model):
     anio = models.IntegerField(verbose_name = 'Año',blank=True, null=True)
     g_atributos = models.ForeignKey(GrupoAtributos, null = True, blank = True, on_delete = models.SET_NULL)
     g_imagenes = models.ForeignKey(GrupoImagenes, null = True, blank = True, on_delete = models.SET_NULL, verbose_name='Grp Img')
-    categoria = models.CharField(max_length = 30, choices = {'silver': "Silver",'gold':'Gold','gold_premium':"Gold Premium"}, default='silver', null=True, blank=True)
+    categoria = models.CharField(max_length = 30, choices = {'silver': "Silver",'gold':'Gold','gold_premium':"Gold Premium"}, default='gold_premium', null=True, blank=True)
     desc_meli = models.TextField(null=True, blank=True)
     precio = models.IntegerField(default = 0)
     cuenta = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True, blank=True, default=None)

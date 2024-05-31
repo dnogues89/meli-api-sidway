@@ -7,38 +7,6 @@ from meli_api.models import Modelo
 # Create your views here.
 def update_espasa_db(request):
     desc_meli = """
-    CONSULTE POR TODOS LOS MODELOS ." EL MEJOR PRECIO DEL PAÍS STOCK PERMANENTE " PRECIOS REALES ....
-
-""PAGAMOS MAS TU USADO""
-
---------------------------------------------------------------
-
-(de menor, igual y hasta mayor valor)
-
-Aceptamos 2 autos por compra de 0 Km
-
-Financiamos la diferencia tasa 0%
---------------------------------------------------------------
-
-ESPASA SA Concesionario Oficial VW
-
-N1 en ventas, 20 años consecutivos !!
-
-CASA CENTRAL, Triunvirato 3661 CABA
-
-
--------------------------------------------------------------
-
-Abierto de Lunes a sabado de 9hs a 19hs !!
-
-
--------------------------------------------------------------
-
-El mayor stock permanente del mercado;
-
-Entrega inmediata, colores a elección !!!!
-
-Superamos cualquier presupuesto escrito !
     """
     conn = EspasaDataBase()
     for item in conn.get_info():
