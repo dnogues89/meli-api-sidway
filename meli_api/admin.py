@@ -6,6 +6,8 @@ from django.utils.html import format_html
 from django.utils import timezone
 from django.urls import reverse
 
+from usuarios.models import Cuenta
+
 
 admin.site.site_header = "Mercado Libre ESPASA DNogues"
 admin.site.site_title = "Meli Espasa"
@@ -37,7 +39,6 @@ def get_token():
                 return 'renovado'
         except:
             return False
-
 
     
 # Register your models here.
