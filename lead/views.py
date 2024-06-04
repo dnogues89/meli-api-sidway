@@ -72,6 +72,13 @@ def get_leads(request):
                 if item.contactos != len(lead['leads']):
                     item.origen = " | ".join([x['channel'] for x in lead['leads']])
                     item.contactos = len(lead['leads'])
+                    if item.date != lead['leads'][0]['created_at']:
+                        item.date = lead['leads'][0]['created_at']
+                        item.to_crm = False
+                    if lead['leads'][0]['channel'] == 'whatsapp':
+                        item.to_crm =True
+                    if lead['leads'][0]['channel'] == 'view':
+                        item.to_crm =True
                     item.save()
             except:
                 item = Lead.objects.create(
@@ -87,9 +94,12 @@ def get_leads(request):
                     contactos = len(lead['leads'])
                 )
                 item.save()
-            if 'whatsapp' not in item.origen and item.to_crm == False:
-                if 'view' not in item.origen:
-                    print('mando')
+                if lead['leads'][0]['channel'] == 'whatsapp':
+                    item.to_crm =True
+                if lead['leads'][0]['channel'] == 'view':
+                    item.to_crm =True
+                print(item.to_crm)
+                if item.to_crm == False:
                     Salesfroce(item).send_data()
                     item.to_crm = True
                     item.save()
