@@ -198,7 +198,7 @@ class ModeloAdmin(admin.ModelAdmin):
     list_display = ('unidad','precio','precio_crm','categoria','cuenta','publicaciones','stock','g_imagenes','cargar_imagenes','c_img','c_atrib','pub_to_copy')
     list_editable = ('precio','categoria','cuenta','pub_to_copy','g_imagenes')
     search_fields = ['descripcion']
-    actions = ('publicar',)
+    actions = ('publicar','actualizar precios')
     
     def stock(self,obj):
         try:
@@ -250,6 +250,16 @@ class ModeloAdmin(admin.ModelAdmin):
     def publicaciones(self,obj):
         return Publicacion.objects.filter(modelo = obj, activa = True).count()
     publicaciones.short_description = 'pubs'
+
+    @admin.action(description="Actualizar Precio")
+    def actualizar_precios(self,request,objetos):
+        for obj in objetos:
+            try:
+                precio =  obj.espasa_db.precio_tx if obj.espasa_db.ofertas == "0" else obj.espasa_db.oferta_min
+            except:
+                precio = 0
+            obj.precio = convertir_precio2(precio)
+            obj.save()
 
     @admin.action(description='Publicar')
     def publicar(self,request,objetos):
