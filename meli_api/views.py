@@ -38,6 +38,7 @@ def update_stats(request):
     for item in pubs.exclude(stats__isnull=True):
         desde = item.f_creado.strftime('%Y-%m-%dT00:00:00.000-00:00')
         resp = api.views_by_item(item.pub_id,desde,hasta)
+        print(resp.text)
         if models.resp_ok(resp, f'Get {item.pub_id} views'):
             print(resp.json()[0]['total_visits'])
             item.stats.views = int(resp.json()[0]['total_visits'])
