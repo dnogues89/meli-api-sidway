@@ -14,45 +14,47 @@ def mis_pubs(request):
 
 def update_stats(request):
     pubs = models.Publicacion.objects.all()
-    api = MeliAPI(models.MeliCon.objects.get(name='API Dnogues'))
-    hasta = timezone.now().date().strftime('%Y-%m-%dT00:00:00.000')
-    lista_pubs = [x.pub_id for x in pubs]
-    
-    # Dividir la lista de publicaciones en sublistas de 5 elementos
-    sublistas_pubs = [lista_pubs[i:i+5] for i in range(0, len(lista_pubs), 5)]
-    
-    for sublist in sublistas_pubs:
-        resp = api.phone_by_items(','.join(sublist), hasta)
+    cuentas = Cuenta.objects.all()
+    for cuenta in cuentas:
+        api = MeliAPI(cuenta)
+        hasta = timezone.now().date().strftime('%Y-%m-%dT00:00:00.000')
+        lista_pubs = [x.pub_id for x in pubs]
         
-        # Contactos telefónicos
-        if models.resp_ok(resp, 'Obtener clicks en telefonos'):
-            for item in resp.json():
-                try:
-                    pub = pubs.get(pub_id=item['item_id'])
-                    pub.stats.clics_tel = item['total']
-                    pub.stats.save()
-                except:
-                    pass
-    
-    #Vistas
-    for item in pubs.exclude(stats__isnull=True):
-        desde = item.f_creado.strftime('%Y-%m-%dT00:00:00.000-00:00')
-        resp = api.views_by_item(item.pub_id,desde,hasta)
-        print(resp.text)
-        if models.resp_ok(resp, f'Get {item.pub_id} views'):
-            print(resp.json()[0]['total_visits'])
-            item.stats.views = int(resp.json()[0]['total_visits'])
-            item.stats.save()
+        # Dividir la lista de publicaciones en sublistas de 5 elementos
+        sublistas_pubs = [lista_pubs[i:i+5] for i in range(0, len(lista_pubs), 5)]
+        
+        for sublist in sublistas_pubs:
+            resp = api.phone_by_items(','.join(sublist), hasta)
+            
+            # Contactos telefónicos
+            if models.resp_ok(resp, 'Obtener clicks en telefonos'):
+                for item in resp.json():
+                    try:
+                        pub = pubs.get(pub_id=item['item_id'])
+                        pub.stats.clics_tel = item['total']
+                        pub.stats.save()
+                    except:
+                        pass
+        
+        #Vistas
+        for item in pubs.exclude(stats__isnull=True):
+            desde = item.f_creado.strftime('%Y-%m-%dT00:00:00.000-00:00')
+            resp = api.views_by_item(item.pub_id,desde,hasta)
+            print(resp.text)
+            if models.resp_ok(resp, f'Get {item.pub_id} views'):
+                print(resp.json()[0]['total_visits'])
+                item.stats.views = int(resp.json()[0]['total_visits'])
+                item.stats.save()
             
     
     return HttpResponse('Archivo no encontrado.')
 
 def preguntas(request):
-    get_token()
-    api = MeliAPI(models.MeliCon.objects.get(name = 'API Dnogues'))
     cuentas = Cuenta.objects.all()
     for cuenta in cuentas:
-        resp = api.preguntas(cuenta.meli_id)
+        get_token(cuenta)
+        api = MeliAPI(cuenta)
+        resp = api.preguntas(cuenta.user_meli)
         if models.resp_ok(resp, 'Levantando preguntas'):
             for preg in resp.json()['questions']:
                 if preg['status'] == "UNANSWERED":
@@ -65,10 +67,10 @@ def preguntas(request):
     return HttpResponse(f'{resp.json()}')
 
 def sincro_meli(request):
-    api = MeliAPI(models.MeliCon.objects.get(name = 'API Dnogues'))
     cuentas = Cuenta.objects.all()
     for cuenta in cuentas:
-        resp = api.items_by_id(cuenta.meli_id)
+        api = MeliAPI(cuenta)
+        resp = api.items_by_id(cuenta.user_meli)
         if models.resp_ok(resp,'Buscando Publicaciones'):
                 pubs_meli = resp.json()['results']
                 pubs_django = [obj.pub_id for obj in  models.Publicacion.objects.all()]

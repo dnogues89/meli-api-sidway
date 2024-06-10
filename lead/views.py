@@ -5,6 +5,8 @@ from meli_api import models
 from django.http import HttpResponse
 from .salesforce_lead import Salesfroce, convertir_numero
 
+from usuarios.models import Cuenta
+
 from django.utils import timezone
 from datetime import timedelta
 
@@ -46,63 +48,67 @@ def generar_fechas(inicio, fin):
 
 # Create your views here.
 def get_leads(request):
-    conn = models.MeliCon.objects.get(name = 'API Dnogues')
-    api = MeliAPI(conn)
-    desde = Lead.objects.latest('date').date.strftime("%Y-%m-%d")
-    resp = api.leads(conn.user_id,desde)
-    print(desde)
-    if models.resp_ok(resp,'Descargando Leads'):
-        for lead in resp.json()['results']:
-            phone , name, email = limpiar_lead(lead)
-            
-            if phone == '1111111111' and email == 'sin@mail.com':
+    cuentas = Cuenta.objects.all()
+    for cuenta in cuentas:
+        api = MeliAPI(cuenta)
+        desde = Lead.objects.latest('date').date.strftime("%Y-%m-%d")
+        resp = api.leads(cuenta.user_meli,desde)
+        if models.resp_ok(resp,'Descargando Leads'):
+            leads = resp.json()['results']
+            if leads == None:
                 break
-            
-            try:
-                pub = models.Publicacion.objects.get(pub_id = lead['item_id'])
-                model = pub.modelo.descripcion
-                familia = pub.modelo.espasa_db.familia
-            except:
-                pub = "-"
-                model = '-'
-                familia = '-'
+            for lead in leads:
+                phone , name, email = limpiar_lead(lead)
                 
-            try:
-                item =Lead.objects.get(lead_id = lead['id'])
-                if item.contactos != len(lead['leads']):
-                    item.origen = " | ".join([x['channel'] for x in lead['leads']])
-                    item.contactos = len(lead['leads'])
-                    if item.date != lead['leads'][0]['created_at']:
-                        item.date = lead['leads'][0]['created_at']
-                        item.to_crm = False
+                if phone == '1111111111' and email == 'sin@mail.com':
+                    break
+                
+                try:
+                    pub = models.Publicacion.objects.get(pub_id = lead['item_id'])
+                    model = pub.modelo.descripcion
+                    familia = pub.modelo.espasa_db.familia
+                except:
+                    pub = "-"
+                    model = '-'
+                    familia = '-'
+                    
+                try:
+                    item =Lead.objects.get(lead_id = lead['id'])
+                    if item.contactos != len(lead['leads']):
+                        item.origen = " | ".join([x['channel'] for x in lead['leads']])
+                        item.contactos = len(lead['leads'])
+                        if item.date != lead['leads'][0]['created_at']:
+                            item.date = lead['leads'][0]['created_at']
+                            item.to_crm = False
+                        if lead['leads'][0]['channel'] == 'whatsapp':
+                            item.to_crm =True
+                        if lead['leads'][0]['channel'] == 'view':
+                            item.to_crm =True
+                        item.save()
+                except:
+                    item = Lead.objects.create(
+                        lead_id = lead['id'],
+                        item_id = lead['item_id'],
+                        modelo = model,
+                        familia = familia,
+                        origen = " | ".join([x['channel'] for x in lead['leads']]),
+                        date = lead['leads'][0]['created_at'],
+                        name = name,
+                        email = email,
+                        phone = phone,
+                        contactos = len(lead['leads']),
+                        cuenta = cuenta
+                    )
+                    item.save()
                     if lead['leads'][0]['channel'] == 'whatsapp':
                         item.to_crm =True
                     if lead['leads'][0]['channel'] == 'view':
                         item.to_crm =True
-                    item.save()
-            except:
-                item = Lead.objects.create(
-                    lead_id = lead['id'],
-                    item_id = lead['item_id'],
-                    modelo = model,
-                    familia = familia,
-                    origen = " | ".join([x['channel'] for x in lead['leads']]),
-                    date = lead['leads'][0]['created_at'],
-                    name = name,
-                    email = email,
-                    phone = phone,
-                    contactos = len(lead['leads'])
-                )
-                item.save()
-                if lead['leads'][0]['channel'] == 'whatsapp':
-                    item.to_crm =True
-                if lead['leads'][0]['channel'] == 'view':
-                    item.to_crm =True
-                print(item.to_crm)
-                if item.to_crm == False:
-                    Salesfroce(item).send_data()
-                    item.to_crm = True
-                    item.save()
+                    print(item.to_crm)
+                    if item.to_crm == False:
+                        Salesfroce(item, origen=cuenta.salesforce_group).send_data()
+                        item.to_crm = True
+                        item.save()
             
                 
     return HttpResponse(f'{resp.json()}')

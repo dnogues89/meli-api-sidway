@@ -24,8 +24,7 @@ def resp_ok(resp, name):
             Errores.objects.create(name=f'{name} | {resp.status_code}',error=resp.text).save()
         return False
 
-def get_token():
-        obj = MeliCon.objects.get(name = 'API Dnogues')
+def get_token(obj:Cuenta):
         api = MeliAPI(obj)
         try:
             if api.get_user_me().json()['message'] == 'invalid_token':
@@ -96,9 +95,9 @@ class PublicacionAdmin(admin.ModelAdmin):
        
     @admin.action(description='Sincronizar pubs con Meli')
     def sinconizar_meli(self,request,objetos):
-        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
         
         for obj in objetos:
+            api = MeliAPI(obj.cuenta)
             resp = api.consulta_pub(obj)
             if resp_ok(resp, f'Consultando publicacion | {obj.pub_id}'):
                 resp = resp.json()
@@ -137,8 +136,8 @@ class PublicacionAdmin(admin.ModelAdmin):
 
     @admin.action(description='Pausar / Activar')
     def pausar(self,request,objetos):
-        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
         for obj in objetos:
+            api = MeliAPI(obj.cuenta)
             if obj.activa == True:
                 resp = api.pausar_eliminar_publicacion(obj.pub_id,'paused')
                 if resp_ok(resp,'Pausar publicacion'):
@@ -160,9 +159,9 @@ class PublicacionAdmin(admin.ModelAdmin):
 
     @admin.action(description='Eliminar pub de Mercadolibre')
     def eliminar(self,request,objetos):
-        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
         for obj in objetos:
-            if obj.banner ==True:
+            api = MeliAPI(obj.cuenta)
+            if obj.banner == True:
                 self.message_user(request,f'Es un banner No se va a', level="ERROR")
                 break
             resp1 = api.pausar_eliminar_publicacion(obj.pub_id,'closed')
@@ -175,11 +174,13 @@ class PublicacionAdmin(admin.ModelAdmin):
                     self.message_user(request,f'{obj.pub_id} | Publicacion Cerrada, pero no se pudo eliminar\nError: {resp.text}', level="ERROR")
             else:
                 self.message_user(request,f'{obj.pub_id} | La publicacion no se pudo cerrar ni eliminar\nError: {resp1.text}', level="ERROR")
-
-    @admin.action(description='Sincronizar Publicaciones')
-    def publicaciones_vendedor(self,request,objetos):
-        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
-        resp = api.items_por_usuario_categoria(api.data.user_id)
+    
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.username == 'dnogues':
+            return qs
+        qs = qs.filter(cuenta = Cuenta.objects.filter(user = request.user)[0])
+        return qs
     
                
 @admin.register(GrupoImagenes)
@@ -231,14 +232,6 @@ class ModeloAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        # for obj in qs:
-        #     try:
-        #         obj.precio = convertir_precio2(obj.espasa_db.precio_tx) if obj.espasa_db.ofertas == "0" else convertir_precio2(obj.espasa_db.oferta_min)
-        #         obj.save()
-        #     except:
-        #         print('pase')
-        #         pass
-        get_token()
         return qs
 
     def unidad(self,obj):
@@ -263,15 +256,15 @@ class ModeloAdmin(admin.ModelAdmin):
 
     @admin.action(description='Publicar')
     def publicar(self,request,objetos):
-        api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
         for obj in objetos:
+            api = MeliAPI(obj.cuenta)
             resp = api.publicar_auto(ArmarPublicacion(obj).pub())
             print(resp.status_code)
             if resp_ok(resp,'Publicar Auto'):
                 resp = resp.json()
                 stats = PubStats.objects.create(pub_id = resp['id'])
                 stats.save()
-                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True).save()
+                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=obj.cuenta).save()
                 desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
                 if resp_ok(desc,f"Cambiando desc | {resp['id']}"):
                     self.message_user(

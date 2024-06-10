@@ -6,7 +6,7 @@ from .models import Lead, Estadisticas
 # Register your models here.
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
-    list_display = ['name','phone','email','item_id','contactos','date','to_crm']
+    list_display = ['name','phone','email','item_id','cuenta','contactos','date','to_crm']
     search_fields = ['name', 'phone','email']
     ordering = ['-date']
     date_hierarchy = 'date'

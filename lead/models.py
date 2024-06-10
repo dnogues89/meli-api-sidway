@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
+from usuarios.models import Cuenta
 
 # Create your models here.
 class Lead(models.Model):
@@ -15,6 +16,7 @@ class Lead(models.Model):
     date = models.DateTimeField(null=True, blank=True)
     to_crm = models.BooleanField(default=False)
     contactos = models.IntegerField(default=0)
+    cuenta = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True)
     
 class Estadisticas(models.Model):
     cuenta = models.CharField(max_length=100,default='Estadisticas LIMA')
