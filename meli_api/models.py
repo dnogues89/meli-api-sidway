@@ -79,7 +79,7 @@ class Atributo(models.Model):
     value = models.CharField(max_length = 40)
     
     def __str__(self) -> str:
-        return self.nombre
+        return f'{self.nombre} | {self.value}'
 
 class GrupoAtributos(models.Model):
     nombre = models.CharField(max_length = 100)
