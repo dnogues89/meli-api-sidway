@@ -207,8 +207,8 @@ class PortadasAdmin(admin.ModelAdmin):
 
 @admin.register(Modelo)
 class ModeloAdmin(admin.ModelAdmin):
-    list_display = ('unidad','precio','precio_crm','categoria','cuenta','publicaciones','stock','cargar_portadas','cargar_imagenes','c_port','c_img','c_atrib','pub_to_copy')
-    list_editable = ('precio','categoria','cuenta','pub_to_copy')
+    list_display = ('unidad','precio','precio_crm','publicaciones','stock','cargar_portadas','cargar_imagenes','c_port','c_img','c_atrib','pub_to_copy')
+    list_editable = ('precio','pub_to_copy')
     search_fields = ['descripcion']
     actions = ('publicar','actualizar_precios')
     
@@ -278,15 +278,16 @@ class ModeloAdmin(admin.ModelAdmin):
 
     @admin.action(description='Publicar')
     def publicar(self,request,objetos):
+        cuenta = Cuenta.objects.get(user = request.user)
         for obj in objetos:
-            api = MeliAPI(obj.cuenta)
+            api = MeliAPI(cuenta)
             resp = api.publicar_auto(ArmarPublicacion(obj).pub())
             print(resp.status_code)
             if resp_ok(resp,'Publicar Auto'):
                 resp = resp.json()
                 stats = PubStats.objects.create(pub_id = resp['id'])
                 stats.save()
-                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=obj.cuenta).save()
+                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
                 desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
                 if resp_ok(desc,f"Cambiando desc | {resp['id']}"):
                     self.message_user(
