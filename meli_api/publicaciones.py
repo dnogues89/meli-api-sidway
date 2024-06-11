@@ -1,3 +1,5 @@
+import random
+
 class ArmarPublicacion():
     def __init__(self, modelo) -> None:
       self.modelo = modelo
@@ -14,7 +16,11 @@ class ArmarPublicacion():
       
     def imagenes(self):
       imagenes = []
-      for imagen in self.modelo.g_imagenes.imagenes.all():
+      portada_random = random.choice(self.modelo.portadas.imagenes.all())
+      imagenes.append({
+          'source':f"https://meli.dnoguesdev.com.ar{portada_random.pic.url}"
+        })
+      for imagen in self.modelo.g_imagenes.imagenes.all()[:24]:
         imagenes.append({
           'source':f"https://meli.dnoguesdev.com.ar{imagen.pic.url}"
         })

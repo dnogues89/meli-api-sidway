@@ -10,4 +10,4 @@ class ImagesForm(forms.ModelForm):
         }), label = "")
     class Meta:
         model = Image
-        fields = ['model_code','model','pic']
+        fields = ['model','pic']

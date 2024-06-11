@@ -188,7 +188,18 @@ class GrupoImagenesAdmin(admin.ModelAdmin):
     list_display = ('codigo','nombre','cantidad','cargar_imagenes')
 
     def cargar_imagenes(self,obj):
-        url = reverse('File_Uploads')
+        url = reverse('File_Uploads') + f'?grupo_imagenes={obj.id}'
+        return format_html('<a href="{}" target=_blank>{}</a>',url, 'Subir Imagenes')
+
+    def cantidad(self,obj):
+        return obj.imagenes.count()
+
+@admin.register(Portadas)
+class PortadasAdmin(admin.ModelAdmin):
+    list_display = ('codigo','nombre','cantidad','cargar_imagenes')
+
+    def cargar_imagenes(self,obj):
+        url = reverse('File_Uploads') + f'?portada_id={obj.id}'
         return format_html('<a href="{}" target=_blank>{}</a>',url, 'Subir Imagenes')
 
     def cantidad(self,obj):
@@ -196,8 +207,8 @@ class GrupoImagenesAdmin(admin.ModelAdmin):
 
 @admin.register(Modelo)
 class ModeloAdmin(admin.ModelAdmin):
-    list_display = ('unidad','precio','precio_crm','categoria','cuenta','publicaciones','stock','g_imagenes','cargar_imagenes','c_img','c_atrib','pub_to_copy')
-    list_editable = ('precio','categoria','cuenta','pub_to_copy','g_imagenes')
+    list_display = ('unidad','precio','precio_crm','categoria','cuenta','publicaciones','stock','cargar_portadas','cargar_imagenes','c_port','c_img','c_atrib','pub_to_copy')
+    list_editable = ('precio','categoria','cuenta','pub_to_copy')
     search_fields = ['descripcion']
     actions = ('publicar','actualizar_precios')
     
@@ -219,6 +230,12 @@ class ModeloAdmin(admin.ModelAdmin):
         except:
             return 0
 
+    def c_port(self,obj):
+        try:
+            return obj.portadas.imagenes.count()
+        except:
+            return 0
+
     def c_atrib(self,obj):
         try:
             return obj.g_atributos.atributos.count()
@@ -226,9 +243,14 @@ class ModeloAdmin(admin.ModelAdmin):
             return 0
 
     def cargar_imagenes(self,obj):
-        url = reverse('File_Uploads')
-        return format_html("<a href='#' onclick=\"window.open('{}', 'Probando', 'width='+screen.width/2+',height='+screen.height/2); return false;\">{}</a>", url, 'Ir')
+        url = reverse('File_Uploads') + f'?grupo_imagenes={obj.id}'
+        return format_html('<a href="{}" >{}</a>', url, 'Imagenes')
     cargar_imagenes.short_description = 'Up/img'
+
+    def cargar_portadas(self,obj):
+        url = reverse('File_Uploads') + f'?portada_id={obj.id}'
+        return format_html('<a href="{}" >{}</a>', url, 'Portadas')
+    cargar_portadas.short_description = 'Up/portadas'
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from .forms import ImagesForm
 from .models import Image
-from meli_api.models import GrupoImagenes, Modelo
+from meli_api.models import GrupoImagenes, Portadas, Modelo
 
 #funcion para bloquear multiples botones
 import threading
@@ -21,22 +21,53 @@ def index(request):
 
 @endpoint_lock 
 def fileupload(request):
+    portada_id = request.GET.get('portada_id')
+    grupo_imagenes = request.GET.get('grupo_imagenes')
+    print(f'Portada ID: {portada_id}')
+    print(f'grupo_imagenes ID: {grupo_imagenes}')
+    
+    try:
+        modelo = Modelo.objects.get(pk=portada_id)
+    except:
+        modelo = Modelo.objects.get(pk=grupo_imagenes)
+    retorno = request.environ['HTTP_REFERER']
+    
     form = ImagesForm(request.POST, request.FILES)
-    if request.method == 'POST':
-        images = request.FILES.getlist('pic')
-        
-        g_imagenes = GrupoImagenes.objects.create(codigo = form.data['model_code'], nombre = form.data['model'])
-        g_imagenes.save()
+    if grupo_imagenes:
+        if request.method == 'POST':
+            images = request.FILES.getlist('pic')
             
-        for image in images:
-            print(form.data['model_code'])
-            print(image)
-            image_ins = Image.objects.create(model_code=form.data['model_code'], model=form.data['model'], pic = image)
-            image_ins.save()
-            g_imagenes.imagenes.add(image_ins)
-        g_imagenes.save()
+            g_imagenes = GrupoImagenes.objects.create(codigo = modelo.espasa_db.codigo, nombre = form.data['model'])
+            g_imagenes.save()
+                
+            for image in images:
+                image_ins = Image.objects.create(model_code=modelo.espasa_db.codigo, model=form.data['model'], pic = image)
+                image_ins.save()
+                g_imagenes.imagenes.add(image_ins)
+            g_imagenes.save()
+            
+            modelo.g_imagenes = g_imagenes
+            modelo.save()
+            return redirect('/admin/meli_api/modelo/')
         
-        return redirect('Confirmacion')
+    if portada_id:
+        print('estoy en portadas')
+        if request.method == 'POST':
+            images = request.FILES.getlist('pic')
+            
+            portadas = Portadas.objects.create(codigo = modelo.espasa_db.codigo, nombre = form.data['model'])
+            portadas.save()
+                
+            for image in images:
+                image_ins = Image.objects.create(model_code=modelo.espasa_db.codigo, model=form.data['model'], pic = image)
+                image_ins.save()
+                portadas.imagenes.add(image_ins)
+            portadas.save()
+            
+            modelo.portadas = portadas
+            modelo.save()
+            
+            return redirect('/admin/meli_api/modelo/')
     context = {'form': form}
     return render(request, "upload.html", context)
 

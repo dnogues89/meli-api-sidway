@@ -105,12 +105,26 @@ class GrupoImagenes(models.Model):
             item.delete()
         
         super().delete()
-    
+        
+class Portadas(models.Model):
+    codigo = models.CharField(max_length=10, default='')
+    nombre = models.CharField(max_length = 100)
+    imagenes = models.ManyToManyField(Image, blank=True)
+
+    def __str__(self) -> str:
+        return f'{self.codigo} | {self.nombre}'
+
+    def delete(self,*args, **kwargs) -> tuple[int, dict[str, int]]:
+        for item in self.imagenes.all():
+            item.delete()
+        
+        super().delete()
     
 class Modelo(models.Model):
     descripcion = models.CharField(max_length = 50,blank=True, null=True)
     anio = models.IntegerField(verbose_name = 'Año',blank=True, null=True)
     g_atributos = models.ForeignKey(GrupoAtributos, null = True, blank = True, on_delete = models.SET_NULL)
+    portadas = models.ForeignKey(Portadas, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='Portadas')
     g_imagenes = models.ForeignKey(GrupoImagenes, null = True, blank = True, on_delete = models.SET_NULL, verbose_name='Grp Img')
     categoria = models.CharField(max_length = 30, choices = {'silver': "Silver",'gold':'Gold','gold_premium':"Gold Premium"}, default='gold_premium', null=True, blank=True)
     desc_meli = models.TextField(null=True, blank=True)
@@ -147,14 +161,7 @@ class Modelo(models.Model):
             for item in my:
                 item.value = timezone.now().year
                 item.save()
-        
-        #Adjuntar grupo de fotos si es que ya hay un grupo de fotos creado
-        if self.g_imagenes == None:
-            try:
-                g_imagenes = GrupoImagenes.objects.get(codigo = self.espasa_db.codigo)
-                self.g_imagenes = g_imagenes
-            except:
-                pass
+                
             super().save()               
         
         
