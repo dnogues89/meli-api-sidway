@@ -61,7 +61,7 @@ def preguntas(request):
                     resp_q = api.responder_pregunta(preg['id'],'GRACIAS POR CONTACTARNOS EN ESPASA S.A. \nPor favor escribinos por whatsapp a 11-2314-9614 para que te podamos dar la mejor atencion, o haciendo click en el icono de whatsapp de la publicacion.\nTe vamos a contactar en menos de 30 minutos.')
                     if models.resp_ok(resp_q,f"Respondiendo pregunta{preg['id']}"):
                         pass
-            return HttpResponse(f'{resp_q.json()}')
+            return HttpResponse(f'{resp.json()}')
         
     
     return HttpResponse(f'{resp.json()}')
