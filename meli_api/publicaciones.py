@@ -3,6 +3,7 @@ import random
 class ArmarPublicacion():
     def __init__(self, modelo) -> None:
       self.modelo = modelo
+      self.precio = str(self.modelo.precio)[:-1] + str(random.randint(1,9))
     
     def atributes(self):
       atributos = []
@@ -37,7 +38,7 @@ class ArmarPublicacion():
         "pictures": self.imagenes(),
         "video_id": self.modelo.video_id,
         "category_id": "MLA1744",
-        "price": str(self.modelo.precio),
+        "price": str(self.precio),
         "currency_id": "ARS",
         "listing_type_id": self.modelo.categoria,
         "available_quantity": "1",
@@ -106,4 +107,4 @@ Asesores Comerciales certificados por VW Argentina
     
     """
     
-    return desc
+    return desc + str('.'*random.randint(1,9))
