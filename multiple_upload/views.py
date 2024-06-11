@@ -37,8 +37,11 @@ def fileupload(request):
         if request.method == 'POST':
             images = request.FILES.getlist('pic')
             
-            g_imagenes = GrupoImagenes.objects.create(codigo = modelo.espasa_db.codigo, nombre = form.data['model'])
-            g_imagenes.save()
+            try:
+                g_imagenes = GrupoImagenes.objects.get(pk=modelo.g_imagenes.pk)
+            except:
+                g_imagenes = GrupoImagenes.objects.create(codigo = modelo.espasa_db.codigo, nombre = form.data['model'])
+                g_imagenes.save()
                 
             for image in images:
                 image_ins = Image.objects.create(model_code=modelo.espasa_db.codigo, model=form.data['model'], pic = image)
@@ -55,8 +58,11 @@ def fileupload(request):
         if request.method == 'POST':
             images = request.FILES.getlist('pic')
             
-            portadas = Portadas.objects.create(codigo = modelo.espasa_db.codigo, nombre = form.data['model'])
-            portadas.save()
+            try:
+                portadas = Portadas.objects.get(pk=modelo.portadas.pk)
+            except:
+                portadas = Portadas.objects.create(codigo = modelo.espasa_db.codigo, nombre = form.data['model'])
+                portadas.save()
                 
             for image in images:
                 image_ins = Image.objects.create(model_code=modelo.espasa_db.codigo, model=form.data['model'], pic = image)
