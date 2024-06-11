@@ -128,8 +128,9 @@ class Modelo(models.Model):
         super().save()
         #Agregamos atributos a la publicacion haciendo una creacion de grupo de atributos
         if self.g_atributos == None and self.pub_to_copy != None:
-            api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
+            api = MeliAPI(Cuenta.objects.all()[0])
             g_att = GrupoAtributos.objects.create(nombre = self.descripcion)
+            g_att.save()
             resp = api.consulta_pub(self.pub_to_copy)
             if resp_ok(resp, 'Consultar Atributos'):
                 self.video_id = resp.json()['video_id'] 
