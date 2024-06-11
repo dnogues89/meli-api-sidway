@@ -96,7 +96,7 @@ def sincro_meli(request):
 
 def publicacion(request,publicacion):
     try:
-        return HttpResponse(models.Publicacion.objects.get(pub_id = publicacion).titulo)
+        return HttpResponse(models.Publicacion.objects.get(pub_id = publicacion).cuenta.salesforce_group)
     except:
-        return HttpResponse('Sin especificar')
+        return HttpResponse('WAT')
     
