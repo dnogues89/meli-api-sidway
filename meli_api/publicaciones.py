@@ -21,7 +21,7 @@ class ArmarPublicacion():
       imagenes.append({
           'source':f"https://meli.dnoguesdev.com.ar{portada_random.pic.url}"
         })
-      for imagen in self.modelo.g_imagenes.imagenes.all()[:24]:
+      for imagen in self.modelo.g_imagenes.imagenes.all()[1:25]:
         imagenes.append({
           'source':f"https://meli.dnoguesdev.com.ar{imagen.pic.url}"
         })
