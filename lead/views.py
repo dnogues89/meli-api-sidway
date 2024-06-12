@@ -53,7 +53,7 @@ def get_leads(request):
         api = MeliAPI(cuenta)
         desde = Lead.objects.latest('date').date.strftime("%Y-%m-%d")
         resp = api.leads(cuenta.user_meli,desde)
-        if models.resp_ok(resp,'Descargando Leads'):
+        if models.resp_ok(resp,f'Descargando Leads {cuenta}'):
             leads = resp.json()['results']
             if leads == None:
                 break
