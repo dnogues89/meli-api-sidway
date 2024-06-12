@@ -13,10 +13,11 @@ def mis_pubs(request):
     return HttpResponse('Archivo no encontrado.')
 
 def update_stats(request):
-    pubs = models.Publicacion.objects.all()
     cuentas = Cuenta.objects.all()
     for cuenta in cuentas:
         api = MeliAPI(cuenta)
+        get_token(cuenta)
+        pubs = models.Publicacion.objects.filter(cuenta = cuenta)
         hasta = timezone.now().date().strftime('%Y-%m-%dT00:00:00.000')
         lista_pubs = [x.pub_id for x in pubs]
         

@@ -25,21 +25,19 @@ def resp_ok(resp, name):
         return False
 
 def get_token(obj:Cuenta):
-        api = MeliAPI(obj)
-        try:
-            if api.get_user_me().json()['message'] == 'invalid_token':
-                resp = MeliAPI(obj).renew_token()
-                print(resp)
-                print(resp.text)
-                if resp_ok(resp, 'Renovar token'):
-                    obj.access_token = resp.json()['access_token']
-                    obj.refresh_secret = resp.json()['refresh_token']
-                else:
-                    return False
-                obj.save()
-                return 'renovado'
-        except:
-            return False
+    api = MeliAPI(obj)
+    try:
+        if api.get_user_me().json()['message'] == 'invalid_token':
+            resp = MeliAPI(obj).renew_token()
+            if resp_ok(resp, 'Renovar token'):
+                obj.access_token = resp.json()['access_token']
+                obj.refresh_secret = resp.json()['refresh_token']
+            else:
+                return False
+            obj.save()
+            return 'renovado'
+    except:
+        return False
 
     
 # Register your models here.
@@ -256,6 +254,8 @@ class ModeloAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
+        cuenta = Cuenta.objects.get(user = request.user)
+        print(get_token(cuenta))
         return qs
 
     def unidad(self,obj):
