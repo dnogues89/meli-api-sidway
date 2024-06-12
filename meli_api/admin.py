@@ -29,6 +29,8 @@ def get_token(obj:Cuenta):
         try:
             if api.get_user_me().json()['message'] == 'invalid_token':
                 resp = MeliAPI(obj).renew_token()
+                print(resp)
+                print(resp.text)
                 if resp_ok(resp, 'Renovar token'):
                     obj.access_token = resp.json()['access_token']
                     obj.refresh_secret = resp.json()['refresh_token']
