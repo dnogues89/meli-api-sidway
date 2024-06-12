@@ -24,6 +24,7 @@ def update_stats(request):
         # Dividir la lista de publicaciones en sublistas de 5 elementos
         sublistas_pubs = [lista_pubs[i:i+5] for i in range(0, len(lista_pubs), 5)]
         
+        
         for sublist in sublistas_pubs:
             resp = api.phone_by_items(','.join(sublist), hasta)
             
@@ -42,6 +43,7 @@ def update_stats(request):
             desde = item.f_creado.strftime('%Y-%m-%dT00:00:00.000-00:00')
             resp = api.views_by_item(item.pub_id,desde,hasta)
             print(resp.text)
+            print(item.pub_id,desde,hasta)
             if models.resp_ok(resp, f'Get {item.pub_id} views'):
                 print(resp.json()[0]['total_visits'])
                 item.stats.views = int(resp.json()[0]['total_visits'])

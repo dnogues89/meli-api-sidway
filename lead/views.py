@@ -104,7 +104,7 @@ def get_leads(request):
                         item.to_crm =True
                     if lead['leads'][0]['channel'] == 'view':
                         item.to_crm =True
-                    print(item.to_crm)
+                    item.save()
                     if item.to_crm == False:
                         Salesfroce(item, origen=cuenta.salesforce_group).send_data()
                         item.to_crm = True

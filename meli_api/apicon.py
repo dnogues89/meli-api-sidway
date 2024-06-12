@@ -152,6 +152,10 @@ class MeliAPI():
 
         response = requests.request("GET", url, headers=headers)
 
+        print()
+        print(headers)
+        print(url)
+        
         return response
     
     def phone_by_items(self, items:list, hasta):
