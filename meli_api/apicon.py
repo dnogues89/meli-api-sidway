@@ -39,6 +39,7 @@ class MeliAPI():
         }
 
         response = requests.request("POST", url, headers=headers, data=payload)
+        
         return response
 
     def items_by_id(self, user_id):
