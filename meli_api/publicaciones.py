@@ -101,7 +101,6 @@ Asesores Comerciales certificados por VW Argentina
 - Entrega inmediata.
 - Disponibilidad de Colores.
 - Financiación exclusiva.
-- Estacionamiento gratuito.
 - Consulte por esta y otras versiones o modelos.
 - No incluye ningún gasto.
     
