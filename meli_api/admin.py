@@ -56,6 +56,7 @@ class ErroresAdmin(admin.ModelAdmin):
 class PublicacionAdmin(admin.ModelAdmin):
     list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
+    list_filter = ['cuenta']
     actions = ('pausar','eliminar','sinconizar_meli')
     ordering = ['sincronizado','titulo']
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
@@ -120,7 +121,7 @@ class PublicacionAdmin(admin.ModelAdmin):
         return obj.f_creado.strftime("%d/%m/%y") 
         
     def titulo_short(self,obj):
-        return f"{obj.titulo.replace('Volkswagen','')[:15]}..." if len(obj.titulo.replace('Volkswagen','')) > 15 else obj.titulo.replace('Volkswagen','')
+        return f"{obj.titulo.replace('Volkswagen','')[:25]}..." if len(obj.titulo.replace('Volkswagen','')) > 25 else obj.titulo.replace('Volkswagen','')
     titulo_short.short_description = 'titulo'
 
     def ver(self,obj):
