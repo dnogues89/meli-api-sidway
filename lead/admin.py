@@ -8,6 +8,7 @@ from .models import Lead, Estadisticas
 class LeadAdmin(admin.ModelAdmin):
     list_display = ['name','phone','email','item_id','cuenta','contactos','date','to_crm']
     search_fields = ['name', 'phone','email']
+    list_filter = ['cuenta']
     ordering = ['-date']
     date_hierarchy = 'date'
     list_per_page = 500
