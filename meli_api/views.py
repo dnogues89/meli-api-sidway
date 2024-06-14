@@ -7,6 +7,8 @@ from django.utils import timezone
 from datetime import timedelta
 from .admin import get_token
 
+from .models import Publicacion
+
 from usuarios.models import Cuenta
 
 # Create your views here.
@@ -103,4 +105,3 @@ def publicacion(request,publicacion):
         return HttpResponse(models.Publicacion.objects.get(pub_id = publicacion).cuenta.salesforce_group)
     except:
         return HttpResponse('WAT')
-    

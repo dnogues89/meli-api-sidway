@@ -79,7 +79,7 @@ class PublicacionAdmin(admin.ModelAdmin):
     list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
     list_filter = ['cuenta']
-    actions = ('pausar','eliminar','sinconizar_meli')
+    actions = ('pausar','eliminar','sinconizar_meli','revisar_activa')
     ordering = ['sincronizado','titulo']
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
 
@@ -114,30 +114,7 @@ class PublicacionAdmin(admin.ModelAdmin):
         try:
             return obj.stats.clics_tel
         except:
-            return '-'
-       
-    @admin.action(description='Sincronizar pubs con Meli')
-    def sinconizar_meli(self,request,objetos):
-        
-        for obj in objetos:
-            api = MeliAPI(obj.cuenta)
-            resp = api.consulta_pub(obj)
-            if resp_ok(resp, f'Consultando publicacion | {obj.pub_id}'):
-                resp = resp.json()
-                #Precio
-                if resp['price'] != convertir_precio(obj):
-                    precio = convertir_precio(obj)
-                    if precio == 0:
-                        self.message_user(request,f'Precio invalido {precio}', level='ERROR')
-                        break
-                    resp = api.actualizar_precio(obj.pub_id,str(precio))
-                    if resp_ok(resp,'Cambio Precio') == False:
-                        self.message_user(request,f'No se actualizo el precio {resp.text}', level='ERROR')
-                        break
-                    self.message_user(request,f'Publicacion {obj.pub_id} actualizada a {precio}')
-                    obj.sincronizado = True
-                    obj.save()
-                            
+            return '-'                           
                            
     def creado(self,obj):
         return obj.f_creado.strftime("%d/%m/%y") 
@@ -197,7 +174,44 @@ class PublicacionAdmin(admin.ModelAdmin):
                     self.message_user(request,f'{obj.pub_id} | Publicacion Cerrada, pero no se pudo eliminar\nError: {resp.text}', level="ERROR")
             else:
                 self.message_user(request,f'{obj.pub_id} | La publicacion no se pudo cerrar ni eliminar\nError: {resp1.text}', level="ERROR")
-    
+
+    @admin.action(description='Sincronizar pubs con Meli')
+    def sinconizar_meli(self,request,objetos):
+        
+        for obj in objetos:
+            api = MeliAPI(obj.cuenta)
+            resp = api.consulta_pub(obj)
+            if resp_ok(resp, f'Consultando publicacion | {obj.pub_id}'):
+                resp = resp.json()
+                #Precio
+                if resp['price'] != convertir_precio(obj):
+                    precio = convertir_precio(obj)
+                    if precio == 0:
+                        self.message_user(request,f'Precio invalido {precio}', level='ERROR')
+                        break
+                    resp = api.actualizar_precio(obj.pub_id,str(precio))
+                    if resp_ok(resp,'Cambio Precio') == False:
+                        self.message_user(request,f'No se actualizo el precio {resp.text}', level='ERROR')
+                        break
+                    self.message_user(request,f'Publicacion {obj.pub_id} actualizada a {precio}')
+                    obj.sincronizado = True
+                    obj.save()
+
+    @admin.action(description="Revisar si esta ACTIVA")
+    def revisar_activa(self,request,objetos):
+        cuenta = Cuenta.objects.get(user = request.user)
+        api = MeliAPI(cuenta)
+        for obj in objetos:
+            resp = api.consulta_pub(obj.pub_id)
+            if resp_ok(resp, 'Consultando Estado de unidad'):
+                if resp.json()['status'] == 'active':
+                    obj.activa = True
+                    obj.save()
+                else:
+                    obj.activa = False
+                    obj.save()
+                    self.message_user(request,f'{obj.pub_id} | {resp.json()['status']}', level="ERROR")
+     
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.username == 'dnogues':
@@ -318,7 +332,7 @@ class ModeloAdmin(admin.ModelAdmin):
                         resp = resp.json()
                         stats = PubStats.objects.create(pub_id = resp['id'])
                         stats.save()
-                        pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = True,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
+                        pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
                         desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
                         if resp_ok(desc,f"Cambiando desc | {resp['id']}"):
                             self.message_user(
