@@ -210,7 +210,7 @@ class PublicacionAdmin(admin.ModelAdmin):
                 else:
                     obj.activa = False
                     obj.save()
-                    self.message_user(request,f'{obj.pub_id} | {resp.json()['status']}', level="ERROR")
+                    self.message_user(request,f"{obj.pub_id} | {resp.json()['status']} | {resp.json()['sub_status']}", level="ERROR")
      
     def get_queryset(self, request):
         qs = super().get_queryset(request)
