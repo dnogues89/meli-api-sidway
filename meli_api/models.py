@@ -133,6 +133,7 @@ class Modelo(models.Model):
     espasa_db = models.ForeignKey(CRM, null=True, blank=True, on_delete=models.SET_NULL)
     pub_to_copy = models.CharField(max_length=50, help_text='Publicacion a copiar atributos, ej MLA12345', verbose_name='Copy ID', null=True, blank=True)
     video_id = models.CharField(max_length=200, null=True,blank=True, help_text='No tocar')
+    cantidad = models.IntegerField(default=1, verbose_name='Cant Pubs')
 
     
     def __str__(self) -> str:
