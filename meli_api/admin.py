@@ -16,7 +16,26 @@ admin.site.site_title = "Meli Espasa"
 
 
 #Creo un filtro para los 0 Publicaciones
+from django.contrib.admin import SimpleListFilter
+from django.db.models import Count, Q
 
+class PublicacionesCeroFilter(SimpleListFilter):
+    title = 'publicaciones'
+    parameter_name = 'publicaciones'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('0', 'Sin publicaciones'),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == '0':
+            print('Estoy aca')
+            cuenta = Cuenta.objects.get(user=request.user)
+            # Filtrar objetos que tienen 0 publicaciones activas para la cuenta del usuario
+        if self.value() == '0':
+            return queryset.annotate(num_publicaciones=Count('publicacion', filter=Q(publicacion__activa=True, publicacion__cuenta__user=request.user))).filter(num_publicaciones=0)
+        return queryset
 
 
 
@@ -218,6 +237,7 @@ class ModeloAdmin(admin.ModelAdmin):
     list_editable = ('precio','pub_to_copy','cantidad')
     search_fields = ['descripcion']
     actions = ('publicar','actualizar_precios')
+    list_filter = (PublicacionesCeroFilter,)
     
     def stock(self,obj):
         try:
