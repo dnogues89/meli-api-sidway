@@ -284,7 +284,7 @@ class ModeloAdmin(admin.ModelAdmin):
         cuenta = Cuenta.objects.get(user = request.user)
         api = MeliAPI(cuenta)
         bucles = sum(obj.cantidad for obj in objetos) + len(objetos)
-        if bucles > 5:
+        if bucles > 7:
             self.message_user(request,'No se pueden hacer mas de 5 publicaciones a la vez',level='ERROR')
         else:
             for obj in objetos:
