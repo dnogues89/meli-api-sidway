@@ -14,6 +14,12 @@ admin.site.site_title = "Meli Espasa"
 
 # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
 
+
+#Creo un filtro para los 0 Publicaciones
+
+
+
+
 def resp_ok(resp, name):
     if resp.status_code == 200 or resp.status_code == 402 or resp.status_code == 201:
         return True
@@ -283,8 +289,8 @@ class ModeloAdmin(admin.ModelAdmin):
     def publicar(self,request,objetos):
         cuenta = Cuenta.objects.get(user = request.user)
         api = MeliAPI(cuenta)
-        bucles = sum(obj.cantidad for obj in objetos) + len(objetos)
-        if bucles > 7:
+        bucles = sum(obj.cantidad for obj in objetos)
+        if bucles > 6:
             self.message_user(request,'No se pueden hacer mas de 5 publicaciones a la vez',level='ERROR')
         else:
             for obj in objetos:
