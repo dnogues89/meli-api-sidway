@@ -58,7 +58,6 @@ def update_stats(request):
 def preguntas(request):
     cuentas = Cuenta.objects.all()
     for cuenta in cuentas:
-        get_token(cuenta)
         api = MeliAPI(cuenta)
         resp = api.preguntas(cuenta.user_meli)
         if models.resp_ok(resp, 'Levantando preguntas'):
