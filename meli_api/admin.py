@@ -31,7 +31,7 @@ class PublicacionesCeroFilter(SimpleListFilter):
     def queryset(self, request, queryset):
         # Filtrar objetos que tienen 0 publicaciones activas para la cuenta del usuario
         if self.value() == '0':
-            return queryset.annotate(num_publicaciones=Count('publicacion', filter=Q(publicacion__activa=True, publicacion__cuenta__user=request.user))).filter(num_publicaciones=0)
+            return queryset.annotate(num_publicaciones=Count('publicacion', filter=Q(publicacion__cuenta__user=request.user))).filter(num_publicaciones=0)
         return queryset
 
 
