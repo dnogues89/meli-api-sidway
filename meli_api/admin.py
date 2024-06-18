@@ -303,7 +303,7 @@ class ModeloAdmin(admin.ModelAdmin):
             return ''
     
     def publicaciones(self,obj):
-        return Publicacion.objects.filter(modelo = obj, activa = True, cuenta = self.cuenta).count()
+        return Publicacion.objects.filter(modelo = obj, cuenta = self.cuenta).count()
     publicaciones.short_description = 'pubs'
 
     @admin.action(description="Actualizar Precio")
