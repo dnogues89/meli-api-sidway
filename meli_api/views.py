@@ -8,8 +8,13 @@ from datetime import timedelta
 from .admin import get_token
 
 from .models import Publicacion
+import aiohttp
 
 from usuarios.models import Cuenta
+
+async def crear_publicaciones(session,url):
+    async with session.get(url) as res:
+        pub = await res.json()
 
 # Create your views here.
 def mis_pubs(request):
@@ -66,7 +71,7 @@ def preguntas(request):
                     resp_q = api.responder_pregunta(preg['id'],'GRACIAS POR CONTACTARNOS EN ESPASA S.A. \nPor favor escribinos por whatsapp a 11-2314-9614 para que te podamos dar la mejor atencion, o haciendo click en el icono de whatsapp de la publicacion.\nTe vamos a contactar en menos de 30 minutos.')
                     if models.resp_ok(resp_q,f"Respondiendo pregunta{preg['id']}"):
                         pass
-            return HttpResponse(f'{resp.json()}')
+    return HttpResponse(f'{resp.json()}')
         
     
     return HttpResponse(f'{resp.json()}')
@@ -104,3 +109,6 @@ def publicacion(request,publicacion):
         return HttpResponse(models.Publicacion.objects.get(pub_id = publicacion).cuenta.salesforce_group)
     except:
         return HttpResponse('WAT')
+
+def publicar_v2(request):
+   pass 

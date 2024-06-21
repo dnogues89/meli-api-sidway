@@ -345,7 +345,13 @@ class ModeloAdmin(admin.ModelAdmin):
                         self.message_user(request,f'{str(resp.text)}',level='ERROR')
                     obj.cantidad = 1
                     obj.save()
-    
+
+    #Version 2 para publicar de forma ASYNCRONA
+    @admin.action(description='Publicar v2')
+    def publicar_v2(self,request,objetos):
+        cuenta = Cuenta.objects.get(user = request.user)
+        api = MeliAPI(cuenta)
+
     #Agrego self cuenta cuanto logueo
     def changelist_view(self, request, extra_context=None):
         self.request = request
