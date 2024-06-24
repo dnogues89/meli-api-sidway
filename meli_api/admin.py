@@ -78,7 +78,7 @@ class ErroresAdmin(admin.ModelAdmin):
 class PublicacionAdmin(admin.ModelAdmin):
     list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
-    list_filter = ['cuenta']
+    list_filter = ['cuenta','activa']
     actions = ('pausar','eliminar','sinconizar_meli','revisar_activa')
     ordering = ['sincronizado','titulo']
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
