@@ -327,7 +327,6 @@ class ModeloAdmin(admin.ModelAdmin):
             for obj in objetos:
                 for i in range(0,obj.cantidad):
                     resp = api.publicar_auto(ArmarPublicacion(obj).pub())
-                    print(resp.status_code)
                     if resp_ok(resp,'Publicar Auto'):
                         resp = resp.json()
                         stats = PubStats.objects.create(pub_id = resp['id'])
@@ -359,7 +358,8 @@ class ModeloAdmin(admin.ModelAdmin):
         payload = {'cuenta':cuenta}
         lista_pubs = []
         for obj in objetos:
-            lista_pubs.append(ArmarPublicacion(obj).pub())
+            for i in range(0,obj.cantidad):
+                lista_pubs.append(ArmarPublicacion(obj).pub())
         payload['lista_pubs'] = lista_pubs
 
         pub_res = requests.post('http://meli.dnoguesdev.com.ar/api/publicar/',json=payload)
