@@ -22,6 +22,11 @@ async def crear_publicaciones(session,url, headers,payload):
         pub_meli_resp = await res.json()
         return pub_meli_resp
 
+async def cambiar_desc(session,url, headers,payload):
+    async with session.post(url=url, json=payload, headers= headers) as res:
+        desc_meli_resp = await res.json()
+        return desc_meli_resp
+
 # Create your views here.
 def mis_pubs(request):
     return HttpResponse('Archivo no encontrado.')
@@ -133,10 +138,23 @@ async def publicar_v2(request):
                 actions.append(asyncio.ensure_future(crear_publicaciones(session, url,headers,payload)))
             
             meli_pubs_res = await asyncio.gather(*actions)
+            cambiar_desc_actions = []
+            for pub in meli_pubs_res:
+                url = f"https://api.mercadolibre.com/items/{pub['id']}/description?api_version=2"
+
+                payload = json.dumps({
+                "plain_text": "Probando async"
+                })
+                headers = {
+                'Authorization': f'Bearer {cuenta['access_token']}',
+                'Content-Type': 'application/json'
+                }
+        
+                cambiar_desc_actions.append(asyncio.ensure_future(cambiar_desc(session, url,headers,payload)))
+
             for data in meli_pubs_res:
                 pub_res.append(data)
-            
-            print(pub_res)
+    
     return HttpResponse(f'{pub_res}')
     
     
