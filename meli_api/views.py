@@ -13,6 +13,7 @@ import aiohttp
 import json
 
 from usuarios.models import Cuenta
+import random
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -141,9 +142,24 @@ async def publicar_v2(request):
             cambiar_desc_actions = []
             for pub in meli_pubs_res:
                 url = f"https://api.mercadolibre.com/items/{pub['id']}/description?api_version=2"
+                desc = """
 
+                            Asesores Comerciales certificados por VW Argentina
+
+                            - Hasta agotar stock en OFERTA
+                            - Consecionario Oficial N°1 por 21 años consecutivos.
+                            - El mejor precio del Mercado Asegurado!
+                            - Acepto permuta por mayor o menor valor.
+                            - Entrega inmediata.
+                            - Disponibilidad de Colores.
+                            - Financiación exclusiva.
+                            - Consulte por esta y otras versiones o modelos.
+                            - No incluye ningún gasto.
+                                
+                                """
+                desc + str('.'*random.randint(1,9))
                 payload = json.dumps({
-                "plain_text": "Probando async"
+                "plain_text": desc
                 })
                 headers = {
                 'Authorization': f"Bearer {cuenta['access_token']}",
