@@ -362,12 +362,11 @@ class ModeloAdmin(admin.ModelAdmin):
                 lista_pubs.append(ArmarPublicacion(obj).pub())
         payload['lista_pubs'] = lista_pubs
 
-        pub_res = requests.post('http://meli.dnoguesdev.com.ar/api/publicar/',json=payload)
+        pub_res = requests.post('http://127.0.0.1:8000/api/publicar/',json=payload)
       
         try:
             cuenta = Cuenta.objects.get(id= pub_res.json()['cuenta']['id'])
             for resp in pub_res.json()['pub_res']:
-                print(resp)
                 stats = PubStats.objects.create(pub_id = resp['id'])
                 stats.save()
                 pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = "",precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()

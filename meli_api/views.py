@@ -23,7 +23,7 @@ async def crear_publicaciones(session,url, headers,payload):
         return pub_meli_resp
 
 async def cambiar_desc(session,url, headers,payload):
-    async with session.put(url=url, json=payload, headers=headers) as res:
+    async with session.put(url=url, data=payload, headers=headers) as res:
         desc_meli_resp = await res.json()
         return desc_meli_resp
 
