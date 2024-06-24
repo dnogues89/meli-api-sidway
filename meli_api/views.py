@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from . import models
 
 from meli_api.apicon import MeliAPI
@@ -23,7 +23,10 @@ async def crear_publicaciones(session,url, headers,payload):
         return pub_meli_resp
 
 async def cambiar_desc(session,url, headers,payload):
-    async with session.post(url=url, json=payload, headers= headers) as res:
+    async with session.post(url=url, json=payload, headers=headers) as res:
+        print(url)
+        print(payload)
+        print(headers)
         desc_meli_resp = await res.json()
         return desc_meli_resp
 
@@ -146,16 +149,20 @@ async def publicar_v2(request):
                 "plain_text": "Probando async"
                 })
                 headers = {
-                'Authorization': f'Bearer {cuenta['access_token']}',
+                'Authorization': f"Bearer {cuenta['access_token']}",
                 'Content-Type': 'application/json'
                 }
         
                 cambiar_desc_actions.append(asyncio.ensure_future(cambiar_desc(session, url,headers,payload)))
-
+            
+            desc_resp = await asyncio.gather(*cambiar_desc_actions)
+                        
             for data in meli_pubs_res:
                 pub_res.append(data)
+            
+            data = {'pub_res':pub_res,'cuenta':cuenta}
     
-    return HttpResponse(f'{pub_res}')
+    return JsonResponse(data,safe=False)
     
     
     # actions =[]

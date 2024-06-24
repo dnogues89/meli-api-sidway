@@ -363,22 +363,16 @@ class ModeloAdmin(admin.ModelAdmin):
         payload['lista_pubs'] = lista_pubs
 
         pub_res = requests.post('http://127.0.0.1:8000/api/publicar/',json=payload)
-        for resp in pub_res.json():
-            stats = PubStats.objects.create(pub_id = resp['id'])
-            stats.save()
-            pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
-            desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
-            if resp_ok(desc,f"Cambiando desc | {resp['id']}"):
-                self.message_user(
-                    request,
-                    f"{Descripciones().get_descripcion()} | Publicado {resp['permalink']}"
-                )
-            else:
-                self.message_user(request,f'{str(resp.text)}',level='ERROR')
-        else:
-            self.message_user(request,f'{str(resp.text)}',level='ERROR')
-
-                    
+      
+        try:
+            cuenta = Cuenta.objects.get(id= pub_res.json()['cuenta']['id'])
+            for resp in pub_res.json()['pub_res']:
+                print(resp)
+                stats = PubStats.objects.create(pub_id = resp['id'])
+                stats.save()
+                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = "",precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
+        except:
+            pass            
         
 
     #Agrego self cuenta cuanto logueo
