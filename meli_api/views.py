@@ -8,13 +8,19 @@ from datetime import timedelta
 from .admin import get_token
 
 from .models import Publicacion
+import asyncio
 import aiohttp
+import json
 
 from usuarios.models import Cuenta
 
-async def crear_publicaciones(session,url):
-    async with session.get(url) as res:
-        pub = await res.json()
+from django.views.decorators.csrf import csrf_exempt
+
+
+async def crear_publicaciones(session,url, headers,payload):
+    async with session.post(url=url,json=payload, headers= headers) as res:
+        pub_meli_resp = await res.json()
+        return pub_meli_resp
 
 # Create your views here.
 def mis_pubs(request):
@@ -72,9 +78,6 @@ def preguntas(request):
                     if models.resp_ok(resp_q,f"Respondiendo pregunta{preg['id']}"):
                         pass
     return HttpResponse(f'{resp.json()}')
-        
-    
-    return HttpResponse(f'{resp.json()}')
 
 def sincro_meli(request):
     cuentas = Cuenta.objects.all()
@@ -110,5 +113,39 @@ def publicacion(request,publicacion):
     except:
         return HttpResponse('WAT')
 
-def publicar_v2(request):
-   pass 
+
+@csrf_exempt
+async def publicar_v2(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        cuenta = data['cuenta']
+        actions = []
+        pub_res = []
+        async with aiohttp.ClientSession() as session:
+            for pub in data['lista_pubs']:
+                url = "https://api.mercadolibre.com/items"
+
+                payload = pub
+                headers = {
+                'Authorization': f"Bearer {cuenta['access_token']}",
+                'Content-Type': 'application/json'
+                }
+                actions.append(asyncio.ensure_future(crear_publicaciones(session, url,headers,payload)))
+            
+            meli_pubs_res = await asyncio.gather(*actions)
+            for data in meli_pubs_res:
+                pub_res.append(data)
+            
+            print(pub_res)
+    return HttpResponse(f'{pub_res}')
+    
+    
+    # actions =[]
+    # async with aiohttp.ClientSession() as session:
+    #     for num in range(1, 101):
+    #         url = f"https://pokeapi.co/api/v2/pokemon/{num}"
+    #         actions.append(asyncio.ensure_future(crear_publicaciones(session, url)))
+
+    #     meli_pubs_res = await asyncio.gather(*actions)
+    #     for data in pokemon_res:
+    #         pokemon_data.append(data)

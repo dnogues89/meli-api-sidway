@@ -247,7 +247,7 @@ class ModeloAdmin(admin.ModelAdmin):
     list_display = ('unidad','cantidad','precio','precio_crm','publicaciones','stock','cargar_portadas','cargar_imagenes','c_port','c_img','c_atrib','pub_to_copy')
     list_editable = ('precio','pub_to_copy','cantidad')
     search_fields = ['descripcion']
-    actions = ('publicar','actualizar_precios')
+    actions = ('publicar','actualizar_precios','publicar_v2')
     list_filter = (PublicacionesCeroFilter,)
     
     def stock(self,obj):
@@ -347,10 +347,39 @@ class ModeloAdmin(admin.ModelAdmin):
                     obj.save()
 
     #Version 2 para publicar de forma ASYNCRONA
+    
     @admin.action(description='Publicar v2')
     def publicar_v2(self,request,objetos):
+        import json
+        from django.forms.models import model_to_dict
+        import requests
         cuenta = Cuenta.objects.get(user = request.user)
         api = MeliAPI(cuenta)
+        cuenta = model_to_dict(cuenta)
+        payload = {'cuenta':cuenta}
+        lista_pubs = []
+        for obj in objetos:
+            lista_pubs.append(ArmarPublicacion(obj).pub())
+        payload['lista_pubs'] = lista_pubs
+
+        pub_res = requests.post('http://127.0.0.1:8000/api/publicar/',json=payload)
+        for resp in pub_res.json():
+            stats = PubStats.objects.create(pub_id = resp['id'])
+            stats.save()
+            pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
+            desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
+            if resp_ok(desc,f"Cambiando desc | {resp['id']}"):
+                self.message_user(
+                    request,
+                    f"{Descripciones().get_descripcion()} | Publicado {resp['permalink']}"
+                )
+            else:
+                self.message_user(request,f'{str(resp.text)}',level='ERROR')
+        else:
+            self.message_user(request,f'{str(resp.text)}',level='ERROR')
+
+                    
+        
 
     #Agrego self cuenta cuanto logueo
     def changelist_view(self, request, extra_context=None):

@@ -23,6 +23,7 @@ urlpatterns = [
     path('get_stats/',views.update_stats, name='update_stats'),
     path('sincro_meli/',views.sincro_meli, name='sincro_meli'),
     path('preguntas/',views.preguntas, name='preguntas'),
-    path('publicacion/<str:publicacion>',views.publicacion, name='publicacion')
+    path('publicacion/<str:publicacion>',views.publicacion, name='publicacion'),
+    path('publicar/',views.publicar_v2, name='publicacionv2')
     
 ]
