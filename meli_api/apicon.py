@@ -1,5 +1,6 @@
 import requests
 import json
+import random
 
 # Primera conexion
 # https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=2164447249478080&redirect_uri=https://espasa.dnoguesdev.com.ar
@@ -151,10 +152,6 @@ class MeliAPI():
         } 
 
         response = requests.request("GET", url, headers=headers)
-
-        print()
-        print(headers)
-        print(url)
         
         return response
     
@@ -208,3 +205,83 @@ class MeliAPI():
         response = requests.request("GET", url, headers=headers)
 
         return response
+
+
+class MeliApiAsync():
+    def __init__(self, user_id, token,) -> None:
+        self.user_id = user_id
+        self.token = token
+    
+    def pausar_eliminar_publicacion(self,pub_id,status):
+        key = "status"
+        if status == 'delete':
+            key = "deleted"
+            status = "true"
+            
+        url = f"https://api.mercadolibre.com/items/{pub_id}"
+
+        payload = json.dumps({key: status})
+        headers = {
+        'Authorization': f'Bearer {self.token}',
+        'Content-Type': 'application/json'
+        }
+
+        # response = requests.request("PUT", url, headers=headers, data=payload)
+        return url,headers,payload
+    
+    def publicar_auto(self,payload):
+        url = "https://api.mercadolibre.com/items"
+
+        headers = {
+        'Authorization': f'Bearer {self.token}',
+        'Content-Type': 'application/json'
+        }
+
+        # response = requests.request("POST", url, headers=headers, data=json.dumps(payload))
+        
+        return url, headers, payload
+    
+    def cambiar_desc(self,pub_id):
+        url = f"https://api.mercadolibre.com/items/{pub_id}/description?api_version=2"
+
+        desc = """
+
+            Asesores Comerciales certificados por VW Argentina
+
+            - Hasta agotar stock en OFERTA
+            - Consecionario Oficial N°1 por 21 años consecutivos.
+            - El mejor precio del Mercado Asegurado!
+            - Acepto permuta por mayor o menor valor.
+            - Entrega inmediata.
+            - Disponibilidad de Colores.
+            - Financiación exclusiva.
+            - Consulte por esta y otras versiones o modelos.
+            - No incluye ningún gasto.
+                
+                """
+                
+        desc = desc + str('.'*random.randint(1,9))
+        
+        payload = json.dumps({
+        "plain_text": desc
+        })
+        headers = {
+        'Authorization': f'Bearer {self.token}',
+        'Content-Type': 'application/json'
+        }
+
+        # response = requests.request("PUT", url, headers=headers, data=payload)
+
+        return url, headers, payload
+    
+    def consulta_pub(self,pub_id):
+        url = f"https://api.mercadolibre.com/items/{pub_id}"
+
+        headers = {
+        'Authorization': f'Bearer {self.token}'
+        }
+
+        # response = requests.request("GET", url)
+        payload = json.dumps({})
+        
+        return url,headers,payload

@@ -24,6 +24,8 @@ urlpatterns = [
     path('sincro_meli/',views.sincro_meli, name='sincro_meli'),
     path('preguntas/',views.preguntas, name='preguntas'),
     path('publicacion/<str:publicacion>',views.publicacion, name='publicacion'),
-    path('publicar/',views.publicar_v2, name='publicacionv2')
+    path('publicar/',views.publicar_v2, name='publicacionv2'),
+    path('eliminar/',views.eliminar_pubs, name='eliminar'),
+    path('activa/',views.activa, name='activa')
     
 ]

@@ -5,15 +5,16 @@ from .apicon import MeliAPI
 from django.utils.html import format_html
 from django.utils import timezone
 from django.urls import reverse
-
 from usuarios.models import Cuenta
-
+from django.forms.models import model_to_dict
+import requests
 
 admin.site.site_header = "Mercado Libre ESPASA DNogues"
 admin.site.site_title = "Meli Espasa"
 
 # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
 
+path = 'http://127.0.0.1:8000/'
 
 #Creo un filtro para los 0 Publicaciones
 from django.contrib.admin import SimpleListFilter
@@ -79,7 +80,7 @@ class PublicacionAdmin(admin.ModelAdmin):
     list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
     list_filter = ['cuenta','activa']
-    actions = ('pausar','eliminar','sinconizar_meli','revisar_activa')
+    actions = ('pausar','eliminar','sinconizar_meli','revisar_activa','eliminar_v2','revisar_activa_v2')
     ordering = ['sincronizado','titulo']
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
 
@@ -175,9 +176,38 @@ class PublicacionAdmin(admin.ModelAdmin):
             else:
                 self.message_user(request,f'{obj.pub_id} | La publicacion no se pudo cerrar ni eliminar\nError: {resp1.text}', level="ERROR")
 
-    @admin.action(description='Sincronizar pubs con Meli')
-    def sinconizar_meli(self,request,objetos):
+    @admin.action(description='Eliminar pub ML V2')
+    def eliminar_v2(self,request,objetos):
+        cant_pubs = 0
+        total_pubs = 0
+        cuenta = Cuenta.objects.get(user = request.user)
+        cuenta = model_to_dict(cuenta)
+        payload = {'cuenta':cuenta}
+        lista_pubs = []
+        for obj in objetos:
+            if obj.banner == True:
+                self.message_user(request,f'Es un banner No se va a', level="ERROR")
+                break
+            total_pubs += 1
+            lista_pubs.append(obj.pub_id)
+        payload['lista_pubs'] = lista_pubs
+        pub_res = requests.post(f"{path}/api/eliminar/", json=payload)
+        for pub in pub_res.json()['pub_res']:
+            try:
+                if pub['sub_status'][0] == 'deleted':
+                    objetos.filter(pub_id = pub['id']).delete()
+                    cant_pubs += 1
+                    self.message_user(request,f'{obj.pub_id} | Publicacion Eliminada correctamente')
+                else:
+                    self.message_user(request,f"{obj.pub_id} | {pub['status']}", level="ERROR")
+            except:
+                self.message_user(request,f"Error al eliminar", level="ERROR")
+            
         
+        
+
+    @admin.action(description='Sincronizar pubs con Meli')
+    def sinconizar_meli(self,request,objetos):        
         for obj in objetos:
             api = MeliAPI(obj.cuenta)
             resp = api.consulta_pub(obj)
@@ -212,6 +242,28 @@ class PublicacionAdmin(admin.ModelAdmin):
                     obj.save()
                     self.message_user(request,f"{obj.pub_id} | {resp.json()['status']} | {resp.json()['sub_status']}", level="ERROR")
      
+    @admin.action(description="Revisar si esta ACTIVA V2")
+    def revisar_activa_v2(self,request,objetos):
+        cant_pubs = 0
+        total_pubs = 0
+        cuenta = Cuenta.objects.get(user = request.user)
+        cuenta = model_to_dict(cuenta)
+        payload = {'cuenta':cuenta}
+        lista_pubs = []
+        for obj in objetos:
+            total_pubs += 1
+            lista_pubs.append(obj.pub_id)
+        payload['lista_pubs'] = lista_pubs
+        pub_res = requests.post(f"{path}/api/activa/", json=payload)
+                
+        for pub in pub_res.json()['pub_res']:
+            if pub['status'] == 'active':
+                objetos.filter(pub_id = pub['id']).update(activa = True)
+                cant_pubs += 1
+        self.message_user(request,f'{cant_pubs} de {total_pubs} publicaciones activas')
+            
+
+
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         if request.user.username == 'dnogues':
@@ -349,9 +401,9 @@ class ModeloAdmin(admin.ModelAdmin):
     
     @admin.action(description='Publicar v2')
     def publicar_v2(self,request,objetos):
-        import json
-        from django.forms.models import model_to_dict
-        import requests
+        cant_pubs = 0
+        total_pubs = 0
+
         cuenta = Cuenta.objects.get(user = request.user)
         api = MeliAPI(cuenta)
         cuenta = model_to_dict(cuenta)
@@ -360,18 +412,25 @@ class ModeloAdmin(admin.ModelAdmin):
         for obj in objetos:
             for i in range(0,obj.cantidad):
                 lista_pubs.append(ArmarPublicacion(obj).pub())
+                total_pubs += 1
+            obj.cantidad = 1
+            obj.save()
         payload['lista_pubs'] = lista_pubs
 
-        pub_res = requests.post('http://meli.dnoguesdev.com.ar/api/publicar/',json=payload)
+        pub_res = requests.post(f'{path}/api/publicar/',json=payload)
       
         try:
             cuenta = Cuenta.objects.get(id= pub_res.json()['cuenta']['id'])
             for resp in pub_res.json()['pub_res']:
+                cant_pubs += 1
                 stats = PubStats.objects.create(pub_id = resp['id'])
                 stats.save()
                 pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = "",precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
         except:
-            pass            
+            pass
+        
+        self.message_user(request,f'Publicados {cant_pubs} de {total_pubs} publicaciones',level='SUCCESS')
+        
         
 
     #Agrego self cuenta cuanto logueo

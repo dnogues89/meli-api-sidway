@@ -6,17 +6,31 @@ from meli_api.apicon import MeliAPI
 from django.utils import timezone
 from datetime import timedelta
 from .admin import get_token
+from .apicon import MeliApiAsync
 
-from .models import Publicacion
 import asyncio
 import aiohttp
 import json
 
 from usuarios.models import Cuenta
-import random
 
 from django.views.decorators.csrf import csrf_exempt
 
+
+async def post(session, url,headers,payload):
+    async with session.post(url=url,json=payload, headers= headers) as res:
+        post_resp = await res.json()
+        return post_resp
+
+async def get(session, url,headers):
+    async with session.get(url=url, headers= headers) as res:
+        post_resp = await res.json()
+        return post_resp
+
+async def put(session, url,headers,payload):
+    async with session.put(url=url,data=payload, headers= headers) as res:
+        post_resp = await res.json()
+        return post_resp
 
 async def crear_publicaciones(session,url, headers,payload):
     async with session.post(url=url,json=payload, headers= headers) as res:
@@ -125,52 +139,22 @@ async def publicar_v2(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         cuenta = data['cuenta']
+        api = MeliApiAsync(cuenta['user_meli'],cuenta['access_token'])
         actions = []
         pub_res = []
         async with aiohttp.ClientSession() as session:
             for pub in data['lista_pubs']:
-                url = "https://api.mercadolibre.com/items"
-
-                payload = pub
-                headers = {
-                'Authorization': f"Bearer {cuenta['access_token']}",
-                'Content-Type': 'application/json'
-                }
-                actions.append(asyncio.ensure_future(crear_publicaciones(session, url,headers,payload)))
+                url, headers,payload = api.publicar_auto(pub)
+                actions.append(asyncio.ensure_future(post(session, url,headers,payload)))
             
             meli_pubs_res = await asyncio.gather(*actions)
             cambiar_desc_actions = []
+            
             for pub in meli_pubs_res:
-                url = f"https://api.mercadolibre.com/items/{pub['id']}/description?api_version=2"
-                desc = """
-
-                            Asesores Comerciales certificados por VW Argentina
-
-                            - Hasta agotar stock en OFERTA
-                            - Consecionario Oficial N°1 por 21 años consecutivos.
-                            - El mejor precio del Mercado Asegurado!
-                            - Acepto permuta por mayor o menor valor.
-                            - Entrega inmediata.
-                            - Disponibilidad de Colores.
-                            - Financiación exclusiva.
-                            - Consulte por esta y otras versiones o modelos.
-                            - No incluye ningún gasto.
-                                
-                                """
-                desc + str('.'*random.randint(1,9))
-                payload = json.dumps({
-                "plain_text": desc
-                })
-                headers = {
-                'Authorization': f"Bearer {cuenta['access_token']}",
-                'Content-Type': 'application/json'
-                }
-        
-                cambiar_desc_actions.append(asyncio.ensure_future(cambiar_desc(session, url,headers,payload)))
+                url,headers,payload =  api.cambiar_desc(pub['id'])
+                cambiar_desc_actions.append(asyncio.ensure_future(put(session, url,headers,payload)))
             
-            desc_resp = await asyncio.gather(*cambiar_desc_actions)
-            
-            print(desc_resp)
+            _ = await asyncio.gather(*cambiar_desc_actions)
                         
             for data in meli_pubs_res:
                 pub_res.append(data)
@@ -178,14 +162,54 @@ async def publicar_v2(request):
             data = {'pub_res':pub_res,'cuenta':cuenta}
     
     return JsonResponse(data,safe=False)
-    
-    
-    # actions =[]
-    # async with aiohttp.ClientSession() as session:
-    #     for num in range(1, 101):
-    #         url = f"https://pokeapi.co/api/v2/pokemon/{num}"
-    #         actions.append(asyncio.ensure_future(crear_publicaciones(session, url)))
 
-    #     meli_pubs_res = await asyncio.gather(*actions)
-    #     for data in pokemon_res:
-    #         pokemon_data.append(data)
+@csrf_exempt   
+async def eliminar_pubs(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        cuenta = data['cuenta']
+        api = MeliApiAsync(cuenta['user_meli'],cuenta['access_token'])
+        actions = []
+        pub_res = []
+        async with aiohttp.ClientSession() as session:
+            for pub in data['lista_pubs']:
+                url,headers,payload = api.pausar_eliminar_publicacion(pub,'closed')
+                actions.append(asyncio.ensure_future(put(session, url,headers,payload)))
+            
+            pub_paused = await asyncio.gather(*actions)
+            
+            for pub in data['lista_pubs']:
+                url,headers,payload = api.pausar_eliminar_publicacion(pub,'delete')
+                actions.append(asyncio.ensure_future(put(session, url,headers,payload)))
+            
+            meli_pubs_res = await asyncio.gather(*actions)
+            
+            for data in meli_pubs_res:
+                pub_res.append(data)
+            
+            data = {'pub_res':pub_res,'cuenta':cuenta}
+    
+    return JsonResponse(data,safe=False)
+
+@csrf_exempt
+async def activa(request):
+    print('entre')
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        cuenta = data['cuenta']
+        api = MeliApiAsync(cuenta['user_meli'],cuenta['access_token'])
+        actions = []
+        pub_res = []
+        async with aiohttp.ClientSession() as session:
+            for pub in data['lista_pubs']:
+                url,headers,payload = api.consulta_pub(pub)
+                actions.append(asyncio.ensure_future(get(session, url,headers)))
+            
+            resp = await asyncio.gather(*actions)
+            
+            for data in resp:
+                pub_res.append(data)
+                
+            data = {'pub_res':pub_res,'cuenta':cuenta}
+    
+    return JsonResponse(data,safe=False)
