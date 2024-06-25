@@ -14,7 +14,8 @@ admin.site.site_title = "Meli Espasa"
 
 # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
 
-path = 'http://127.0.0.1:8000/'
+# path = 'http://127.0.0.1:8000/'
+path = 'http://meli.dnoguesdev.com.ar/'
 
 #Creo un filtro para los 0 Publicaciones
 from django.contrib.admin import SimpleListFilter
