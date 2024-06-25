@@ -199,10 +199,9 @@ class PublicacionAdmin(admin.ModelAdmin):
                     objetos.filter(pub_id = pub['id']).delete()
                     cant_pubs += 1
                     self.message_user(request,f'{obj.pub_id} | Publicacion Eliminada correctamente')
-                else:
-                    self.message_user(request,f"{obj.pub_id} | {pub['status']}", level="ERROR")
             except:
                 self.message_user(request,f"Error al eliminar", level="ERROR")
+        self.message_user(request,f'Se eliminaron {cant_pubs} de {total_pubs} publicaciones')
             
         
         
