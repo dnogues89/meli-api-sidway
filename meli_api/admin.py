@@ -345,7 +345,6 @@ class ModeloAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         qs = super().get_queryset(request)
         cuenta = Cuenta.objects.get(user = request.user)
-        print(get_token(cuenta))
         return qs
 
     def unidad(self,obj):
