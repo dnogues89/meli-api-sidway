@@ -424,7 +424,8 @@ class ModeloAdmin(admin.ModelAdmin):
                 cant_pubs += 1
                 stats = PubStats.objects.create(pub_id = resp['id'])
                 stats.save()
-                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = "",precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
+                modelo = Modelo.objects.get(descripcion__iexact = resp['title'])
+                pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = "",precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=modelo, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
         except:
             pass
         
