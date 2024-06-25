@@ -37,7 +37,6 @@ class PublicacionesCeroFilter(SimpleListFilter):
         return queryset
 
 
-
 def resp_ok(resp, name):
     if resp.status_code == 200 or resp.status_code == 402 or resp.status_code == 201:
         return True
