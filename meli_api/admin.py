@@ -420,14 +420,15 @@ class ModeloAdmin(admin.ModelAdmin):
         try:
             cuenta = Cuenta.objects.get(id= pub_res.json()['cuenta']['id'])
             for resp in pub_res.json()['pub_res']:
+                modelo = objetos.filter(descripcion__iexact = resp['title'].replace('Volkswagen ',''))
                 cant_pubs += 1
                 stats = PubStats.objects.create(pub_id = resp['id'])
                 stats.save()
                 try:
                     modelo = objetos.filter(descripcion__iexact = resp['title'].replace('Volkswagen ',''))
-                    pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = "",precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=modelo, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
+                    pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = "",precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=modelo[0], url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
                 except:
-                    pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = "",precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=modelo, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
+                    pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = "",precio=resp['price'],categoria = resp['listing_type_id'],activa = False, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
         except:
             pass
         

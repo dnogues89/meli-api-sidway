@@ -121,7 +121,7 @@ def sincro_meli(request):
                             models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'][11:],desc = resp['descriptions'],precio=resp['price'],categoria = resp['listing_type_id'],activa = activa, url = resp['permalink'],sincronizado = True, cuenta=cuenta).save()
 
                         item = models.Publicacion.objects.get(pub_id = resp['id'])
-                        stats = models.PubStats.objects.get(pub_id = resp['id'])
+                        stats = models.PubStats.objects.filter(pub_id = resp['id'])[0]
                         item.f_creado = resp['date_created']
                         item.stats = stats
                         item.save()
