@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from . import models
+from .publicaciones import ArmarPublicacion, Descripciones
 
 from meli_api.apicon import MeliAPI
 from django.utils import timezone
@@ -45,6 +46,29 @@ async def cambiar_desc(session,url, headers,payload):
 # Create your views here.
 def mis_pubs(request):
     return HttpResponse('Archivo no encontrado.')
+
+def republicar(request):
+    cuentas = Cuenta.objects.all()
+    for cuenta in cuentas:
+        api = MeliAPI(cuenta)
+        pubs = models.Publicacion.objects.all().filter(cuenta = cuenta).exclude(banner = True)
+        for pub in pubs:
+            modelo = pub.modelo
+            resp = api.pausar_eliminar_publicacion(pub.pub_id,'closed')
+            if resp.status_code == 200:
+                api.pausar_eliminar_publicacion(pub.pub_id,'delete')
+                if resp.status_code == 200:
+                    pub = models.Publicacion.objects.get(pub_id = pub.pub_id)
+                    pub.delete()
+                    resp = api.publicar_auto(ArmarPublicacion(modelo).pub())
+                    if models.resp_ok(resp,'Publicar Auto'):
+                        resp = resp.json()
+                        stats = models.PubStats.objects.create(pub_id = resp['id'])
+                        stats.save()
+                        pub = models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = modelo.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=modelo, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
+                        desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
+                        
+                               
 
 def update_stats(request):
     cuentas = Cuenta.objects.all()
