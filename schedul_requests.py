@@ -56,6 +56,18 @@ def get_stats():
         print("No se pudo conseguir los stats")
         print()
 
+@repeat(every().day.at('05:00'))        
+def republicar():
+    try:
+        response = requests.get('http://meli.dnoguesdev.com.ar/api/republicar/')
+        if response.status_code == 200:
+            print("republicado")
+            print(response.text)
+            print()
+    except:
+        print("No se pudo conseguir los stats")
+        print()   
+
 
 update_espasa_db()
 answer_questions()
