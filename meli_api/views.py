@@ -48,26 +48,33 @@ def mis_pubs(request):
     return HttpResponse('Archivo no encontrado.')
 
 def republicar(request):
-    cuentas = Cuenta.objects.all()
-    for cuenta in cuentas:
-        api = MeliAPI(cuenta)
-        pubs = models.Publicacion.objects.all().filter(cuenta = cuenta).exclude(banner = True)
-        for pub in pubs:
-            modelo = pub.modelo
-            resp = api.pausar_eliminar_publicacion(pub.pub_id,'closed')
+    cuenta = Cuenta.objects.get(name='MeliTNV')
+    # for cuenta in cuentas:
+    api = MeliAPI(cuenta)
+    pubs = models.Publicacion.objects.all().filter(cuenta = cuenta).exclude(banner = True)
+    for pub in pubs:
+        modelo = pub.modelo
+        try:
+            precio =  modelo.espasa_db.precio_tx if modelo.espasa_db.ofertas == "0" else modelo.espasa_db.oferta_min
+        except:
+            precio = 0
+        modelo.precio = models.convertir_precio2(precio)
+        modelo.save()
+        
+        resp = api.pausar_eliminar_publicacion(pub.pub_id,'closed')
+        if resp.status_code == 200:
+            api.pausar_eliminar_publicacion(pub.pub_id,'delete')
             if resp.status_code == 200:
-                api.pausar_eliminar_publicacion(pub.pub_id,'delete')
-                if resp.status_code == 200:
-                    pub = models.Publicacion.objects.get(pub_id = pub.pub_id)
-                    pub.delete()
-                    resp = api.publicar_auto(ArmarPublicacion(modelo).pub())
-                    if models.resp_ok(resp,'Publicar Auto'):
-                        resp = resp.json()
-                        stats = models.PubStats.objects.create(pub_id = resp['id'])
-                        stats.save()
-                        pub = models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = modelo.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=modelo, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
-                        desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
-                        
+                pub = models.Publicacion.objects.get(pub_id = pub.pub_id)
+                pub.delete()
+                resp = api.publicar_auto(ArmarPublicacion(modelo).pub())
+                if models.resp_ok(resp,'Publicar Auto'):
+                    resp = resp.json()
+                    stats = models.PubStats.objects.create(pub_id = resp['id'])
+                    stats.save()
+                    pub = models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = modelo.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=modelo, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
+                    desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
+    return HttpResponse('Proceso terminado')                         
                                
 
 def update_stats(request):
