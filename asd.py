@@ -1,2 +1,3 @@
-for i in range(0,10):
-    print(i)
+phone = "+54 11 30598946"
+phone = "".join(phone.split(' ')[1:])
+print(phone)

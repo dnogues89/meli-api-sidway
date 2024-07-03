@@ -12,7 +12,7 @@ from datetime import timedelta
 
 def limpiar_lead(lead):
     try:
-        phone = lead['phone']
+        phone = "".join(lead['phone'].split(' ')[1:])
     except:
         phone = '1111111111'
         
@@ -26,7 +26,12 @@ def limpiar_lead(lead):
     except:
         email = 'sin@mail.com'
         
-    return phone , name, email
+    try:
+        cuit = lead['identification_number']
+    except:
+        cuit = '00000000000'
+        
+    return phone , name, email, cuit
 
 def generar_fechas(inicio, fin):
     # Convertimos las fechas a objetos datetime
@@ -58,7 +63,7 @@ def get_leads(request):
             if leads == None:
                 break
             for lead in leads:
-                phone , name, email = limpiar_lead(lead)
+                phone , name, email, cuit = limpiar_lead(lead)
                 
                 if phone == '1111111111' and email == 'sin@mail.com':
                     break
@@ -96,6 +101,7 @@ def get_leads(request):
                         name = name,
                         email = email,
                         phone = phone,
+                        cuit = cuit,
                         contactos = len(lead['leads']),
                         cuenta = cuenta
                     )

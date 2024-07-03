@@ -17,6 +17,7 @@ class Lead(models.Model):
     to_crm = models.BooleanField(default=False)
     contactos = models.IntegerField(default=0)
     cuenta = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True)
+    cuit = models.CharField(max_length=100,default=0)
     
 class Estadisticas(models.Model):
     cuenta = models.CharField(max_length=100,default='Estadisticas LIMA')
