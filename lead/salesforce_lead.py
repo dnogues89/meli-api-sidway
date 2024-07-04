@@ -42,7 +42,7 @@ class Salesfroce():
             Nombre: \n
             Apellido: {self.apellido}\n
             Email: {self.email}\n
-            Teléfono: {str(self.telefono)[2:]}\n
+            Teléfono: {str(self.telefono)}\n
             Origen: {self.origen}\n
             Concesionario: {self.concesionario}\n
             Campaña: Mercado Libre API\n
