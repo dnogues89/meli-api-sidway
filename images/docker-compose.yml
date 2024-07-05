@@ -16,7 +16,7 @@ services:
     ports:
       - "8000:8000"
     networks:
-      - orange-network
+      - espasa-network
 
 networks:
   orange-network:
