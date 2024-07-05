@@ -55,3 +55,8 @@ def update_espasa_db(request):
            item.delete()
         
     return render(request, 'confirmacion.html')
+
+def get_client_info(cuit):
+    conn = EspasaDataBase()
+    info = conn.get_info_by_cuit(cuit)
+    return info

@@ -1,9 +1,16 @@
 
 from django.contrib import admin
 
-from .models import Lead, Estadisticas
+from .models import Lead, Estadisticas,CuitInfo
 
 # Register your models here.
+@admin.register(CuitInfo)
+class CuitInfoAdmin(admin.ModelAdmin):
+    list_display = ['cuit','marca','modelo','tipo','fecha_ultimo_pat','provincia','cliente']
+    search_fields = ['cuit','marca','modelo','tipo']
+    date_hierarchy = 'fecha_ultimo_pat'
+
+
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
     list_display = ['name','phone','email','item_id','cuenta','contactos','date','to_crm']

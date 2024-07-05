@@ -10,6 +10,8 @@ from usuarios.models import Cuenta
 from django.utils import timezone
 from datetime import timedelta
 
+from espasa_info.espasa_conn import EspasaDataBase
+
 def limpiar_lead(lead):
     try:
         phone = "".join(lead['phone'].split(' ')[1:])
@@ -91,6 +93,7 @@ def get_leads(request):
                             item.to_crm =True
                         item.save()
                 except:
+                    
                     item = Lead.objects.create(
                         lead_id = lead['id'],
                         item_id = lead['item_id'],
