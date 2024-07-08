@@ -12,7 +12,7 @@ class CuitInfo(models.Model):
     marca=models.CharField(max_length=100)
     modelo=models.CharField(max_length=100)
     tipo=models.CharField(max_length=100)
-    fecha_ultimo_pat=models.DateTimeField()
+    fecha_ultimo_pat=models.DateField()
     provincia=models.CharField(max_length=50)
     cliente=models.BooleanField(max_length=50)
     
@@ -26,7 +26,7 @@ class Lead(models.Model):
     name = models.CharField(max_length=100)
     email = models.CharField(max_length=100)
     phone = models.CharField(max_length=100)
-    date = models.DateField(null=True, blank=True)
+    date = models.DateTimeField(null=True, blank=True)
     to_crm = models.BooleanField(default=False)
     contactos = models.IntegerField(default=0)
     cuenta = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True)
