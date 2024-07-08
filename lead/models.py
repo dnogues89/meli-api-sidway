@@ -33,19 +33,19 @@ class Lead(models.Model):
     cuit = models.CharField(max_length=100,default=0)
     cuit_info = models.ForeignKey(CuitInfo, on_delete=models.SET_NULL, default=None, null=True)
     
-    def save(self, *args, **kwargs):
-        if self.cuit_info == None:
-            conn = EspasaDataBase()
-            info = conn.get_info_by_cuit(self.cuit)
-            print(info)
-            if info:
-                settings.USE_TZ = False
-                cuit_info = CuitInfo.objects.create(cuit=self.cuit, marca=info['marca'], modelo=info['modelo'], tipo=info['tipo'], fecha_ultimo_pat=info['fecha_ultimo_pat'], provincia=info['provincia'], cliente=info['cliente'])
-                cuit_info.save()
-                self.cuit_info = cuit_info
-                settings.USE_TZ = True
+    # def save(self, *args, **kwargs):
+    #     if self.cuit_info == None:
+    #         conn = EspasaDataBase()
+    #         info = conn.get_info_by_cuit(self.cuit)
+    #         print(info)
+    #         if info:
+    #             settings.USE_TZ = False
+    #             cuit_info = CuitInfo.objects.create(cuit=self.cuit, marca=info['marca'], modelo=info['modelo'], tipo=info['tipo'], fecha_ultimo_pat=info['fecha_ultimo_pat'], provincia=info['provincia'], cliente=info['cliente'])
+    #             cuit_info.save()
+    #             self.cuit_info = cuit_info
+    #             settings.USE_TZ = True
     
-        super().save(*args, **kwargs)
+    #     super().save(*args, **kwargs)
     
 class Estadisticas(models.Model):
     cuenta = models.CharField(max_length=100,default='Estadisticas LIMA')
