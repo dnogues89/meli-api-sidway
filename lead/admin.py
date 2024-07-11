@@ -23,7 +23,7 @@ class LeadAdmin(admin.ModelAdmin):
     
     def c_info(obj):
         try:
-            return f"{obj.cuit_info.marca} | {obj.cuit_info.modelo} | {obj.cuit_info.fecha_ultimo_pat.strftime("%m/%y")}"
+            return f"{obj.cuit_info.marca} | {obj.cuit_info.modelo} | {obj.cuit_info.fecha_ultimo_pat.strftime('%m/%y')}"
         except:
             return '-'
 
