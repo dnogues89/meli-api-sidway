@@ -20,7 +20,7 @@ class LeadAdmin(admin.ModelAdmin):
     date_hierarchy = 'date'
     list_per_page = 500
     
-    def c_info(obj):
+    def c_info(self, obj):
         try:
             return f"{obj.cuit_info.marca} | {obj.cuit_info.modelo} | {obj.cuit_info.fecha_ultimo_pat.strftime('%m/%y')}"
         except:
