@@ -1,6 +1,5 @@
 
 from django.contrib import admin
-from django.utils import strf
 
 from .models import Lead, Estadisticas,CuitInfo
 
