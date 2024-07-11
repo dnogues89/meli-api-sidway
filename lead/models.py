@@ -34,7 +34,7 @@ class Lead(models.Model):
     cuit_info = models.ForeignKey(CuitInfo, on_delete=models.SET_NULL, default=None, null=True)
     
     def save(self, *args, **kwargs):
-        if self.cuit_info == None:
+        if self.cuit_info == None and self.cuit != 0:
             conn = EspasaDataBase()
             info = conn.get_info_by_cuit(self.cuit)
             print(info)
