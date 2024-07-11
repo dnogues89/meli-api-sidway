@@ -15,7 +15,7 @@ from espasa_info.espasa_conn import EspasaDataBase
 
 def cuit_info(request,telefono):
     try:
-        lead = Lead.objects.get(phone=telefono)
+        lead = Lead.objects.filter(phone=telefono)[0]
         cuit_info = f"{lead.cuit_info.marca} | {lead.cuit_info.modelo} | {lead.cuit_info.fecha_ultimo_pat.strftime('%m/%y')}"
         return HttpResponse(cuit_info)
     except:
