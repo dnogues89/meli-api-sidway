@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Lead
 from meli_api.apicon import MeliAPI
 from meli_api import models
+from .models import Lead
 from django.http import HttpResponse
 from .salesforce_lead import Salesfroce, convertir_numero
 
@@ -11,6 +12,14 @@ from django.utils import timezone
 from datetime import timedelta
 
 from espasa_info.espasa_conn import EspasaDataBase
+
+def cuit_info(request,telefono):
+    try:
+        lead = Lead.objects.get(phone=telefono)
+        cuit_info = f"{lead.cuit_info.marca} | {lead.cuit_info.modelo} | {lead.cuit_info.fecha_ultimo_pat.strftime("%m/%y")}"
+        return HttpResponse(cuit_info)
+    except:
+        return HttpResponse('None')
 
 def limpiar_lead(lead):
     try:
