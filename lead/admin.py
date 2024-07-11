@@ -1,5 +1,6 @@
 
 from django.contrib import admin
+from django.utils import strf
 
 from .models import Lead, Estadisticas,CuitInfo
 
@@ -13,12 +14,18 @@ class CuitInfoAdmin(admin.ModelAdmin):
 
 @admin.register(Lead)
 class LeadAdmin(admin.ModelAdmin):
-    list_display = ['name','phone','email','item_id','cuenta','contactos','date','to_crm']
+    list_display = ['name','phone','email','item_id','cuenta','contactos','date','c_info','to_crm']
     search_fields = ['name', 'phone','email']
     list_filter = ['cuenta']
     ordering = ['-date']
     date_hierarchy = 'date'
     list_per_page = 500
+    
+    def c_info(obj):
+        try:
+            return f"{obj.cuit_info.marca} | {obj.cuit_info.modelo} | {obj.cuit_info.fecha_ultimo_pat.strftime("%m/%y")}"
+        except:
+            return '-'
 
 @admin.register(Estadisticas)
 class EstadisticasAdmin(admin.ModelAdmin):
