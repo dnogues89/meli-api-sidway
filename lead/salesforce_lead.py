@@ -18,12 +18,15 @@ class Salesfroce():
 
     def get_data(self):
         try:
-            comentario = f"{self.cliente.item_id} | {self.cliente.modelo}"
+            comentario = f"{self.cliente.cuit_info.marca} | {self.cliente.cuit_info.modelo} | {self.cliente.cuit_info.fecha_ultimo_pat.strftime('%m/%y')} | {self.cliente.modelo}"
         except:
-            comentario = ""
+            try:
+                comentario = f"{self.cliente.modelo}"
+            except:
+                comentario = ""
         
         try:
-            producto = f"{self.cliente.familia}"
+            producto = f"{self.cliente.modelo}"
         except:
             producto = "Sin definir"
                 
