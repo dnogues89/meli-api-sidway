@@ -80,7 +80,7 @@ class PublicacionAdmin(admin.ModelAdmin):
     list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
     list_filter = ['cuenta','activa']
-    actions = ('pausar','eliminar','sinconizar_meli','revisar_activa','eliminar_v2','revisar_activa_v2')
+    actions = ('pausar','eliminar','sinconizar_meli','actualizar_precios','revisar_activa','eliminar_v2','revisar_activa_v2')
     ordering = ['sincronizado','titulo']
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
 
@@ -261,7 +261,15 @@ class PublicacionAdmin(admin.ModelAdmin):
                 cant_pubs += 1
         self.message_user(request,f'{cant_pubs} de {total_pubs} publicaciones activas')
             
-
+    @admin.action(description="Actualizar Precio")
+    def actualizar_precios(self,request,objetos):
+        for obj in objetos:
+            try:
+                precio =  obj.modelo.espasa_db.precio_tx if obj.modelo.espasa_db.ofertas == "0" else obj.modelo.espasa_db.oferta_min
+            except:
+                precio = 0
+            obj.precio = convertir_precio2(precio)
+            obj.save()
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
