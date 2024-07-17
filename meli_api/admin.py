@@ -288,11 +288,11 @@ class PublicacionAdmin(admin.ModelAdmin):
     @admin.action(description='Buscar Pagina')
     def pagina(self,request,objetos):
         from .meli_pos import PaginaPublicacion
-        fecha = timezone.now().strftime("%d-%mT%H")
+        fecha = timezone.now().strftime("%d-%m")
         for obj in objetos:
             if obj.modelo.search_page != "":
                 pagina, ubicacion = PaginaPublicacion(obj.modelo.search_page, obj.pub_id).search_page()
-                obj.stats.ubicacion = f"{int(pagina)+1} | {ubicacion} | {fecha}"
+                obj.stats.ubicacion = f"Pag:{int(pagina)+1} | Ub:{ubicacion} | Check:{fecha}"
                 obj.stats.save()
         
     
