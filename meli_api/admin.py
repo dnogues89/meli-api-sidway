@@ -78,12 +78,18 @@ class ErroresAdmin(admin.ModelAdmin):
 
 @admin.register(Publicacion)
 class PublicacionAdmin(admin.ModelAdmin):
-    list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','cuenta','activa','ver','sincronizado','banner')
+    list_display=('titulo_short','pub_id','precio','crm','pub_vs_crm','stock','creado','vistas','cont','ubicacion','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
     list_filter = ['cuenta','activa']
     actions = ('pausar','eliminar','sinconizar_meli','actualizar_precios','revisar_activa','eliminar_v2','revisar_activa_v2','pagina')
     ordering = ['sincronizado','titulo']
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
+
+    def ubicacion (self,obj):
+        try:
+            return obj.stats.ubicacion
+        except:
+            return '-'
 
     def pub_vs_crm(self,obj):
         try:
