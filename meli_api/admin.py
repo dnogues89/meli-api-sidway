@@ -285,7 +285,7 @@ class PublicacionAdmin(admin.ModelAdmin):
         fecha = timezone.now().strftime("%d-%mT%H")
         for obj in objetos:
             if obj.modelo.search_page != "":
-                pagina, ubicacion = int(PaginaPublicacion(obj.modelo.search_page, obj.pub_id).search_page())
+                pagina, ubicacion = PaginaPublicacion(obj.modelo.search_page, obj.pub_id).search_page()
                 obj.stats.ubicacion = f"{int(pagina)+1} | {ubicacion} | {fecha}"
                 obj.stats.save()
         

@@ -63,5 +63,5 @@ class PaginaPublicacion:
             except:
                 break
             page +=1
-        return None
+        return None, None
 
