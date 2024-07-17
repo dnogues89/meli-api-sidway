@@ -66,7 +66,13 @@ def get_token(obj:Cuenta):
 # Register your models here.
 @admin.register(PubStats)
 class PubStatsAdmin(admin.ModelAdmin):
-    list_display = ('pub_id','views','clics_tel')
+    list_display = ('pub_id','views','clics_tel', 'pagina')
+    
+    @admin.action(description='Publicar')
+    def revisar_ubicacion(self,request,objetos):
+        for
+    
+    
 
 
 @admin.register(Errores)
@@ -80,7 +86,7 @@ class PublicacionAdmin(admin.ModelAdmin):
     list_display=('titulo_short','pub_id', 'cat','precio','crm','pub_vs_crm','stock','creado','vistas','cont','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
     list_filter = ['cuenta','activa']
-    actions = ('pausar','eliminar','sinconizar_meli','actualizar_precios','revisar_activa','eliminar_v2','revisar_activa_v2')
+    actions = ('pausar','eliminar','sinconizar_meli','actualizar_precios','revisar_activa','eliminar_v2','revisar_activa_v2','pagina')
     ordering = ['sincronizado','titulo']
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
 
@@ -277,6 +283,17 @@ class PublicacionAdmin(admin.ModelAdmin):
             return qs
         qs = qs.filter(cuenta = Cuenta.objects.filter(user = request.user)[0])
         return qs
+    
+    @admin.action(description='Buscar Pagina')
+    def pagina(self,request,objetos):
+        from .meli_pos import PaginaPublicacion
+        fecha = timezone.now().strftime("%d-%mT%H")
+        for obj in objetos:
+            if obj.modelo.search_page != "":
+                pagina, ubicacion = int(PaginaPublicacion(obj.modelo.search_page, obj.pub_id).search_page())
+                obj.stats.ubicacion = f"{int(pagina)+1} | {ubicacion} | {fecha}"
+                obj.stats.save()
+        
     
                
 @admin.register(GrupoImagenes)

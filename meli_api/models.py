@@ -134,6 +134,7 @@ class Modelo(models.Model):
     pub_to_copy = models.CharField(max_length=50, help_text='Publicacion a copiar atributos, ej MLA12345', verbose_name='Copy ID', null=True, blank=True)
     video_id = models.CharField(max_length=200, null=True,blank=True, help_text='No tocar')
     cantidad = models.IntegerField(default=1, verbose_name='A Publicar')
+    search_page = models.CharField(max_length= 200, blank=True, help_text='Casillero para identificar las busquedas', default='')
 
     
     def __str__(self) -> str:
@@ -171,6 +172,8 @@ class PubStats(models.Model):
     pub_id = models.CharField(max_length=100) 
     views = models.IntegerField(default = 0, verbose_name='vistas')
     clics_tel = models.IntegerField(default = 0, verbose_name='boton tel')
+    ubicacion = models.CharField(max_length=100, blank=True, null=True, default='')
+    
     
     def __str__(self) -> str:
         return self.pub_id
