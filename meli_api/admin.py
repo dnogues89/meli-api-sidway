@@ -66,7 +66,7 @@ def get_token(obj:Cuenta):
 # Register your models here.
 @admin.register(PubStats)
 class PubStatsAdmin(admin.ModelAdmin):
-    list_display = ('pub_id','views','clics_tel', 'pagina')
+    list_display = ('pub_id','views','clics_tel', 'ubicacion')
  
 
 
