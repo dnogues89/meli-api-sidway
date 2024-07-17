@@ -67,12 +67,7 @@ def get_token(obj:Cuenta):
 @admin.register(PubStats)
 class PubStatsAdmin(admin.ModelAdmin):
     list_display = ('pub_id','views','clics_tel', 'pagina')
-    
-    @admin.action(description='Publicar')
-    def revisar_ubicacion(self,request,objetos):
-        for
-    
-    
+ 
 
 
 @admin.register(Errores)
