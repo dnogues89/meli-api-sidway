@@ -151,12 +151,13 @@ class Modelo(models.Model):
             if resp_ok(resp, 'Consultar Atributos'):
                 self.video_id = resp.json()['video_id'] 
                 for at in resp.json()['attributes']:
-                    try:
-                        apend = Atributo.objects.get(id_att=at['id'],value=at['value_name'])
-                    except:
-                        apend = Atributo.objects.create(nombre = at['name'] ,id_att=at['id'],value=at['value_name']).save()     
+                    apend = Atributo.objects.filter(id_att=at['id']).filter(value=at['value_name'])
+                    if len(apend) == 0:
+                        apend = Atributo.objects.create(nombre = at['name'] ,id_att=at['id'],value=at['value_name'])
+                        apend.save()    
                     apend = Atributo.objects.filter(id_att=at['id'],value=at['value_name'])[0]
                     g_att.atributos.add(apend)
+                    print(g_att.atributos.count())
             g_att.save()
             self.g_atributos = g_att
             my = Atributo.objects.filter(id_att = 'VEHICLE_YEAR')
@@ -164,7 +165,7 @@ class Modelo(models.Model):
                 item.value = timezone.now().year
                 item.save()
                 
-            super().save()               
+            super().save()                        
         
         
 
