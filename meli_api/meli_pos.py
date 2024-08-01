@@ -6,7 +6,7 @@ class PaginaPublicacion:
     def __init__(self,modelo,publicacion) -> None:
         self.modelo = modelo
         self.familia, self.version = modelo.split(' ')
-        self.url = f'https://listado.mercadolibre.com.ar/{self.familia}-{self.version}#D[A:{self.familia}%20{self.version}]'
+        self.url = f"https://listado.mercadolibre.com.ar/{self.modelo.replace(' ','-')}#D[A:{self.modelo.replace(' ','%20')}]"
         self.html = requests.get(self.url).text
         self.soup = BeautifulSoup(self.html, 'html.parser')
         self.productos = []
@@ -40,6 +40,7 @@ class PaginaPublicacion:
             id_pub = self.validate_info(url.split("MLA-")[1].split("-")[0])
             id_pub = f"MLA{id_pub}"
             self.posicion += 1
+            print(id_pub)
             if self.publicacion == id_pub:
                 print('La encontre')
                 return True
