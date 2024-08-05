@@ -11,6 +11,7 @@ class PaginaPublicacion:
         self.soup = BeautifulSoup(self.html, 'html.parser')
         self.productos = []
         self.publicacion = publicacion
+        self.precio = {}
 
     def total_pages(self):
         try:
@@ -34,13 +35,14 @@ class PaginaPublicacion:
     def get_page_products(self):      
         self.posicion = 0
         for producto in self.soup.find_all(class_="ui-search-result__wrapper"):
-            titulo = '' if self.validate_info(producto.find('h2',class_='ui-search-item__title')) == None else producto.find('h2',class_='ui-search-item__title').text 
+            titulo = self.validate_info(producto.find('h2').text)
             url = self.validate_info(producto.find('a')['href'])
             precio = self.validate_info(int(producto.find(class_='andes-money-amount__fraction').text.replace(".","")))
             id_pub = self.validate_info(url.split("MLA-")[1].split("-")[0])
             id_pub = f"MLA{id_pub}"
             self.posicion += 1
-            print(id_pub)
+            print(titulo)
+            print(precio)
             if self.publicacion == id_pub:
                 print('La encontre')
                 return True
@@ -66,3 +68,7 @@ class PaginaPublicacion:
             page +=1
         return None, None
 
+if __name__ == '__main__':
+    app = PaginaPublicacion('amarok trendline','MLA1866498994')
+    app.search_page()
+        
