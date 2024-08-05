@@ -1,0 +1,16 @@
+[Unit]
+Description=Meli-api-autos Service for Docker
+After=network.target docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/opt/projects/Meli-api-autos/images
+ExecStart=/bin/bash -c "/usr/bin/docker compose -f /opt/projects/Meli-api-autos/images/docker-compose.yml up -d"
+ExecStop=/bin/bash -c "/usr/bin/docker compose -f /opt/projects/Meli-api-autos/images/docker-compose.yml stop"
+#Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
