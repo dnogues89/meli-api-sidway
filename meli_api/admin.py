@@ -8,7 +8,9 @@ from django.urls import reverse
 from usuarios.models import Cuenta
 from django.forms.models import model_to_dict
 import requests
+
 from unfold.admin import ModelAdmin
+from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
 
 admin.site.site_header = "Mercado Libre ESPASA DNogues"
 admin.site.site_title = "Meli Espasa"
@@ -21,6 +23,17 @@ path = 'http://127.0.0.1:8000/'
 #Creo un filtro para los 0 Publicaciones
 from django.contrib.admin import SimpleListFilter
 from django.db.models import Count, Q
+
+from django.contrib.auth.models import User
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+
+admin.site.unregister(User)
+
+@admin.register(User)
+class UserAdmin(BaseUserAdmin, ModelAdmin):
+    form = UserChangeForm
+    add_form = UserCreationForm
+    change_password_form = AdminPasswordChangeForm
 
 class PublicacionesCeroFilter(SimpleListFilter):
     title = 'publicaciones'
