@@ -92,14 +92,14 @@ class ErroresAdmin(ModelAdmin):
 
 @admin.register(Publicacion)
 class PublicacionAdmin(ModelAdmin):
-    list_display=('titulo_short','pub_id','precio','crm','pub_vs_crm','stock','creado','vistas','cont','ubicacion','cuenta','activa','ver','sincronizado','banner')
+    list_display=('titulo_short','pub_id','precio','crm','pub_vs_crm','stock','creado','vistas','cont','pub_ubicacion','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
     list_filter = ['cuenta','activa']
     actions = ('pausar','eliminar','sinconizar_meli','actualizar_precios','revisar_activa','eliminar_v2','revisar_activa_v2','pagina')
     ordering = ['sincronizado','titulo']
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
 
-    def ubicacion (self,obj):
+    def pub_ubicacion (self,obj):
         try:
             return obj.stats.ubicacion
         except:
@@ -306,10 +306,10 @@ class PublicacionAdmin(ModelAdmin):
         for obj in objetos:
             if obj.modelo.search_page != "":
                 pagina, ubicacion = PaginaPublicacion(obj.modelo.search_page, obj.pub_id).search_page()
-                try:
-                    obj.stats.ubicacion = f"{int(pagina)+1}|{ubicacion}|{fecha}"
-                except:
-                    obj.stats.ubicacion = f"No Encontrada | Check: {fecha}"
+                if pagina != 0 and ubicacion != 0:
+                    obj.stats.ubicacion = f"{int(pagina)+1}|{int(ubicacion)+1}|{fecha}"
+                else:
+                    obj.stats.ubicacion = f"N/A|{fecha}"
                 obj.stats.save()
         
     
