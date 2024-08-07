@@ -8,6 +8,8 @@ from django.urls import reverse
 from usuarios.models import Cuenta
 from django.forms.models import model_to_dict
 import requests
+from lead.models import Lead
+from django.db.models import Sum
 
 from unfold.admin import ModelAdmin
 from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
@@ -134,7 +136,7 @@ class PublicacionAdmin(ModelAdmin):
      
     def cont(self,obj):
         try:
-            return obj.stats.clics_tel
+            return Lead.objects.filter(item_id=obj.pub_id).aggregate(total=Sum('contactos'))['total'] or 0
         except:
             return '-'                           
                            
