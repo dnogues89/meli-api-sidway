@@ -8,6 +8,7 @@ from django.urls import reverse
 from usuarios.models import Cuenta
 from django.forms.models import model_to_dict
 import requests
+from unfold.admin import ModelAdmin
 
 admin.site.site_header = "Mercado Libre ESPASA DNogues"
 admin.site.site_title = "Meli Espasa"
@@ -65,19 +66,19 @@ def get_token(obj:Cuenta):
     
 # Register your models here.
 @admin.register(PubStats)
-class PubStatsAdmin(admin.ModelAdmin):
+class PubStatsAdmin(ModelAdmin):
     list_display = ('pub_id','views','clics_tel', 'ubicacion')
  
 
 
 @admin.register(Errores)
-class ErroresAdmin(admin.ModelAdmin):
+class ErroresAdmin(ModelAdmin):
     list_display = ('name','fecha','error')
     date_hierarchy = 'fecha'
     ordering = ('-fecha',)
 
 @admin.register(Publicacion)
-class PublicacionAdmin(admin.ModelAdmin):
+class PublicacionAdmin(ModelAdmin):
     list_display=('titulo_short','pub_id','precio','crm','pub_vs_crm','stock','creado','vistas','cont','ubicacion','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
     list_filter = ['cuenta','activa']
@@ -301,7 +302,7 @@ class PublicacionAdmin(admin.ModelAdmin):
     
                
 @admin.register(GrupoImagenes)
-class GrupoImagenesAdmin(admin.ModelAdmin):
+class GrupoImagenesAdmin(ModelAdmin):
     list_display = ('codigo','nombre','cantidad','cargar_imagenes')
 
     def cargar_imagenes(self,obj):
@@ -312,7 +313,7 @@ class GrupoImagenesAdmin(admin.ModelAdmin):
         return obj.imagenes.count()
 
 @admin.register(Portadas)
-class PortadasAdmin(admin.ModelAdmin):
+class PortadasAdmin(ModelAdmin):
     list_display = ('codigo','nombre','cantidad','cargar_imagenes')
 
     def cargar_imagenes(self,obj):
@@ -323,7 +324,7 @@ class PortadasAdmin(admin.ModelAdmin):
         return obj.imagenes.count()
 
 @admin.register(Modelo)
-class ModeloAdmin(admin.ModelAdmin):
+class ModeloAdmin(ModelAdmin):
     list_display = ('unidad','cantidad','precio','precio_crm','publicaciones','stock','cargar_portadas','cargar_imagenes','c_port','c_img','c_atrib','pub_to_copy')
     list_editable = ('precio','pub_to_copy','cantidad')
     search_fields = ['descripcion']
@@ -473,11 +474,11 @@ class ModeloAdmin(admin.ModelAdmin):
 
   
 @admin.register(Atributo)
-class AtributoAdmin(admin.ModelAdmin):
+class AtributoAdmin(ModelAdmin):
     list_display = ('nombre','id_att','value')
 
 @admin.register(GrupoAtributos)
-class GrupoAtributosAdmin(admin.ModelAdmin):
+class GrupoAtributosAdmin(ModelAdmin):
     list_display = ('nombre','pub_to_copy','cantidad')
     list_editable = ('pub_to_copy',)
     actions = ('copiar_atributos',)
@@ -508,7 +509,7 @@ class GrupoAtributosAdmin(admin.ModelAdmin):
         )
     
 @admin.register(MeliCon)
-class MeliConAdmin(admin.ModelAdmin):
+class MeliConAdmin(ModelAdmin):
     list_display = ('name',)
     actions = ('get_credenciales',)
     

@@ -1,18 +1,19 @@
 
 from django.contrib import admin
+from unfold.admin import ModelAdmin
 
 from .models import Lead, Estadisticas,CuitInfo
 
 # Register your models here.
 @admin.register(CuitInfo)
-class CuitInfoAdmin(admin.ModelAdmin):
+class CuitInfoAdmin(ModelAdmin):
     list_display = ['cuit','marca','modelo','tipo','fecha_ultimo_pat','provincia','cliente']
     search_fields = ['cuit','marca','modelo','tipo']
     date_hierarchy = 'fecha_ultimo_pat'
 
 
 @admin.register(Lead)
-class LeadAdmin(admin.ModelAdmin):
+class LeadAdmin(ModelAdmin):
     list_display = ['name','phone','email','item_id','cuenta','contactos','date','c_info','to_crm']
     search_fields = ['name', 'phone','email']
     list_filter = ['cuenta']
@@ -27,7 +28,7 @@ class LeadAdmin(admin.ModelAdmin):
             return '-'
 
 @admin.register(Estadisticas)
-class EstadisticasAdmin(admin.ModelAdmin):
+class EstadisticasAdmin(ModelAdmin):
     list_display = [
         'cuenta',
         "hoy",
