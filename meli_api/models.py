@@ -202,7 +202,7 @@ class Publicacion(models.Model):
     
     def save(self, *args, **kwargs):
         precio = convertir_precio(self)
-        self.precio = "$ {:,.0f}".format(precio).replace(",", ".")
+        self.precio = "${:,.0f}".format(precio).replace(",", ".")
         try:
             old = Publicacion.objects.get(pk=self.pk)
             if self.precio != old.precio:

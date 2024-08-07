@@ -307,7 +307,7 @@ class PublicacionAdmin(ModelAdmin):
             if obj.modelo.search_page != "":
                 pagina, ubicacion = PaginaPublicacion(obj.modelo.search_page, obj.pub_id).search_page()
                 try:
-                    obj.stats.ubicacion = f"Pag:{int(pagina)+1} | Ub:{ubicacion} | Check:{fecha}"
+                    obj.stats.ubicacion = f"{int(pagina)+1}|{ubicacion}|{fecha}"
                 except:
                     obj.stats.ubicacion = f"No Encontrada | Check: {fecha}"
                 obj.stats.save()

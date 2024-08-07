@@ -66,7 +66,7 @@ class PaginaPublicacion:
             except:
                 break
             page +=1
-        return None, None
+        return 0, 0
 
 if __name__ == '__main__':
     app = PaginaPublicacion('amarok trendline','MLA1866498994')
