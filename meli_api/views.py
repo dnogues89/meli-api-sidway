@@ -253,10 +253,10 @@ def search_page(request):
     for obj in unidades:
         if obj.modelo.search_page != "":
             pagina, ubicacion = PaginaPublicacion(obj.modelo.search_page, obj.pub_id).search_page()
-            if pagina != 0 and ubicacion != 0:
-                obj.stats.ubicacion = f"{int(pagina)+1}|{int(ubicacion)+1}|{fecha}"
-            else:
+            if pagina == 0 and ubicacion == 0:
                 obj.stats.ubicacion = f"N/A|{fecha}"
+            else:
+                obj.stats.ubicacion = f"{int(pagina)+1}|{int(ubicacion)+1}|{fecha}"
             obj.stats.save()
     return HttpResponse('OK')
     
