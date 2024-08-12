@@ -40,9 +40,6 @@ class PaginaPublicacion:
             id_pub = self.validate_info(url.split("MLA-")[1].split("-")[0])
             id_pub = f"MLA{id_pub}"
             self.posicion += 1
-            print(titulo)
-            print(precio)
-            print(id_pub)
             if self.publicacion == id_pub:
                 print('La encontre')
                 return True
