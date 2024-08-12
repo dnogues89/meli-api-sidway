@@ -249,7 +249,7 @@ async def activa(request):
 def search_page(request):
     from .meli_pos import PaginaPublicacion
     fecha = timezone.now().strftime("%d-%m")
-    unidades = models.Publicacion.all().filter(activa=True).exclude(banner=True)
+    unidades = models.Publicacion.objects.filter(activa=True).exclude(banner=True)
     for obj in unidades:
         if obj.modelo.search_page != "":
             pagina, ubicacion = PaginaPublicacion(obj.modelo.search_page, obj.pub_id).search_page()

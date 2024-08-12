@@ -28,6 +28,6 @@ urlpatterns = [
     path('eliminar/',views.eliminar_pubs, name='eliminar'),
     path('activa/',views.activa, name='activa'),
     path('republicar/', views.republicar, name='republicar'),
-    path('seatch_page/',views.search_page, name='search_page')
+    path('search_page/',views.search_page, name='search_page')
     
 ]
