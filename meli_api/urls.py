@@ -27,6 +27,7 @@ urlpatterns = [
     path('publicar/',views.publicar_v2, name='publicacionv2'),
     path('eliminar/',views.eliminar_pubs, name='eliminar'),
     path('activa/',views.activa, name='activa'),
-    path('republicar/', views.republicar, name='republicar')
+    path('republicar/', views.republicar, name='republicar'),
+    path('seatch_page/',views.search_page, name='search_page')
     
 ]
