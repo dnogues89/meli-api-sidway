@@ -69,6 +69,6 @@ class PaginaPublicacion:
         return 0, 0
 
 if __name__ == '__main__':
-    app = PaginaPublicacion('amarok trendline','MLA1866498994')
+    app = PaginaPublicacion('amarok trendline','MLA1842268854')
     app.search_page()
         
