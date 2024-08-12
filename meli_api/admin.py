@@ -314,7 +314,7 @@ class PublicacionAdmin(ModelAdmin):
                 else:
                     obj.stats.ubicacion = f"N/A|{fecha}"
                 obj.stats.save()
-                self.message_user(f'{pagina, ubicacion}')
+                self.message_user(request, f'{pagina, ubicacion}')
         
     
                
