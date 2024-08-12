@@ -308,6 +308,7 @@ class PublicacionAdmin(ModelAdmin):
         for obj in objetos:
             if obj.modelo.search_page != "":
                 pagina, ubicacion = PaginaPublicacion(obj.modelo.search_page, obj.pub_id).search_page()
+                print(pagina, ubicacion)
                 if pagina != 0 and ubicacion != 0:
                     obj.stats.ubicacion = f"{int(pagina)+1}|{int(ubicacion)+1}|{fecha}"
                 else:
