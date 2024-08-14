@@ -2,10 +2,13 @@ from django.contrib import admin
 from .models import Cuenta
 from meli_api.apicon import MeliAPI
 from meli_api.admin import resp_ok
+from unfold.admin import ModelAdmin
+
+
 
 # Register your models here.
 @admin.register(Cuenta)
-class CuentaAdmin(admin.ModelAdmin):
+class CuentaAdmin(ModelAdmin):
     list_display = ['name','user','user']
     actions = ('get_credenciales',)
 
