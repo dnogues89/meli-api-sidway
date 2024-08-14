@@ -26,7 +26,7 @@ class ArmarPublicacion():
           'source':f"https://meli.dnoguesdev.com.ar{imagen.pic.url}"
         })
       imagenes.append({
-          'source':f"https://meli.dnoguesdev.com.ar{portada_random.pic.url}"
+          'source':f"http://meli.dnoguesdev.com.ar/media/MiniApp_Images/institucional.jpeg"
         })
       return imagenes
 
