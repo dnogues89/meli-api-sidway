@@ -5,4 +5,4 @@ from unfold.admin import ModelAdmin
 # Register your models here.
 @admin.register(Image)
 class ImageAdmin(ModelAdmin):
-    fields =['model_code','model']
+    fields =['model_code','model','pic']
