@@ -248,6 +248,7 @@ class PublicacionAdmin(ModelAdmin):
                     self.message_user(request,f'Publicacion {obj.pub_id} actualizada a {precio}')
                     obj.sincronizado = True
                     obj.save()
+                #Descripciones
 
     @admin.action(description="Revisar si esta ACTIVA")
     def revisar_activa(self,request,objetos):
@@ -293,6 +294,23 @@ class PublicacionAdmin(ModelAdmin):
                 precio = 0
             obj.precio = convertir_precio2(precio)
             obj.save()
+            api = MeliAPI(obj.cuenta)
+            resp = api.consulta_pub(obj)
+            if resp_ok(resp, f'Consultando publicacion | {obj.pub_id}'):
+                resp = resp.json()
+                #Precio
+                if resp['price'] != convertir_precio(obj):
+                    precio = convertir_precio(obj)
+                    if precio == 0:
+                        self.message_user(request,f'Precio invalido {precio}', level='ERROR')
+                        break
+                    resp = api.actualizar_precio(obj.pub_id,str(precio))
+                    if resp_ok(resp,'Cambio Precio') == False:
+                        self.message_user(request,f'No se actualizo el precio {resp.text}', level='ERROR')
+                        break
+                    self.message_user(request,f'Publicacion {obj.pub_id} actualizada a {precio}')
+                    obj.sincronizado = True
+                    obj.save()
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)

@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 class PaginaPublicacion:
     def __init__(self,modelo,publicacion) -> None:
         self.modelo = modelo
-        self.url = f"https://listado.mercadolibre.com.ar/{self.modelo.replace(' ','-')}#D[A:{self.modelo.replace(' ','%20')}]"
+        self.url = f"https://autos.mercadolibre.com.ar/{self.modelo.replace(' ','-')}#D[A:{self.modelo.replace(' ','%20')}]"
         self.html = requests.get(self.url).text
         self.soup = BeautifulSoup(self.html, 'html.parser')
         self.productos = []
@@ -66,6 +66,6 @@ class PaginaPublicacion:
         return 0, 0
 
 if __name__ == '__main__':
-    app = PaginaPublicacion('amarok v6 comfortline','MLA1874026832')
+    app = PaginaPublicacion('Vento GLI','MAL1444662711')
     print(app.search_page())
         
