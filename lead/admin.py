@@ -3,7 +3,7 @@ from django.contrib import admin
 from unfold.admin import ModelAdmin
 
 from .models import Lead, Estadisticas,CuitInfo, Usado
-from siomaa_api import Sioma_API
+from .siomaa_api import Sioma_API
 
 # Register your models here.
 @admin.register(CuitInfo)
