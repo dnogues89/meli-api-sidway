@@ -7,6 +7,24 @@ from django.conf import settings
 
 # Create your models here.
 
+class Usado(models.Model):
+    compra = models.DateField()
+    marca = models.CharField(max_length=100)
+    modelo = models.CharField(max_length=100)
+    version = models.CharField(max_length=100)
+    anio = models.CharField(max_length=10)
+    cerokm = models.BooleanField()
+    venta = models.DateField(null=True, blank=True)
+    CHOICES = {
+        'Prenda':'Prenda',
+        'Cash':'Cash'
+    }
+    tipo_compra = models.CharField(max_length=100,choices=CHOICES)
+    tipo_acreedor = models.CharField(max_length=100, null=True,blank=True)
+    acreedor = models.CharField(max_length=100, null=True,blank=True)
+    
+    
+
 class CuitInfo(models.Model):
     cuit=models.CharField(max_length=50)
     marca=models.CharField(max_length=100)
@@ -15,6 +33,7 @@ class CuitInfo(models.Model):
     fecha_ultimo_pat=models.DateField()
     provincia=models.CharField(max_length=50)
     cliente=models.BooleanField(max_length=50)
+    usados = models.ManyToManyField(Usado, blank=True, null=True)
     
     
 class Lead(models.Model):

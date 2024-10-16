@@ -12,3 +12,4 @@ db.sqlite3
 */migrations/__pycache__
 /espasa_info/espasa_conn.py
 */media/
+siomaa_key.py
