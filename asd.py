@@ -1,5 +1,6 @@
+from datetime import datetime
 data = {}
-data['C0KM'] = 'Si'
-asd = "Prenda" if data['C0KM'] == 'Si' else 'Cash'
 
-print(asd)
+data['FechaOperacion'] = '2017-11-09T00:00:00'
+
+print()
