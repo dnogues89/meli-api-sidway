@@ -24,7 +24,13 @@ class Usado(models.Model):
     acreedor = models.CharField(max_length=100, null=True,blank=True)
     
     
-    
+class Cuit(models.Model):
+    nombre = models.CharField(max_length=100, null=True,blank=True)
+    localidad = models.CharField(max_length=100, null=True, blank=True)
+    dni = models.CharField(max_length=100, blank=True, null=True)
+    cuil = models.CharField(max_length=100, blank=True, null=True)
+    usados = models.ManyToManyField(Usado, null=True, blank=True)
+
 
 class CuitInfo(models.Model):
     cuit=models.CharField(max_length=50)
@@ -52,6 +58,7 @@ class Lead(models.Model):
     cuenta = models.ForeignKey(Cuenta, on_delete=models.SET_NULL, null=True)
     cuit = models.CharField(max_length=100,default=0)
     cuit_info = models.ForeignKey(CuitInfo, on_delete=models.SET_NULL, default=None, null=True)
+    siomaa_info = models.ForeignKey(Cuit, on_delete=models.SET_NULL, default =None, null=True)
     
     def save(self, *args, **kwargs):
         if self.cuit_info == None and self.cuit != 0:
