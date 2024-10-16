@@ -5,6 +5,8 @@ from unfold.admin import ModelAdmin
 from .models import Lead, Estadisticas,CuitInfo, Usado
 from .siomaa_api import Sioma_API
 
+from datetime import datetime
+
 # Register your models here.
 @admin.register(CuitInfo)
 class CuitInfoAdmin(ModelAdmin):
@@ -20,16 +22,16 @@ class CuitInfoAdmin(ModelAdmin):
             if siomaa:
                 for item in siomaa['HistoricoCompras']:
                     usado = Usado.objects.create(
-                        compra = siomaa['FechaOperacion'],
-                        marca = siomaa['Marca'],
-                        modelo = siomaa['Modelo'],
-                        version = siomaa['Version'],
-                        anio = siomaa['AnioModelo'],
-                        cerokm = True if siomaa['C0KM'] == 'Si' else False,
-                        venta = siomaa['FechaVenta'],
-                        tipo_compra = 'Prenda' if siomaa['TipoCompra'] == 'Prenda' else 'Cash',
-                        tipo_acreedor = siomaa['TipoAcreedor'],
-                        acreedor = siomaa['Acreedor']
+                        compra=datetime.strptime(siomaa['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if siomaa['FechaOperacion'] else None,
+                        marca=siomaa['Marca'],
+                        modelo=siomaa['Modelo'],
+                        version=siomaa['Version'],
+                        anio=siomaa['AnioModelo'],
+                        cerokm=True if siomaa['C0KM'] == 'Si' else False,
+                        venta=datetime.strptime(siomaa['FechaVenta'], '%Y-%m-%dT%H:%M:%S').date() if siomaa['FechaVenta'] else None,
+                        tipo_compra='Prenda' if siomaa['TipoCompra'] == 'Prenda' else 'Cash',
+                        tipo_acreedor=siomaa['TipoAcreedor'],
+                        acreedor=siomaa['Acreedor']
                     ).save()
                     obj.usados.add(usado)
                 
