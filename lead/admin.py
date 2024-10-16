@@ -11,7 +11,7 @@ class CuitInfoAdmin(ModelAdmin):
     list_display = ['cuit','marca','modelo','tipo','fecha_ultimo_pat','provincia','cliente']
     search_fields = ['cuit','marca','modelo','tipo']
     date_hierarchy = 'fecha_ultimo_pat'
-    actions = ('siomaa_api')
+    actions = ('siomaa_api',)
     
     @admin.action(description="Api SIOMAA")
     def siomaa_api(self,request,objetos):
