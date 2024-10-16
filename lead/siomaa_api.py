@@ -1,5 +1,5 @@
 import requests
-from siomaa_key import SIOMAA_USER, SIOMAA_PASSWORD, SIOMA_ENDPOING
+from .siomaa_key import SIOMAA_USER, SIOMAA_PASSWORD, SIOMA_ENDPOING
 import json
 
 class Sioma_API():
