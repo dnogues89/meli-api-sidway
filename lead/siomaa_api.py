@@ -20,6 +20,12 @@ class Sioma_API():
         
         
     def get_data(self):
-        return requests.post(SIOMA_ENDPOING,data= json.dumps(self.payload),headers={"Content-Type": "application/json"})
+        try:
+            return requests.post(SIOMA_ENDPOING,data= json.dumps(self.payload),headers={"Content-Type": "application/json"}).json()[0]
+        except:
+            return None
     
-    
+
+api = Sioma_API(23342509509).get_data()
+if api:
+    print(api["HistoricoCompras"])

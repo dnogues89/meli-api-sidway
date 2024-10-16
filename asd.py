@@ -1,3 +1,5 @@
-phone = "+54 11 30598946"
-phone = "".join(phone.split(' ')[1:])
-print(phone)
+data = {}
+data['C0KM'] = 'Si'
+asd = "Prenda" if data['C0KM'] == 'Si' else 'Cash'
+
+print(asd)

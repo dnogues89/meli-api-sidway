@@ -24,6 +24,7 @@ class Usado(models.Model):
     acreedor = models.CharField(max_length=100, null=True,blank=True)
     
     
+    
 
 class CuitInfo(models.Model):
     cuit=models.CharField(max_length=50)
