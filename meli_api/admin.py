@@ -103,8 +103,9 @@ class PublicacionAdmin(ModelAdmin):
 
     def stock_pub(self,obj):
         try:
+            modelo = obj.modelo
             cuenta = obj.cuenta
-            return f'{obj.modelo.espasa_db.stock} | {Publicacion.objects.filter(modelo = obj, cuenta = cuenta).count()}'
+            return f'{obj.modelo.espasa_db.stock} | {Publicacion.objects.filter(modelo = modelo, cuenta = cuenta).count()}'
         except:
             return '-'
 
