@@ -101,6 +101,13 @@ class PublicacionAdmin(ModelAdmin):
     ordering = ['sincronizado','titulo']
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
 
+    def stock_pub(self,obj):
+        try:
+            cuenta = obj.cuenta
+            return f'{obj.modelo.espasa_db.stock} | {Publicacion.objects.filter(modelo = obj, cuenta = cuenta).count()}'
+        except:
+            return '-'
+
     def pub_ubicacion (self,obj):
         try:
             return obj.stats.ubicacion
