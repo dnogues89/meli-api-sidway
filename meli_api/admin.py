@@ -94,7 +94,7 @@ class ErroresAdmin(ModelAdmin):
 
 @admin.register(Publicacion)
 class PublicacionAdmin(ModelAdmin):
-    list_display=('titulo_short','pub_id','precio','crm','pub_vs_crm','stock','creado','vistas','cont','pub_ubicacion','cuenta','activa','ver','sincronizado','banner')
+    list_display=('titulo_short','pub_id','precio','crm','pub_vs_crm','stock_pub','creado','vistas','cont','pub_ubicacion','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
     list_filter = ['cuenta','activa']
     actions = ('pausar','eliminar','sinconizar_meli','actualizar_precios','revisar_activa','eliminar_v2','revisar_activa_v2','pagina')
