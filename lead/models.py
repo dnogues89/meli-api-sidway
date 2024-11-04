@@ -72,7 +72,7 @@ class Lead(models.Model):
                 cuit_info.save()
                 self.cuit_info = cuit_info
                 settings.USE_TZ = True
-    
+      
         super().save(*args, **kwargs)
     
 class Estadisticas(models.Model):

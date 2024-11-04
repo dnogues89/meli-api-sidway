@@ -2,9 +2,13 @@ from django.shortcuts import render
 from .models import Lead
 from meli_api.apicon import MeliAPI
 from meli_api import models
-from .models import Lead
+from .models import Lead, Usado, Cuit
 from django.http import HttpResponse
 from .salesforce_lead import Salesfroce, convertir_numero
+
+from datetime import datetime
+
+from .siomaa_api import Sioma_API
 
 from usuarios.models import Cuenta
 
@@ -128,6 +132,40 @@ def get_leads(request):
                         Salesfroce(item, origen=cuenta.salesforce_group).send_data()
                         item.to_crm = True
                         item.save()
+                    
+                    if item.cuit:
+                        try:
+                            obj = Cuit.objects.get(cuil = item.cuit)
+                        except:
+                            obj = Cuit.objects.create(cuil = item.cuit)
+                            obj.save()
+                            
+                        siomaa = Sioma_API(item.cuil).get_data()
+                        if siomaa:
+                            if obj.nombre == None:
+                                obj.nombre = siomaa['Nombre']
+                                obj.localidad = siomaa['Localidad']
+                                obj.dni = siomaa['DNIConsultado']
+                                obj.save()
+                            for i in siomaa['HistoricoCompras']:
+                                try:
+                                    usado = Usado.objects.get(id_sioma = i['IdOperacion']) 
+                                except:
+                                    usado = Usado.objects.create(
+                                        id_sioma = i['IdOperacion'],
+                                        compra=datetime.strptime(i['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaOperacion'] else None,
+                                        marca=i['Marca'],
+                                        modelo=i['Modelo'],
+                                        version=i['Version'],
+                                        anio=i['AnioModelo'],
+                                        cerokm=True if i['C0KM'] == 'Si' else False,
+                                        venta=datetime.strptime(i['FechaVenta'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaVenta'] else None,
+                                        tipo_compra='Prenda' if i['TipoCompra'] == 'Prenda' else 'Cash',
+                                        tipo_acreedor=i['TipoAcreedor'],
+                                        acreedor=i['Acreedor']
+                                    ).save()
+                                usado = Usado.objects.get(id_sioma = i['IdOperacion']) 
+                                obj.usados.add(usado)
             
                 
     return HttpResponse(f'{resp.json()}')
