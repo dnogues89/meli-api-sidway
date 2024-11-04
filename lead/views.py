@@ -29,7 +29,7 @@ def cuit_info(request,telefono):
         lead = Lead.objects.filter(phone=telefono)[0]
         usados = lead.siomaa_info.usados.filter(venta = None)
         posesion = "Posesion: "
-        if usados.count() < 3:
+        if usados.count() <= 3:
             for i in usados:
                 posesion = f"{posesion} {i.marca} {i.modelo} {i.version} {i.anio} | "
         cuit_info = f"Cant: {lead.siomaa_info.usados.count()} | 0Km comprados: {lead.siomaa_info.usados.filter(cerokm=True).count()} | Prendas: {lead.siomaa_info.usados.filter(tipo_compra='Prenda').count()} | {posesion}"
@@ -106,7 +106,7 @@ def get_leads(request):
                     
                 try:
                     item =Lead.objects.get(lead_id = lead['id'])
-                    if item.contactos != len(lead['leads']) or item.date != lead['leads'][0]['created_at']:
+                    if item.contactos != len(lead['leads']):
                         item.origen = " | ".join([x['channel'] for x in lead['leads']])
                         item.contactos = len(lead['leads'])
                         item.phone = phone
@@ -140,6 +140,7 @@ def get_leads(request):
                     if lead['leads'][0]['channel'] == 'view':
                         item.to_crm =True
                     item.save()
+                    
                 if item.to_crm == False:
                     Salesfroce(item, origen=cuenta.salesforce_group).send_data()
                     item.to_crm = True
