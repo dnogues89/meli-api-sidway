@@ -9,31 +9,37 @@ from datetime import datetime
 
 # Register your models here.
 
-# @admin.register(Cuit)
-# class CuitAdmin(ModelAdmin):
-#     list_display = ['nombre','localidad','dni','cuil','usados']
-#     search_fields = ['nombre','dni','cuil']
-#     actions = ('siomaa_api',)
+@admin.register(Usado)
+class UsadoAdmin(ModelAdmin):
+    list_display = ['marca','modelo','version','anio']
 
-#     @admin.action(description="Api SIOMAA")
-#     def siomaa_api(self,request,objetos):
-#         for obj in objetos:
-#             siomaa = Sioma_API(obj.cuit).get_data()
-#             if siomaa:
-#                 for item in siomaa['HistoricoCompras']:
-#                     usado = Usado.objects.create(
-#                         compra=datetime.strptime(item['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaOperacion'] else None,
-#                         marca=item['Marca'],
-#                         modelo=item['Modelo'],
-#                         version=item['Version'],
-#                         anio=item['AnioModelo'],
-#                         cerokm=True if item['C0KM'] == 'Si' else False,
-#                         venta=datetime.strptime(item['FechaVenta'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaVenta'] else None,
-#                         tipo_compra='Prenda' if item['TipoCompra'] == 'Prenda' else 'Cash',
-#                         tipo_acreedor=item['TipoAcreedor'],
-#                         acreedor=item['Acreedor']
-#                     ).save()
-#                     obj.usados.add(usado)
+
+@admin.register(Cuit)
+class CuitAdmin(ModelAdmin):
+    list_display = ['nombre','localidad','dni','cuil']
+    search_fields = ['nombre','dni','cuil']
+    actions = ('siomaa_api',)
+
+    @admin.action(description="Api SIOMAA")
+    def siomaa_api(self,request,objetos):
+        for obj in objetos:
+            siomaa = Sioma_API(obj.cuit).get_data()
+            if siomaa:
+                for item in siomaa['HistoricoCompras']:
+                    usado = Usado.objects.create(
+                        id_siomaa = item['IdOperacion'],
+                        compra=datetime.strptime(item['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaOperacion'] else None,
+                        marca=item['Marca'],
+                        modelo=item['Modelo'],
+                        version=item['Version'],
+                        anio=item['AnioModelo'],
+                        cerokm=True if item['C0KM'] == 'Si' else False,
+                        venta=datetime.strptime(item['FechaVenta'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaVenta'] else None,
+                        tipo_compra='Prenda' if item['TipoCompra'] == 'Prenda' else 'Cash',
+                        tipo_acreedor=item['TipoAcreedor'],
+                        acreedor=item['Acreedor']
+                    ).save()
+                    obj.usados.add(usado)
 
 
 @admin.register(CuitInfo)
@@ -50,6 +56,7 @@ class CuitInfoAdmin(ModelAdmin):
             if siomaa:
                 for item in siomaa['HistoricoCompras']:
                     usado = Usado.objects.create(
+                        id_siomaa = item['IdOperacion'],
                         compra=datetime.strptime(item['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaOperacion'] else None,
                         marca=item['Marca'],
                         modelo=item['Modelo'],
