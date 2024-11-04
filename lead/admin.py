@@ -18,23 +18,26 @@ class CuitAdmin(ModelAdmin):
     @admin.action(description="Api SIOMAA")
     def siomaa_api(self,request,objetos):
         for obj in objetos:
-            siomaa = Sioma_API(obj.cuit).get_data()
+            siomaa = Sioma_API(obj.cuil).get_data()
             if siomaa:
                 for item in siomaa['HistoricoCompras']:
-                    usado = Usado.objects.create(
-                        id_sioma = item['IdOperacion'],
-                        compra=datetime.strptime(item['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaOperacion'] else None,
-                        marca=item['Marca'],
-                        modelo=item['Modelo'],
-                        version=item['Version'],
-                        anio=item['AnioModelo'],
-                        cerokm=True if item['C0KM'] == 'Si' else False,
-                        venta=datetime.strptime(item['FechaVenta'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaVenta'] else None,
-                        tipo_compra='Prenda' if item['TipoCompra'] == 'Prenda' else 'Cash',
-                        tipo_acreedor=item['TipoAcreedor'],
-                        acreedor=item['Acreedor']
-                    ).save()
-                    obj.usados.add(usado)
+                    try:
+                        usado.objects.get(id_sioma = item['IdOperacion'])
+                    except:
+                        usado = Usado.objects.create(
+                            id_sioma = item['IdOperacion'],
+                            compra=datetime.strptime(item['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaOperacion'] else None,
+                            marca=item['Marca'],
+                            modelo=item['Modelo'],
+                            version=item['Version'],
+                            anio=item['AnioModelo'],
+                            cerokm=True if item['C0KM'] == 'Si' else False,
+                            venta=datetime.strptime(item['FechaVenta'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaVenta'] else None,
+                            tipo_compra='Prenda' if item['TipoCompra'] == 'Prenda' else 'Cash',
+                            tipo_acreedor=item['TipoAcreedor'],
+                            acreedor=item['Acreedor']
+                        ).save()
+                        obj.usados.add(usado)
 
 
 @admin.register(CuitInfo)
