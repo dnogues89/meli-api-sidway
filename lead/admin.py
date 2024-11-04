@@ -22,7 +22,7 @@ class CuitAdmin(ModelAdmin):
             if siomaa:
                 for item in siomaa['HistoricoCompras']:
                     usado = Usado.objects.create(
-                        id_siomaa = item['IdOperacion'],
+                        id_sioma = item['IdOperacion'],
                         compra=datetime.strptime(item['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaOperacion'] else None,
                         marca=item['Marca'],
                         modelo=item['Modelo'],
@@ -51,7 +51,7 @@ class CuitInfoAdmin(ModelAdmin):
             if siomaa:
                 for item in siomaa['HistoricoCompras']:
                     usado = Usado.objects.create(
-                        id_siomaa = item['IdOperacion'],
+                        id_sioma = item['IdOperacion'],
                         compra=datetime.strptime(item['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaOperacion'] else None,
                         marca=item['Marca'],
                         modelo=item['Modelo'],
