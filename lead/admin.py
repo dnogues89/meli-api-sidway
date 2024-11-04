@@ -37,7 +37,8 @@ class CuitAdmin(ModelAdmin):
                             tipo_acreedor=item['TipoAcreedor'],
                             acreedor=item['Acreedor']
                         ).save()
-                        obj.usados.add(usado)
+                    usado.objects.get(id_sioma = item['IdOperacion']) 
+                    obj.usados.add(usado)
 
 
 @admin.register(CuitInfo)
