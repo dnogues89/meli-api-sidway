@@ -113,7 +113,7 @@ def get_leads(request):
                         item.origen = " | ".join([x['channel'] for x in lead['leads']])
                         item.contactos = len(lead['leads'])
                         item.phone = phone
-                        if item.date != created_at:
+                        if item_date != created_at:
                             item.date = created_at
                             item.to_crm = False
                         if lead['leads'][0]['channel'] == 'whatsapp':
