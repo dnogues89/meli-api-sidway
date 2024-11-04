@@ -128,48 +128,48 @@ def get_leads(request):
                     if lead['leads'][0]['channel'] == 'view':
                         item.to_crm =True
                     item.save()
-                    if item.to_crm == False:
-                        Salesfroce(item, origen=cuenta.salesforce_group).send_data()
-                        item.to_crm = True
-                        item.save()
-                    
-                    #NUEVO
-                    if item.cuit:
-                        try:
-                            obj = Cuit.objects.get(cuil = item.cuit)
-                        except:
-                            obj = Cuit.objects.create(cuil = item.cuit)
+                if item.to_crm == False:
+                    Salesfroce(item, origen=cuenta.salesforce_group).send_data()
+                    item.to_crm = True
+                    item.save()
+                
+                #NUEVO
+                if item.cuit:
+                    try:
+                        obj = Cuit.objects.get(cuil = item.cuit)
+                    except:
+                        obj = Cuit.objects.create(cuil = item.cuit)
+                        obj.save()
+                        
+                    obj = Cuit.objects.get(cuil = item.cuit)   
+                    siomaa = Sioma_API(obj.cuil).get_data()
+                    if siomaa:
+                        if obj.nombre == None:
+                            obj.nombre = siomaa['Nombre']
+                            obj.localidad = siomaa['Localidad']
+                            obj.dni = siomaa['DNIConsultado']
                             obj.save()
-                            
-                        obj = Cuit.objects.get(cuil = item.cuit)   
-                        siomaa = Sioma_API(obj.cuil).get_data()
-                        if siomaa:
-                            if obj.nombre == None:
-                                obj.nombre = siomaa['Nombre']
-                                obj.localidad = siomaa['Localidad']
-                                obj.dni = siomaa['DNIConsultado']
-                                obj.save()
-                            for i in siomaa['HistoricoCompras']:
-                                try:
-                                    usado = Usado.objects.get(id_sioma = i['IdOperacion']) 
-                                except:
-                                    usado = Usado.objects.create(
-                                        id_sioma = i['IdOperacion'],
-                                        compra=datetime.strptime(i['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaOperacion'] else None,
-                                        marca=i['Marca'],
-                                        modelo=i['Modelo'],
-                                        version=i['Version'],
-                                        anio=i['AnioModelo'],
-                                        cerokm=True if i['C0KM'] == 'Si' else False,
-                                        venta=datetime.strptime(i['FechaVenta'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaVenta'] else None,
-                                        tipo_compra='Prenda' if i['TipoCompra'] == 'Prenda' else 'Cash',
-                                        tipo_acreedor=i['TipoAcreedor'],
-                                        acreedor=i['Acreedor']
-                                    ).save()
+                        for i in siomaa['HistoricoCompras']:
+                            try:
                                 usado = Usado.objects.get(id_sioma = i['IdOperacion']) 
-                                obj.usados.add(usado)
-                                item.siomaa_info = obj
-                                item.save()
+                            except:
+                                usado = Usado.objects.create(
+                                    id_sioma = i['IdOperacion'],
+                                    compra=datetime.strptime(i['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaOperacion'] else None,
+                                    marca=i['Marca'],
+                                    modelo=i['Modelo'],
+                                    version=i['Version'],
+                                    anio=i['AnioModelo'],
+                                    cerokm=True if i['C0KM'] == 'Si' else False,
+                                    venta=datetime.strptime(i['FechaVenta'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaVenta'] else None,
+                                    tipo_compra='Prenda' if i['TipoCompra'] == 'Prenda' else 'Cash',
+                                    tipo_acreedor=i['TipoAcreedor'],
+                                    acreedor=i['Acreedor']
+                                ).save()
+                            usado = Usado.objects.get(id_sioma = i['IdOperacion']) 
+                            obj.usados.add(usado)
+                            item.siomaa_info = obj
+                            item.save()
                                 
             
                 
