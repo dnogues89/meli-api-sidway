@@ -141,7 +141,7 @@ def get_leads(request):
                             obj = Cuit.objects.create(cuil = item.cuit)
                             obj.save()
                             
-                        siomaa = Sioma_API(item.cuil).get_data()
+                        siomaa = Sioma_API(obj.cuil).get_data()
                         if siomaa:
                             if obj.nombre == None:
                                 obj.nombre = siomaa['Nombre']
