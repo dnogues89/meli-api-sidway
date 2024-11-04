@@ -8,7 +8,7 @@ from django.conf import settings
 # Create your models here.
 
 class Usado(models.Model):
-    id_sioma = models.CharField(max_length=100, unique=True)
+    id_sioma = models.CharField(max_length=100)
     compra = models.DateField()
     marca = models.CharField(max_length=100)
     modelo = models.CharField(max_length=100)
@@ -30,7 +30,7 @@ class Cuit(models.Model):
     localidad = models.CharField(max_length=100, null=True, blank=True)
     dni = models.CharField(max_length=100, blank=True, null=True)
     cuil = models.CharField(max_length=100, blank=True, null=True)
-    usados = models.ManyToManyField(Usado, null=True, blank=True)
+    usados = models.ManyToManyField(Usado, blank=True)
 
 
 class CuitInfo(models.Model):
@@ -41,7 +41,7 @@ class CuitInfo(models.Model):
     fecha_ultimo_pat=models.DateField()
     provincia=models.CharField(max_length=50)
     cliente=models.BooleanField(max_length=50)
-    usados = models.ManyToManyField(Usado, blank=True, null=True)
+    usados = models.ManyToManyField(Usado, blank=True)
     
     
 class Lead(models.Model):
