@@ -94,7 +94,7 @@ def get_leads(request):
                     
                 try:
                     item =Lead.objects.get(lead_id = lead['id'])
-                    if item.contactos != len(lead['leads']):
+                    if item.contactos != len(lead['leads']) or item.date != lead['leads'][0]['created_at']:
                         item.origen = " | ".join([x['channel'] for x in lead['leads']])
                         item.contactos = len(lead['leads'])
                         item.phone = phone
