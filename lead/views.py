@@ -17,10 +17,22 @@ from datetime import timedelta
 
 from espasa_info.espasa_conn import EspasaDataBase
 
+# def cuit_info(request,telefono):
+#     try:
+#         lead = Lead.objects.filter(phone=telefono)[0]
+#         cuit_info = f"Usado: {lead.cuit_info.marca} {lead.cuit_info.modelo} | Pat: {lead.cuit_info.fecha_ultimo_pat.strftime('%m/%y')} | Cliente: {lead.cuit_info.cliente}"
+#         return HttpResponse(cuit_info)
+#     except:
+#         return HttpResponse('None')
 def cuit_info(request,telefono):
     try:
         lead = Lead.objects.filter(phone=telefono)[0]
-        cuit_info = f"Usado: {lead.cuit_info.marca} {lead.cuit_info.modelo} | Pat: {lead.cuit_info.fecha_ultimo_pat.strftime('%m/%y')} | Cliente: {lead.cuit_info.cliente}"
+        usados = lead.siomaa_info.usados.filter(venta = None)
+        posesion = "Posesion: "
+        if usados.count() < 3:
+            for i in usados:
+                posesion = f"{posesion} {i.marca} {i.modelo} {i.version} {i.anio} | "
+        cuit_info = f"Cant: {lead.siomaa_info.usados.count()} | 0Km comprados: {lead.siomaa_info.usados.filter(cerokm=True).count()} | Prendas: {lead.siomaa_info.usados.filter(tipo_compra='Prenda').count()} | {posesion}"
         return HttpResponse(cuit_info)
     except:
         return HttpResponse('None')
