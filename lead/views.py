@@ -141,6 +141,7 @@ def get_leads(request):
                             obj = Cuit.objects.create(cuil = item.cuit)
                             obj.save()
                             
+                        obj = Cuit.objects.get(cuil = item.cuit)   
                         siomaa = Sioma_API(obj.cuil).get_data()
                         if siomaa:
                             if obj.nombre == None:
@@ -167,6 +168,7 @@ def get_leads(request):
                                     ).save()
                                 usado = Usado.objects.get(id_sioma = i['IdOperacion']) 
                                 obj.usados.add(usado)
+                                
             
                 
     return HttpResponse(f'{resp.json()}')
