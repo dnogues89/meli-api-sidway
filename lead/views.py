@@ -155,13 +155,13 @@ def get_leads(request):
                             except:
                                 usado = Usado.objects.create(
                                     id_sioma = i['IdOperacion'],
-                                    compra=datetime.strptime(i['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaOperacion'] else None,
+                                    compra=datetime.strptime(i['FechaOperacion'], '%Y-%m-%dT%H:%M:%S').date() if i['FechaOperacion'] else None,
                                     marca=i['Marca'],
                                     modelo=i['Modelo'],
                                     version=i['Version'],
                                     anio=i['AnioModelo'],
                                     cerokm=True if i['C0KM'] == 'Si' else False,
-                                    venta=datetime.strptime(i['FechaVenta'], '%Y-%m-%dT%H:%M:%S').date() if item['FechaVenta'] else None,
+                                    venta=datetime.strptime(i['FechaVenta'], '%Y-%m-%dT%H:%M:%S').date() if i['FechaVenta'] else None,
                                     tipo_compra='Prenda' if i['TipoCompra'] == 'Prenda' else 'Cash',
                                     tipo_acreedor=i['TipoAcreedor'],
                                     acreedor=i['Acreedor']
