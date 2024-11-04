@@ -168,6 +168,8 @@ def get_leads(request):
                                     ).save()
                                 usado = Usado.objects.get(id_sioma = i['IdOperacion']) 
                                 obj.usados.add(usado)
+                                item.siomaa_info = obj
+                                item.save()
                                 
             
                 
