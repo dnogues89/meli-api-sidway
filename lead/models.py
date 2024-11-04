@@ -8,7 +8,7 @@ from django.conf import settings
 # Create your models here.
 
 class Usado(models.Model):
-    id_sioma = models.CharField(max_length=100)
+    id_sioma = models.CharField(max_length=100, null=True, blank=True)
     compra = models.DateField()
     marca = models.CharField(max_length=100)
     modelo = models.CharField(max_length=100)
