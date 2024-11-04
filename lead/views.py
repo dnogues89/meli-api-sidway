@@ -133,6 +133,7 @@ def get_leads(request):
                         item.to_crm = True
                         item.save()
                     
+                    #NUEVO
                     if item.cuit:
                         try:
                             obj = Cuit.objects.get(cuil = item.cuit)
