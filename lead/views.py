@@ -113,6 +113,7 @@ def get_leads(request):
                         item.origen = " | ".join([x['channel'] for x in lead['leads']])
                         item.contactos = len(lead['leads'])
                         item.phone = phone
+                        item.to_crm = True
                         # if item.date != created_at:
                         #     item.date = created_at
                         #     item.to_crm = False
