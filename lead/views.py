@@ -106,14 +106,16 @@ def get_leads(request):
                     
                 try:
                     item =Lead.objects.get(lead_id = lead['id'])
+                    created_at = datetime.fromisoformat(lead['leads'][0]['created_at'].replace("Z", "+00:00"))
+                    item_date = item.date if item.date.tzinfo else item.date.replace(tzinfo=timezone.utc)
+                    
                     if item.contactos != len(lead['leads']):
                         item.origen = " | ".join([x['channel'] for x in lead['leads']])
                         item.contactos = len(lead['leads'])
                         item.phone = phone
-                        item.to_crm = True
-                        # if item.date != created_at:
-                        #     item.date = created_at
-                        #     item.to_crm = False
+                        if item.date != created_at:
+                            item.date = created_at
+                            item.to_crm = False
                         if lead['leads'][0]['channel'] == 'whatsapp':
                             item.to_crm =True
                         if lead['leads'][0]['channel'] == 'view':
