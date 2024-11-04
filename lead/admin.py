@@ -87,7 +87,6 @@ class LeadAdmin(ModelAdmin):
     list_filter = ['cuenta']
     ordering = ['-date']
     date_hierarchy = 'date'
-    list_per_page = 500
     
     def c_info(self, obj):
         try:
