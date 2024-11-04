@@ -22,7 +22,7 @@ class CuitAdmin(ModelAdmin):
             if siomaa:
                 for item in siomaa['HistoricoCompras']:
                     try:
-                        usado.objects.get(id_sioma = item['IdOperacion'])
+                        usado = Usado.objects.get(id_sioma = item['IdOperacion']) 
                     except:
                         usado = Usado.objects.create(
                             id_sioma = item['IdOperacion'],
@@ -37,7 +37,7 @@ class CuitAdmin(ModelAdmin):
                             tipo_acreedor=item['TipoAcreedor'],
                             acreedor=item['Acreedor']
                         ).save()
-                    usado.objects.get(id_sioma = item['IdOperacion']) 
+                    usado = Usado.objects.get(id_sioma = item['IdOperacion']) 
                     obj.usados.add(usado)
 
 
