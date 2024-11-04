@@ -9,11 +9,6 @@ from datetime import datetime
 
 # Register your models here.
 
-@admin.register(Usado)
-class UsadoAdmin(ModelAdmin):
-    list_display = ['marca','modelo','version','anio']
-
-
 @admin.register(Cuit)
 class CuitAdmin(ModelAdmin):
     list_display = ['nombre','localidad','dni','cuil']
