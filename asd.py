@@ -1,6 +1,5 @@
-from datetime import datetime
-data = {}
 
-data['FechaOperacion'] = '2017-11-09T00:00:00'
+asd = [1]
 
-print()
+for i in asd[0:3]:
+    print(i)

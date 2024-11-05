@@ -28,11 +28,10 @@ def cuit_info(request,telefono):
     try:
         lead = Lead.objects.filter(phone=telefono)[0]
         usados = lead.siomaa_info.usados.filter(venta = None)
-        posesion = "Posesion: "
-        if usados.count() <= 3:
-            for i in usados:
-                posesion = f"{posesion} {i.marca} {i.modelo} {i.version} {i.anio} | "
-        cuit_info = f"Cant: {lead.siomaa_info.usados.count()} | 0Km comprados: {lead.siomaa_info.usados.filter(cerokm=True).count()} | Prendas: {lead.siomaa_info.usados.filter(tipo_compra='Prenda').count()} | {posesion}"
+        posesion = f"Posesion: {usados.count()}"
+        for i in usados[0:3]:
+            posesion = f"{posesion} {i.marca} {i.modelo} {i.version} {i.anio} | "
+        cuit_info = f"Op Totales: {lead.siomaa_info.usados.count()} | 0Km: {lead.siomaa_info.usados.filter(cerokm=True).count()} | Prendas: {lead.siomaa_info.usados.filter(tipo_compra='Prenda').count()} | {posesion}"
         return HttpResponse(cuit_info)
     except:
         return HttpResponse('None')
