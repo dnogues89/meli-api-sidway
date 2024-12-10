@@ -430,7 +430,10 @@ class ModeloAdmin(ModelAdmin):
             return ''
     
     def publicaciones(self,obj):
-        return Publicacion.objects.filter(modelo = obj, cuenta = self.cuenta).count()
+        try:
+            return Publicacion.objects.filter(modelo = obj, cuenta = self.cuenta).count()
+        except:
+            return Publicacion.objects.filter(modelo = obj).count()
     publicaciones.short_description = 'pubs'
 
     @admin.action(description="Actualizar Precio")
