@@ -87,13 +87,3 @@ class ArmarPublicacion():
 
         
         return json
-
-
-class Descripciones():
-  def __init__(self) -> None:
-    self.get_descripcion()
-    
-  def get_descripcion(self):
-    desc = self.publicacion_config.descripcion
-    
-    return desc + str('.'*random.randint(1,9))

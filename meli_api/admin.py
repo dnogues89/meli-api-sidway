@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import *
-from .publicaciones import ArmarPublicacion, Descripciones
+from .publicaciones import ArmarPublicacion
 from .apicon import MeliAPI
 from django.utils.html import format_html
 from django.utils import timezone
@@ -462,11 +462,11 @@ class ModeloAdmin(ModelAdmin):
                         stats = PubStats.objects.create(pub_id = resp['id'])
                         stats.save()
                         pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = obj.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=obj, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
-                        desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
+                        desc = api.cambiar_desc(resp['id'] , cuenta.publicacion_config.descripcion)
                         if resp_ok(desc,f"Cambiando desc | {resp['id']}"):
                             self.message_user(
                                 request,
-                                f"{Descripciones().get_descripcion()} | Publicado {resp['permalink']}"
+                                f"{cuenta.publicacion_config.descripcion} | Publicado {resp['permalink']}"
                             )
                         else:
                             self.message_user(request,f'{str(resp.text)}',level='ERROR')
