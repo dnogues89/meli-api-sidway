@@ -33,7 +33,7 @@ class ArmarPublicacion():
 
     def pub(self):    
         json = {
-        "title": f'{self.publicacion_config.marca} {self.publicacion_config.descripcion}',
+        "title": f'{self.publicacion_config.marca} {self.modelo.descripcion}',
         "description": "Okm publicacion de prueba",
         "channels": 
         [
