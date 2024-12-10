@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Cuenta
+from .models import Cuenta, PublicacionConfig
 from meli_api.apicon import MeliAPI
 from meli_api.admin import resp_ok
 from unfold.admin import ModelAdmin
@@ -7,6 +7,10 @@ from unfold.admin import ModelAdmin
 
 
 # Register your models here.
+@admin.register(PublicacionConfig)
+class PublicacionConfigAdmin(ModelAdmin):
+    list_display = ['name','descripcion','telefono_sucursal','email_sucursal','whatsapp']
+
 @admin.register(Cuenta)
 class CuentaAdmin(ModelAdmin):
     list_display = ['name','user','user']

@@ -182,7 +182,7 @@ class PubStats(models.Model):
 class Publicacion(models.Model):
     pub_id = models.CharField(max_length = 100)
     titulo = models.CharField(max_length = 100)
-    desc = models.TextField()
+    desc = models.TextField(null=True, blank=True)
     precio = models.CharField(max_length=50)
     categoria = models.CharField(max_length = 30)
     f_creado = models.DateTimeField(auto_now_add=True)
