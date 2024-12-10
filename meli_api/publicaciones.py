@@ -1,9 +1,9 @@
 import random
 
 class ArmarPublicacion():
-    def __init__(self, modelo) -> None:
+    def __init__(self, modelo, cuenta) -> None:
       self.modelo = modelo
-      self.publicacion_config = modelo.cuenta.publicacion_config
+      self.publicacion_config = cuenta.publicacion_config
       self.precio = str(self.modelo.precio)[:-1] + str(random.randint(1,9))
     
     def atributes(self):

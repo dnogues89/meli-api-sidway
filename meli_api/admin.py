@@ -456,7 +456,7 @@ class ModeloAdmin(ModelAdmin):
         else:
             for obj in objetos:
                 for i in range(0,obj.cantidad):
-                    resp = api.publicar_auto(ArmarPublicacion(obj).pub())
+                    resp = api.publicar_auto(ArmarPublicacion(obj, cuenta).pub())
                     if resp_ok(resp,'Publicar Auto'):
                         resp = resp.json()
                         stats = PubStats.objects.create(pub_id = resp['id'])
