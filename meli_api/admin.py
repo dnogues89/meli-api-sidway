@@ -515,9 +515,12 @@ class ModeloAdmin(ModelAdmin):
 
     #Agrego self cuenta cuanto logueo
     def changelist_view(self, request, extra_context=None):
-        self.request = request
-        self.cuenta = Cuenta.objects.get(user = request.user)
-        return super().changelist_view(request, extra_context=extra_context) 
+        try:
+            self.request = request
+            self.cuenta = Cuenta.objects.get(user = request.user)
+            return super().changelist_view(request, extra_context=extra_context) 
+        except:
+            return super().changelist_view(request, extra_context=extra_context)
 
   
 @admin.register(Atributo)
