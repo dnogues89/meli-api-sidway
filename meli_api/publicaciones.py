@@ -3,6 +3,7 @@ import random
 class ArmarPublicacion():
     def __init__(self, modelo) -> None:
       self.modelo = modelo
+      self.publicacion_config = modelo.cuenta.publicacion_config
       self.precio = str(self.modelo.precio)[:-1] + str(random.randint(1,9))
     
     def atributes(self):
@@ -32,7 +33,7 @@ class ArmarPublicacion():
 
     def pub(self):    
         json = {
-        "title": f'Volkswagen {self.modelo.descripcion}',
+        "title": f'{self.publicacion_config.marca} {self.publicacion_config.descripcion}',
         "description": "Okm publicacion de prueba",
         "channels": 
         [
@@ -73,11 +74,11 @@ class ArmarPublicacion():
           "other_info": "",
           "country_code": "",
           "area_code": "011",
-          "phone": "52787500",
+          "phone": f"{self.publicacion_config.telefono_sucursal}",
           "country_code2": "54",
           "area_code2": "",
-          "phone2": "1123149614",
-          "email": "dnogues@espasa.com.ar",
+          "phone2": f"{self.publicacion_config.whatsapp}",
+          "email": f"{self.publicacion_config.email_sucursal}",
           "webpage": ""
         },
         
@@ -93,20 +94,6 @@ class Descripciones():
     self.get_descripcion()
     
   def get_descripcion(self):
-    desc = """
-
-Asesores Comerciales certificados por VW Argentina
-
-- Hasta agotar stock en OFERTA
-- Consecionario Oficial N°1 por 21 años consecutivos.
-- El mejor precio del Mercado Asegurado!
-- Acepto permuta por mayor o menor valor.
-- Entrega inmediata.
-- Disponibilidad de Colores.
-- Financiación exclusiva.
-- Consulte por esta y otras versiones o modelos.
-- No incluye ningún gasto.
-    
-    """
+    desc = self.publicacion_config.descripcion
     
     return desc + str('.'*random.randint(1,9))
