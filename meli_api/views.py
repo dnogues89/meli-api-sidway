@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, JsonResponse
 from . import models
-from .publicaciones import ArmarPublicacion, Descripciones
+from .publicaciones import ArmarPublicacion
 
 from meli_api.apicon import MeliAPI
 from django.utils import timezone
@@ -73,7 +73,7 @@ def republicar(request):
                         stats = models.PubStats.objects.create(pub_id = resp['id'])
                         stats.save()
                         pub = models.Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = modelo.desc_meli,precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=modelo, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
-                        desc = api.cambiar_desc(resp['id'] , Descripciones().get_descripcion())
+                        desc = api.cambiar_desc(resp['id'] , cuenta.publicacion_config.descripcion)
     return HttpResponse('Proceso terminado')                         
                                
 
