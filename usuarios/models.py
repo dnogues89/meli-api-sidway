@@ -30,7 +30,7 @@ class Cuenta(models.Model):
     access_token = models.CharField(max_length = 100, default=0)
     user_meli = models.CharField(max_length=50, default='')
     salesforce_group = models.CharField(max_length=10, null=True, blank=True, default='')
-    publicacion_config = models.ForeignKey(PublicacionConfig, on_delete=models.SET_NULL)
+    publicacion_config = models.ForeignKey(PublicacionConfig, on_delete=models.SET_NULL, null=True, blank=True)
     
     class Meta:
         verbose_name = 'Cuenta'
