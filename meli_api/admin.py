@@ -152,7 +152,8 @@ class PublicacionAdmin(ModelAdmin):
         return obj.f_creado.strftime("%d/%m/%y") 
         
     def titulo_short(self,obj):
-        return f"{obj.titulo.replace('Volkswagen','')[:25]}..." if len(obj.titulo.replace('Volkswagen','')) > 25 else obj.titulo.replace('Volkswagen','')
+        marca = obj.cuenta.publicacion_config.marca
+        return f"{obj.titulo.replace(f'{marca}','')[:25]}..." if len(obj.titulo.replace(f'{marca}','')) > 25 else obj.titulo.replace(f'{marca}','')
     titulo_short.short_description = 'titulo'
 
     def ver(self,obj):
@@ -415,9 +416,12 @@ class ModeloAdmin(ModelAdmin):
     cargar_portadas.short_description = 'Up/portadas'
 
     def get_queryset(self, request):
-        qs = super().get_queryset(request)
-        cuenta = Cuenta.objects.get(user = request.user)
-        return qs
+        try:
+            qs = super().get_queryset(request)
+            cuenta = Cuenta.objects.get(user = request.user)
+            return qs
+        except:
+            return super().get_queryset(request)
 
     def unidad(self,obj):
         try:
