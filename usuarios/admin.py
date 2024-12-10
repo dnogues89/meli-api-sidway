@@ -13,8 +13,14 @@ class PublicacionConfigAdmin(ModelAdmin):
 
 @admin.register(Cuenta)
 class CuentaAdmin(ModelAdmin):
-    list_display = ['name','user','user']
+    list_display = ['name','user','user','pub_config']
     actions = ('get_credenciales',)
+    
+    def pub_config(self, obj):
+        try:
+            return obj.publicacion_config.name
+        except:
+            return 'Falta configuracion'
 
     @admin.action(description='Get Token')
     def get_credenciales(self,request,objetos):
