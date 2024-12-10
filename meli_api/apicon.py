@@ -241,24 +241,8 @@ class MeliApiAsync():
         
         return url, headers, payload
     
-    def cambiar_desc(self,pub_id):
+    def cambiar_desc(self,pub_id, desc):
         url = f"https://api.mercadolibre.com/items/{pub_id}/description?api_version=2"
-
-        desc = """
-
-            Asesores Comerciales certificados por VW Argentina
-
-            - Hasta agotar stock en OFERTA
-            - Consecionario Oficial N°1 por 21 años consecutivos.
-            - El mejor precio del Mercado Asegurado!
-            - Acepto permuta por mayor o menor valor.
-            - Entrega inmediata.
-            - Disponibilidad de Colores.
-            - Financiación exclusiva.
-            - Consulte por esta y otras versiones o modelos.
-            - No incluye ningún gasto.
-                
-                """
                 
         desc = desc + str('.'*random.randint(1,9))
         

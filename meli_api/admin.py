@@ -489,7 +489,7 @@ class ModeloAdmin(ModelAdmin):
         lista_pubs = []
         for obj in objetos:
             for i in range(0,obj.cantidad):
-                lista_pubs.append(ArmarPublicacion(obj).pub())
+                lista_pubs.append(ArmarPublicacion(obj,cuenta).pub())
                 total_pubs += 1
             obj.cantidad = 1
             obj.save()
@@ -500,15 +500,15 @@ class ModeloAdmin(ModelAdmin):
         try:
             cuenta = Cuenta.objects.get(id= pub_res.json()['cuenta']['id'])
             for resp in pub_res.json()['pub_res']:
-                modelo = objetos.filter(descripcion__iexact = resp['title'].replace('Volkswagen ',''))
+                modelo = objetos.filter(descripcion__iexact = resp['title'].replace(f'{cuenta.publicacion_config.marca} ',''))
                 cant_pubs += 1
                 stats = PubStats.objects.create(pub_id = resp['id'])
                 stats.save()
                 try:
-                    modelo = objetos.filter(descripcion__iexact = resp['title'].replace('Volkswagen ',''))
-                    pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = "",precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=modelo[0], url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
+                    modelo = objetos.filter(descripcion__iexact = resp['title'].replace(f'{cuenta.publicacion_config.marca} ',''))
+                    pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = f'{cuenta.publicacion_config.descripcion}',precio=resp['price'],categoria = resp['listing_type_id'],activa = False,modelo=modelo[0], url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
                 except:
-                    pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = "",precio=resp['price'],categoria = resp['listing_type_id'],activa = False, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
+                    pub = Publicacion.objects.create(pub_id = resp['id'], titulo = resp['title'],desc = f'{cuenta.publicacion_config.descripcion}',precio=resp['price'],categoria = resp['listing_type_id'],activa = False, url = resp['permalink'], stats = stats, sincronizado = True, cuenta=cuenta).save()
         except:
             pass
         

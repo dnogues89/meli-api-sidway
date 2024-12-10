@@ -182,7 +182,7 @@ async def publicar_v2(request):
             cambiar_desc_actions = []
             
             for pub in meli_pubs_res:
-                url,headers,payload =  api.cambiar_desc(pub['id'])
+                url,headers,payload =  api.cambiar_desc(pub['id'], cuenta['publicacion_config']['descripcion'])
                 cambiar_desc_actions.append(asyncio.ensure_future(put(session, url,headers,payload)))
             
             _ = await asyncio.gather(*cambiar_desc_actions)
