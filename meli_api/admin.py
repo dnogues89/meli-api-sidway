@@ -484,8 +484,9 @@ class ModeloAdmin(ModelAdmin):
 
         cuenta = Cuenta.objects.get(user = request.user)
         api = MeliAPI(cuenta)
+        desc = cuenta.publicacion_config.descripcion
         cuenta = model_to_dict(cuenta)
-        payload = {'cuenta':cuenta}
+        payload = {'cuenta':cuenta, 'desc':desc}
         lista_pubs = []
         for obj in objetos:
             for i in range(0,obj.cantidad):

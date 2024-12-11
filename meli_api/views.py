@@ -171,7 +171,7 @@ async def publicar_v2(request):
         data = json.loads(request.body)
         cuenta = data['cuenta']
         api = MeliApiAsync(cuenta['user_meli'],cuenta['access_token'])
-        desc = Cuenta.objects.get(user_meli = cuenta['user_meli']).publicacion_config.descripcion
+        desc = data['desc']
         actions = []
         pub_res = []
         async with aiohttp.ClientSession() as session:
