@@ -14,8 +14,8 @@ from django.db.models import Sum
 from unfold.admin import ModelAdmin
 from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
 
-admin.site.site_header = "Mercado Libre ESPASA DNogues"
-admin.site.site_title = "Meli Espasa"
+admin.site.site_header = "Mercado Libre Sidway DNogues"
+admin.site.site_title = "Meli Sidway"
 
 # api = MeliAPI(MeliCon.objects.get(name = 'API Dnogues'))
 
