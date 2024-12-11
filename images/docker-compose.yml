@@ -19,5 +19,5 @@ services:
       - espasa-network
 
 networks:
-  orange-network:
+  espasa-network:
     driver: bridge
