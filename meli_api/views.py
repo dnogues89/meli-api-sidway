@@ -171,6 +171,7 @@ async def publicar_v2(request):
         data = json.loads(request.body)
         cuenta = data['cuenta']
         api = MeliApiAsync(cuenta['user_meli'],cuenta['access_token'])
+        desc = Cuenta.objects.get(user_meli = cuenta['user_meli']).publicacion_configuration.descripcion
         actions = []
         pub_res = []
         async with aiohttp.ClientSession() as session:
@@ -179,10 +180,11 @@ async def publicar_v2(request):
                 actions.append(asyncio.ensure_future(post(session, url,headers,payload)))
             
             meli_pubs_res = await asyncio.gather(*actions)
+            
             cambiar_desc_actions = []
             
             for pub in meli_pubs_res:
-                url,headers,payload =  api.cambiar_desc(pub['id'], cuenta['publicacion_config']['descripcion'])
+                url,headers,payload =  api.cambiar_desc(pub['id'], desc)
                 cambiar_desc_actions.append(asyncio.ensure_future(put(session, url,headers,payload)))
             
             _ = await asyncio.gather(*cambiar_desc_actions)
