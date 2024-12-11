@@ -489,7 +489,7 @@ class ModeloAdmin(ModelAdmin):
         lista_pubs = []
         for obj in objetos:
             for i in range(0,obj.cantidad):
-                lista_pubs.append(ArmarPublicacion(obj,cuenta).pub())
+                lista_pubs.append(ArmarPublicacion(obj,Cuenta.objects.get(user = request.user)).pub())
                 total_pubs += 1
             obj.cantidad = 1
             obj.save()

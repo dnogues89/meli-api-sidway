@@ -67,7 +67,7 @@ def republicar(request):
                 if resp.status_code == 200:
                     pub = models.Publicacion.objects.get(pub_id = pub.pub_id)
                     pub.delete()
-                    resp = api.publicar_auto(ArmarPublicacion(modelo).pub())
+                    resp = api.publicar_auto(ArmarPublicacion(modelo, cuenta).pub())
                     if models.resp_ok(resp,'Publicar Auto'):
                         resp = resp.json()
                         stats = models.PubStats.objects.create(pub_id = resp['id'])
