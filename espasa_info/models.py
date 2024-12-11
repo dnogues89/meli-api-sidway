@@ -21,6 +21,11 @@ class CRM(models.Model):
     ofertas = models.CharField(max_length=100,default=0,null=True,blank=True)
     oferta_min = models.CharField(max_length=100,default=0,null=True,blank=True)
     oferta_max = models.CharField(max_length=100,default=0,null=True,blank=True)
+    CHOICES = {
+        '1':"ARS",
+        '2':"USD"
+    }
+    moneda = models.CharField(max_length=5, choices=CHOICES, default="", blank=True,null=True)
     
     def __str__(self) -> str:
         return f'{self.codigo} | {self.desc}'

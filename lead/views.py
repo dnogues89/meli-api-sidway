@@ -4,7 +4,8 @@ from meli_api.apicon import MeliAPI
 from meli_api import models
 from .models import Lead, Usado, Cuit
 from django.http import HttpResponse
-from .salesforce_lead import Salesfroce, convertir_numero
+from .salesforce_lead import convertir_numero
+from .tecnom import LeadTecnom
 
 from datetime import datetime
 
@@ -146,9 +147,11 @@ def get_leads(request):
                     item.save()
                     
                 if item.to_crm == False:
-                    Salesfroce(item, origen=cuenta.salesforce_group).send_data()
-                    item.to_crm = True
-                    item.save()
+                    resp = LeadTecnom(item)
+                    resp.send_lead()
+                    if resp.response.status_code == 200:
+                        item.to_crm = True
+                        item.save()
                 
                 #NUEVO
                 if item.cuit:

@@ -13,4 +13,4 @@ def model_text(text):
 # Register your models here.
 @admin.register(CRM)
 class CRMAdmin(ModelAdmin):
-    list_display = ['codigo','desc','stock','precio_tx','ofertas','oferta_min']
+    list_display = ['codigo','desc','stock','precio_tx','ofertas','oferta_min','moneda']

@@ -21,13 +21,14 @@ def update_espasa_db(request):
             obj.ofertas = str(item[7])
             obj.oferta_min = str(item[8]).split('.')[0] if item[8] is not None else 0
             obj.oferta_max = str(item[9]).split('.')[0] if item[9] is not None else 0
+            obj.moneda = item[-1]
             obj.save()
             print(f'item actualizado {obj}')
             if str(item[6]) != '0':
                 try:
                     _ = Modelo.objects.get(espasa_db__codigo = item[0])
                 except:
-                    _ = Modelo.objects.create(espasa_db = obj, descripcion = str(item[1]), anio = f"20{str(item[1]).split('MY')[-1].split(' ')[0]}", desc_meli=desc_meli).save()
+                    _ = Modelo.objects.create(espasa_db = obj, descripcion = str(item[1]), desc_meli=desc_meli).save()
             
         except:
                 
@@ -41,14 +42,15 @@ def update_espasa_db(request):
                 stock = item[6],
                 ofertas = item[7],
                 oferta_min = str(item[8]).split('.')[0] if item[8] is not None else 0,
-                oferta_max = str(item[9]).split('.')[0] if item[8] is not None else 0
+                oferta_max = str(item[9]).split('.')[0] if item[8] is not None else 0,
+                moneda = item[-1]
             ).save()
             print(f'item Creado {obj}')
             if str(item[6]) != '0':
                 try:
                     _ = Modelo.objects.get(espasa_db__codigo = item[0])
                 except:
-                    _ = Modelo.objects.create(espasa_db = obj, descripcion = str(item[1]), anio = f"20{str(item[1]).split('MY')[-1].split(' ')[0]}",desc_meli=desc_meli).save()
+                    _ = Modelo.objects.create(espasa_db = obj, descripcion = str(item[1]),desc_meli=desc_meli).save()
         
         to_delete = Modelo.objects.filter(espasa_db__isnull=True)
         for item in to_delete:
