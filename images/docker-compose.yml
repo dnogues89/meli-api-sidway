@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  meli-api-autos:
-    container_name: meli-api-autos
-    image: meli-api-autos:v1
+  meli-api-sidway:
+    container_name: meli-api-sidway
+    image: meli-api-sidway:v1
     volumes:
       - ../db.sqlite3:/app/db.sqlite3
       - ./media:/app/media
@@ -14,7 +14,7 @@ services:
       - ../espasa_info/migrations:/app/espasa_info/migrations
       - ../multiple_upload/migrations:/app/multiple_upload/migrations
     ports:
-      - "8000:8000"
+      - "8010:8000"
     networks:
       - espasa-network
 
