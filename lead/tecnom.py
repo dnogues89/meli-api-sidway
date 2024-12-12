@@ -4,6 +4,7 @@ import json
 class LeadTecnom():
     def __init__(self, cliente) -> None:
         self.cliente = cliente
+        self.get_data()
         self.send_lead()
 
     def get_data(self):
