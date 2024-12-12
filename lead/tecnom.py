@@ -98,7 +98,7 @@ class LeadTecnom():
 
           {
 
-              "make": "Chrysler",
+              "make": "Sidway",
 
               "model": self.producto
 
