@@ -147,9 +147,9 @@ def get_leads(request):
                     item.save()
                     
                 if item.to_crm == False:
-                    resp = LeadTecnom(item)
-                    resp.send_lead()
-                    if resp.response.status_code == 200:
+                    tec = LeadTecnom(item)
+                    tec.send_lead()
+                    if tec.response.status_code == 200:
                         item.to_crm = True
                         item.save()
                 
