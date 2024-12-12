@@ -66,6 +66,6 @@ class PaginaPublicacion:
         return 0, 0
 
 if __name__ == '__main__':
-    app = PaginaPublicacion('Vento GLI','MAL1444662711')
+    app = PaginaPublicacion('rampage laramie','MLA1448215561')
     print(app.search_page())
         

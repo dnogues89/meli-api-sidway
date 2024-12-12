@@ -530,6 +530,7 @@ class ModeloAdmin(ModelAdmin):
 @admin.register(Atributo)
 class AtributoAdmin(ModelAdmin):
     list_display = ('nombre','id_att','value')
+    search_fields = ('nombre','id_att','value')
 
 @admin.register(GrupoAtributos)
 class GrupoAtributosAdmin(ModelAdmin):
