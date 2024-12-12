@@ -3,7 +3,7 @@ import json
 import random
 
 # Primera conexion
-# https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=2164447249478080&redirect_uri=https://espasa.dnoguesdev.com.ar
+# https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=1286745836956012&redirect_uri=https://melisidway.dnoguesdev.com.ar
 
 
 class MeliAPI():
@@ -11,7 +11,7 @@ class MeliAPI():
         self.data = data
 
     def get_code_tg(self): #Esta funcion no funciona todavia
-        url = 'https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=2164447249478080&redirect_uri=https://espasa.dnoguesdev.com.ar'
+        url = 'https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=1286745836956012&redirect_uri=https://melisidway.dnoguesdev.com.ar'
         
         response = requests.request("GET",url,allow_redirects=False)
         

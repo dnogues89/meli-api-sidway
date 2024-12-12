@@ -20,14 +20,14 @@ class ArmarPublicacion():
       imagenes = []
       portada_random = random.choice(self.modelo.portadas.imagenes.all())
       imagenes.append({
-          'source':f"https://meli.dnoguesdev.com.ar{portada_random.pic.url}"
+          'source':f"https://melisidway.dnoguesdev.com.ar{portada_random.pic.url}"
         })
       for imagen in self.modelo.g_imagenes.imagenes.all()[1:24]:
         imagenes.append({
-          'source':f"https://meli.dnoguesdev.com.ar{imagen.pic.url}"
+          'source':f"https://melisidway.dnoguesdev.com.ar{imagen.pic.url}"
         })
       imagenes.append({
-          'source':f"http://meli.dnoguesdev.com.ar/media/MiniApp_Images/institucional.jpeg"
+          'source':f"http://melisidway.dnoguesdev.com.ar/media/MiniApp_Images/institucional.jpeg"
         })
       return imagenes
 
@@ -48,27 +48,25 @@ class ArmarPublicacion():
         "available_quantity": "1",
 
         "location": {
-              "address_line": "",
-              "zip_code": "",
-              "neighborhood": {
-                "id": "TUxBQkJBTDMxMDZa",
-                "name": "Balvanera"
-              },
-              "city": {
+            "address_line": "",
+            "zip_code": "",
+            "neighborhood": {
+                "id": "TUxBQlBBTDI1MTVa",
+                "name": "Palermo"
+            },
+            "city": {
                 "id": "TUxBQ0NBUGZlZG1sYQ",
                 "name": "Capital Federal"
-              },
-              "state": {
+            },
+            "state": {
                 "id": "TUxBUENBUGw3M2E1",
                 "name": "Capital Federal"
-              },
-              "country": {
+            },
+            "country": {
                 "id": "AR",
                 "name": "Argentina"
-              },
-              "latitude": -34.6101223,
-              "longitude": -58.4059406
-            },
+            }
+        },
         "seller_contact": {
           "contact": "",
           "other_info": "",
