@@ -121,6 +121,7 @@ class Portadas(models.Model):
         super().delete()
     
 class Modelo(models.Model):
+    marca = models.CharField(max_length=100)
     descripcion = models.CharField(max_length = 50,blank=True, null=True)
     anio = models.IntegerField(verbose_name = 'Año',blank=True, null=True)
     g_atributos = models.ForeignKey(GrupoAtributos, null = True, blank = True, on_delete = models.SET_NULL)
@@ -142,6 +143,11 @@ class Modelo(models.Model):
     
     def save(self,*args,**kwargs):
         super().save()
+        marca = self.descripcion.split(' ')[0].lower()
+        if marca == 'renegade' or marca == 'compass' or marca == 'commander':
+            self.marca = 'JEEP'
+        else:
+            self.marca = 'RAM'
         #Agregamos atributos a la publicacion haciendo una creacion de grupo de atributos
         if self.g_atributos == None and self.pub_to_copy != None:
             api = MeliAPI(Cuenta.objects.all()[0])
