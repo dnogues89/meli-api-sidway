@@ -152,8 +152,7 @@ class PublicacionAdmin(ModelAdmin):
         return obj.f_creado.strftime("%d/%m/%y") 
         
     def titulo_short(self,obj):
-        marca = obj.cuenta.publicacion_config.marca
-        return f"{obj.titulo.replace(f'{marca}','')[:25]}..." if len(obj.titulo.replace(f'{marca}','')) > 25 else obj.titulo.replace(f'{marca}','')
+        return f"{obj.titulo[:25]}..." if len(obj.titulo) > 25 else obj.titulo
     titulo_short.short_description = 'titulo'
 
     def ver(self,obj):
