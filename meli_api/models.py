@@ -171,7 +171,7 @@ class Modelo(models.Model):
                 item.value = timezone.now().year
                 item.save()
                 
-            super().save()                        
+        super().save()
         
         
 
