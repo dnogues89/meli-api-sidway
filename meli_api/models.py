@@ -121,7 +121,7 @@ class Portadas(models.Model):
         super().delete()
     
 class Modelo(models.Model):
-    marca = models.CharField(max_length=100)
+    marca = models.CharField(max_length=100, default='', null=True, blank=True)
     descripcion = models.CharField(max_length = 50,blank=True, null=True)
     anio = models.IntegerField(verbose_name = 'Año',blank=True, null=True)
     g_atributos = models.ForeignKey(GrupoAtributos, null = True, blank = True, on_delete = models.SET_NULL)
