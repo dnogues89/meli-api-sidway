@@ -34,9 +34,7 @@ class PaginaPublicacion:
     def get_page_products(self):      
         self.posicion = 0
         for producto in self.soup.find_all(class_="ui-search-result__wrapper"):
-            titulo = self.validate_info(producto.find('h2').text)
             url = self.validate_info(producto.find('a')['href'])
-            precio = self.validate_info(int(producto.find(class_='andes-money-amount__fraction').text.replace(".","")))
             id_pub = self.validate_info(url.split("MLA-")[1].split("-")[0])
             id_pub = f"MLA{id_pub}"
             self.posicion += 1
