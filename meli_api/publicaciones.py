@@ -31,7 +31,7 @@ class ArmarPublicacion():
         })
       return imagenes
 
-    def pub(self, moneda):    
+    def pub(self):    
         json = {
         "title": f'{self.modelo.marca} {self.modelo.descripcion}',
         "description": "Okm publicacion de prueba",
