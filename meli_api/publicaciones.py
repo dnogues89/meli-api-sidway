@@ -31,7 +31,7 @@ class ArmarPublicacion():
         })
       return imagenes
 
-    def pub(self):    
+    def pub(self, moneda):    
         json = {
         "title": f'{self.modelo.marca} {self.modelo.descripcion}',
         "description": "Okm publicacion de prueba",
@@ -43,7 +43,7 @@ class ArmarPublicacion():
         "video_id": self.modelo.video_id,
         "category_id": "MLA1744",
         "price": str(self.precio),
-        "currency_id": "ARS",
+        "currency_id": "ARS" if self.modelo.espasa_db.moneda == 1 else "USD",
         "listing_type_id": self.modelo.categoria,
         "available_quantity": "1",
 
