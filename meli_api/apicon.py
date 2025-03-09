@@ -100,7 +100,7 @@ class MeliAPI():
         'Authorization': f'Bearer {self.data.access_token}'
         }
 
-        response = requests.request("GET", url)
+        response = requests.request("GET", url, headers=headers)
 
         return response
     
