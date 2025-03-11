@@ -144,10 +144,10 @@ class Modelo(models.Model):
     def save(self,*args,**kwargs):
         super().save()
         marca = self.descripcion.split(' ')[0].lower()
-        if marca == 'renegade' or marca == 'compass' or marca == 'commander':
-            self.marca = 'JEEP'
-        else:
+        if marca == 'ram' or marca == 'rampage':
             self.marca = 'RAM'
+        else:
+            self.marca = 'JEEP'
         #Agregamos atributos a la publicacion haciendo una creacion de grupo de atributos
         if self.g_atributos == None and self.pub_to_copy != None:
             api = MeliAPI(Cuenta.objects.all()[0])
