@@ -271,7 +271,7 @@ class PublicacionAdmin(ModelAdmin):
                 else:
                     obj.activa = False
                     obj.save()
-                    self.message_user(request,f"{obj.pub_id} | {resp.json()['status']} | {resp.json()['sub_status']}", level="ERROR")
+                    self.message_user(request,f"{obj.pub_id} | {resp.json()[0]['body']['status']} | {resp.json()[0]['body']['sub_status']}", level="ERROR")
      
     @admin.action(description="Revisar si esta ACTIVA V2")
     def revisar_activa_v2(self,request,objetos):
@@ -554,7 +554,7 @@ class GrupoAtributosAdmin(ModelAdmin):
                         apend = Atributo.objects.create(nombre = at['name'] ,id_att=at['id'],value=at['value_name']).save()     
                     apend = Atributo.objects.get(id_att=at['id'],value=at['value_name'])
                     obj.atributos.add(apend)
-                obj.video_id = resp.json()['video_id'] 
+                obj.video_id = resp.json()[0]['body']['video_id'] 
             obj.save()
 
         self.message_user(
