@@ -94,7 +94,7 @@ class MeliAPI():
         return response
         
     def consulta_pub(self,pub_id):
-        url = f"https://api.mercadolibre.com/items/{pub_id}"
+        url = f"https://api.mercadolibre.com/items?ids={pub_id}"
 
         headers = {
         'Authorization': f'Bearer {self.data.access_token}'
