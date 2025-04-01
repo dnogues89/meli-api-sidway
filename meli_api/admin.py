@@ -97,7 +97,7 @@ class PublicacionAdmin(ModelAdmin):
     list_display=('titulo_short','pub_id','precio','crm','pub_vs_crm','stock_pub','creado','vistas','cont','pub_ubicacion','cuenta','activa','ver','sincronizado','banner')
     list_editable =('precio',)
     list_filter = ['cuenta','activa']
-    actions = ('pausar','eliminar','sinconizar_meli','actualizar_precios','revisar_activa','eliminar_v2','revisar_activa_v2','pagina')
+    actions = ('pausar','eliminar','sinconizar_meli','actualizar_precios','revisar_activa','pagina')
     ordering = ['sincronizado','titulo']
     search_fields = ('titulo', 'pub_id','categoria','precio','activa')
 
@@ -242,7 +242,7 @@ class PublicacionAdmin(ModelAdmin):
             api = MeliAPI(obj.cuenta)
             resp = api.consulta_pub(obj)
             if resp_ok(resp, f'Consultando publicacion | {obj.pub_id}'):
-                resp = resp.json()
+                resp = resp.json()[0]['body']
                 #Precio
                 if resp['price'] != convertir_precio(obj):
                     precio = convertir_precio(obj)
@@ -265,7 +265,7 @@ class PublicacionAdmin(ModelAdmin):
         for obj in objetos:
             resp = api.consulta_pub(obj.pub_id)
             if resp_ok(resp, 'Consultando Estado de unidad'):
-                if resp.json()['status'] == 'active':
+                if resp.json()[0]['body']['status'] == 'active':
                     obj.activa = True
                     obj.save()
                 else:
@@ -305,7 +305,7 @@ class PublicacionAdmin(ModelAdmin):
             api = MeliAPI(obj.cuenta)
             resp = api.consulta_pub(obj)
             if resp_ok(resp, f'Consultando publicacion | {obj.pub_id}'):
-                resp = resp.json()
+                resp = resp.json()[0]['body']
                 #Precio
                 if resp['price'] != convertir_precio(obj):
                     precio = convertir_precio(obj)
@@ -371,7 +371,7 @@ class ModeloAdmin(ModelAdmin):
     list_display = ('unidad','cantidad','precio','precio_crm','publicaciones','stock','cargar_portadas','cargar_imagenes','c_port','c_img','c_atrib','pub_to_copy')
     list_editable = ('precio','pub_to_copy','cantidad')
     search_fields = ['descripcion']
-    actions = ('publicar','actualizar_precios','publicar_v2')
+    actions = ('publicar','actualizar_precios')
     list_filter = (PublicacionesCeroFilter,)
     
     def stock(self,obj):
@@ -547,7 +547,7 @@ class GrupoAtributosAdmin(ModelAdmin):
         for obj in objetos:
             resp = api.consulta_pub(obj.pub_to_copy)
             if resp_ok(resp, 'Consultar Atributos'):
-                for at in resp.json()['attributes']:
+                for at in resp.json()[0]['body']['attributes']:
                     try:
                         apend = Atributo.objects.get(id_att=at['id'],value=at['value_name'])
                     except:
