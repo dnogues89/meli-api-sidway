@@ -155,8 +155,8 @@ class Modelo(models.Model):
             g_att.save()
             resp = api.consulta_pub(self.pub_to_copy)
             if resp_ok(resp, 'Consultar Atributos'):
-                self.video_id = resp.json()['video_id'] 
-                for at in resp.json()['attributes']:
+                self.video_id = resp.json()['body']['video_id'] 
+                for at in resp.json()['body']['attributes']:
                     apend = Atributo.objects.filter(id_att=at['id']).filter(value=at['value_name'])
                     if len(apend) == 0:
                         apend = Atributo.objects.create(nombre = at['name'] ,id_att=at['id'],value=at['value_name'])
