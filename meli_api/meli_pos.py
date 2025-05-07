@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 class PaginaPublicacion:
     def __init__(self,modelo,publicacion) -> None:
         self.modelo = modelo
-        self.url = f"https://autos.mercadolibre.com.ar/{self.modelo.replace(' ','-')}#D[A:{self.modelo.replace(' ','%20')}]"
+        self.desde = 0
+        self.url = f"https://autos.mercadolibre.com.ar/{self.modelo.replace(' ','-')}_Desde_{self.desde}_NoIndex_True"
         self.html = requests.get(self.url).text
         self.soup = BeautifulSoup(self.html, 'html.parser')
         self.productos = []
@@ -19,9 +20,13 @@ class PaginaPublicacion:
             return 1
     
     def next_page(self):
-        try:
-            return self.validate_info(self.soup.find(text='Siguiente').parent.parent['href'])
-        except:
+        if self.soup.find(string='Siguiente'):
+            print()
+            self.desde += 48
+            self.url = f"https://autos.mercadolibre.com.ar/{self.modelo.replace(' ','-')}_Desde_{self.desde}_NoIndex_True"
+            print(self.url)
+            return True
+        else:
             return False
         
     def validate_info(self,param):
@@ -51,7 +56,7 @@ class PaginaPublicacion:
                 return page, self.posicion
                 break
             try:
-                self.url = self.next_page()
+                self.soup.find(string='Siguiente').parent.parent
             except:
                 last_page = 1
                 pass
@@ -64,6 +69,8 @@ class PaginaPublicacion:
         return 0, 0
 
 if __name__ == '__main__':
-    app = PaginaPublicacion('compass','MLA1460180949')
+    app = PaginaPublicacion('Nivus Highline','MLA1495451565')
     print(app.search_page())
+    # print(app.url)
+    
         
