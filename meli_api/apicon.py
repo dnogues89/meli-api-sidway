@@ -122,10 +122,10 @@ class MeliAPI():
         
         return response  
     
-    def actualizar_precio(self,pub_id,precio):
+    def actualizar_precio(self,pub_id,precio, moneda = 'ARS'):
         url = f"https://api.mercadolibre.com/items/{pub_id}"
 
-        payload = json.dumps({'price': precio})
+        payload = json.dumps({'price': precio}, {"currency_id": moneda})
         headers = {
         'Authorization': f'Bearer {self.data.access_token}',
         'Content-Type': 'application/json'

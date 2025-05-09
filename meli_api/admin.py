@@ -312,7 +312,8 @@ class PublicacionAdmin(ModelAdmin):
                     if precio == 0:
                         self.message_user(request,f'Precio invalido {precio}', level='ERROR')
                         break
-                    resp = api.actualizar_precio(obj.pub_id,str(precio))
+                    moneda = "ARS" if obj.modelo.espasa_db.moneda == "1" else "USD"
+                    resp = api.actualizar_precio(obj.pub_id,str(precio), moneda)
                     if resp_ok(resp,'Cambio Precio') == False:
                         self.message_user(request,f'No se actualizo el precio {resp.text}', level='ERROR')
                         break
