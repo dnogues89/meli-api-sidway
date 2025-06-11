@@ -141,7 +141,7 @@ def sincro_meli(request):
                 for obj in set(pubs_meli) - set(pubs_django):
                     resp = api.consulta_pub(obj)
                     if models.resp_ok(resp,'Consulta publicacion'):
-                        resp = resp.json()
+                        resp = resp.json()[0]['body']
                         activa = True if resp['status'] == 'active' else False
                         try:
                             stats = models.PubStats.objects.create(pub_id = resp['id']).save()
