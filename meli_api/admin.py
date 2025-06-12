@@ -66,7 +66,7 @@ def resp_ok(resp, name):
 def get_token(obj:Cuenta):
     api = MeliAPI(obj)
     try:
-        if api.get_user_me().json()['message'] == 'invalid_token':
+        if api.get_user_me().json()['message'] == 'invalid access token':
             resp = MeliAPI(obj).renew_token()
             if resp_ok(resp, 'Renovar token'):
                 obj.access_token = resp.json()['access_token']
