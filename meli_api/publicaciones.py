@@ -48,24 +48,24 @@ class ArmarPublicacion():
         "available_quantity": "1",
 
         "location": {
-            "address_line": "De Los Incas 4831",
-            "zip_code": "1427",
-            # "neighborhood": {
-            #     "id": "TVhYUGFycXVlIENoYXNUVXhCUTBOQlVHWmxaR",
-            #     "name": "Parque Chas"
-            # },
+            "address_line": "",
+            "zip_code": "",
+            "neighborhood": {
+                "id": "TVhYUGFycXVlIENoYXNUVXhCUTBOQlVHWmxaR",
+                "name": "Parque Chas"
+            },
             "city": {
                 "id": "TUxBQ0NBUGZlZG1sYQ",
                 "name": "Capital Federal"
             },
-            # "state": {
-            #     "id": "AR-C",
-            #     "name": "Capital Federal"
-            # },
-            # "country": {
-            #     "id": "AR",
-            #     "name": "Argentina"
-            # }
+            "state": {
+                "id": "TUxBUENBUGw3M2E1",
+                "name": "Capital Federal"
+            },
+            "country": {
+                "id": "AR",
+                "name": "Argentina"
+            }
         },
         "seller_contact": {
           "contact": "",
