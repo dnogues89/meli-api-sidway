@@ -50,16 +50,16 @@ class ArmarPublicacion():
         "location": {
             "address_line": "De Los Incas 4831",
             "zip_code": "1427",
-            "neighborhood": {
-                "id": "TVhYUGFycXVlIENoYXNUVXhCUTBOQlVHWmxaR",
+            # "neighborhood": {
+            #     "id": "TVhYUGFycXVlIENoYXNUVXhCUTBOQlVHWmxaR",
+            #     "name": "Parque Chas"
+            # },
+            "city": {
+                "id": "QVItQ1BhcnF1ZSBDaGFz",
                 "name": "Parque Chas"
             },
-            "city": {
-                "id": "TUxBQ0NBUGZlZG1sYQ",
-                "name": "Capital Federal"
-            },
             "state": {
-                "id": "TUxBUENBUGw3M2E1",
+                "id": "AR-C",
                 "name": "Capital Federal"
             },
             "country": {
