@@ -55,17 +55,17 @@ class ArmarPublicacion():
             #     "name": "Parque Chas"
             # },
             "city": {
-                "id": "QVItQ1BhcnF1ZSBDaGFz",
-                "name": "Parque Chas"
-            },
-            "state": {
-                "id": "AR-C",
+                "id": "TUxBQ0NBUGZlZG1sYQ",
                 "name": "Capital Federal"
             },
-            "country": {
-                "id": "AR",
-                "name": "Argentina"
-            }
+            # "state": {
+            #     "id": "AR-C",
+            #     "name": "Capital Federal"
+            # },
+            # "country": {
+            #     "id": "AR",
+            #     "name": "Argentina"
+            # }
         },
         "seller_contact": {
           "contact": "",
