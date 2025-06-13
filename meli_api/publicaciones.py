@@ -47,26 +47,26 @@ class ArmarPublicacion():
         "listing_type_id": self.modelo.categoria,
         "available_quantity": "1",
 
-        # "location": {
-        #     "address_line": "",
-        #     "zip_code": "",
-        #     "neighborhood": {
-        #         "id": "TUxBQlBBTDI1MTVa",
-        #         "name": "Palermo"
-        #     },
-        #     "city": {
-        #         "id": "TUxBQ0NBUGZlZG1sYQ",
-        #         "name": "Capital Federal"
-        #     },
-        #     "state": {
-        #         "id": "TUxBUENBUGw3M2E1",
-        #         "name": "Capital Federal"
-        #     },
-        #     "country": {
-        #         "id": "AR",
-        #         "name": "Argentina"
-        #     }
-        # },
+        "location": {
+            "address_line": "De Los Incas 4831",
+            "zip_code": "1427",
+            "neighborhood": {
+                "id": "TVhYUGFycXVlIENoYXNUVXhCUTBOQlVHWmxaR",
+                "name": "Parque Chas"
+            },
+            "city": {
+                "id": "TUxBQ0NBUGZlZG1sYQ",
+                "name": "Capital Federal"
+            },
+            "state": {
+                "id": "TUxBUENBUGw3M2E1",
+                "name": "Capital Federal"
+            },
+            "country": {
+                "id": "AR",
+                "name": "Argentina"
+            }
+        },
         "seller_contact": {
           "contact": "",
           "other_info": "",
