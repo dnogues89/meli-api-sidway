@@ -369,8 +369,8 @@ class PortadasAdmin(ModelAdmin):
 
 @admin.register(Modelo)
 class ModeloAdmin(ModelAdmin):
-    list_display = ('unidad','cantidad','precio','precio_crm','publicaciones','stock','cargar_portadas','cargar_imagenes','c_port','c_img','c_atrib','pub_to_copy')
-    list_editable = ('precio','pub_to_copy','cantidad')
+    list_display = ('unidad','cantidad','precio','precio_crm','publicaciones','stock','cargar_portadas','cargar_imagenes','c_port','c_img','c_atrib','search_page', 'combustible','puertas','video_id')
+    list_editable = ('precio','search_page','cantidad', 'combustible','puertas','video_id')
     search_fields = ['descripcion']
     actions = ('publicar','actualizar_precios')
     list_filter = (PublicacionesCeroFilter,)

@@ -13,6 +13,14 @@ from django.dispatch import receiver
 
 from .apicon import MeliAPI
 
+def create_and_load_atributo(g_att,nombre, id_att, value):
+    try:
+        apend = Atributo.objects.get_or_create(nombre = nombre ,id_att=id_att,value=value)[0]
+        apend.save()
+    except:
+        apend = Atributo.objects.filter(nombre = nombre ,id_att=id_att,value=value)[0]
+    g_att.atributos.add(apend)
+
 # Create your models here.
 def convertir_precio2(precio):
     try:
@@ -136,45 +144,46 @@ class Modelo(models.Model):
     video_id = models.CharField(max_length=200, null=True,blank=True, help_text='No tocar')
     cantidad = models.IntegerField(default=1, verbose_name='A Publicar')
     search_page = models.CharField(max_length= 200, blank=True, help_text='Casillero para identificar las busquedas', default='')
-
+    combustible = models.CharField(max_length=30, choices = {'Nafta': 'Nafta', 'Diésel': 'Diésel', 'Eléctrico': 'Eléctrico', 'Híbrido': 'Híbrido'}, default='Nafta', null=True, blank=True)
+    puertas = models.CharField(max_length=10, choices = {'4': '4', '5': '5'}, default='5', null=True, blank=True)
     
     def __str__(self) -> str:
         return f'{self.descripcion}'
     
     def save(self,*args,**kwargs):
         super().save()
+        self.anio = timezone.now().year
         marca = self.descripcion.split(' ')[0].lower()
         if marca == 'ram' or marca == 'rampage':
             self.marca = 'RAM'
         else:
             self.marca = 'JEEP'
-        #Agregamos atributos a la publicacion haciendo una creacion de grupo de atributos
-        if self.g_atributos == None and self.pub_to_copy != None:
-            api = MeliAPI(Cuenta.objects.all()[0])
-            g_att = GrupoAtributos.objects.create(nombre = self.descripcion)
-            g_att.save()
-            resp = api.consulta_pub(self.pub_to_copy)
-            if resp_ok(resp, 'Consultar Atributos'):
-                try:
-                    self.video_id = resp.json()[0]['body']['video_id'] 
-                except:
-                    pass
-                for at in resp.json()[0]['body']['attributes']:
-                    apend = Atributo.objects.filter(id_att=at['id']).filter(value=at['value_name'])
-                    if len(apend) == 0:
-                        apend = Atributo.objects.create(nombre = at['name'] ,id_att=at['id'],value=at['value_name'])
-                        apend.save() 
-                    apend = Atributo.objects.filter(id_att=at['id'],value=at['value_name'])[0]
-                    g_att.atributos.add(apend)
-                    print(g_att.atributos.count())
-            g_att.save()
-            self.g_atributos = g_att
-            my = Atributo.objects.filter(id_att = 'VEHICLE_YEAR')
-            for item in my:
-                item.value = timezone.now().year
-                item.save()
+        if self.g_atributos == None:
+            if self.search_page != '':
+
+                from .meli_pos import PaginaPublicacion
+                titulo = PaginaPublicacion(self.search_page).titulo().split(' ')
+                api = MeliAPI(Cuenta.objects.all()[0])
+                g_att = GrupoAtributos.objects.create(nombre = self.descripcion)
+                g_att.save()              
+                create_and_load_atributo(g_att, 'Marca', 'BRAND', self.marca)
+                create_and_load_atributo(g_att, 'Modelo', 'MODEL', titulo[0])
+                create_and_load_atributo(g_att, 'Año', 'VEHICLE_YEAR', self.anio)
+                create_and_load_atributo(g_att, 'Version', 'TRIM', ' '.join(titulo[1:]))
+                create_and_load_atributo(g_att, 'Tipo de vehículo', 'VEHICLE_TYPE', 'Autos y camionetas')
+                create_and_load_atributo(g_att, 'Tipo de combustible', 'FUEL_TYPE', self.combustible)
+                create_and_load_atributo(g_att, 'Puertas', 'DOORS', self.puertas)
+                create_and_load_atributo(g_att, 'Kilómetros', 'KILOMETERS', '0 km')    
                 
-        super().save()
+                g_att.save()
+                self.g_atributos = g_att
+                my = Atributo.objects.filter(id_att = 'VEHICLE_YEAR')
+                
+                for item in my:
+                    item.value = timezone.now().year
+                    item.save()
+                
+        super().save()  
         
         
 
