@@ -26,9 +26,6 @@ class ArmarPublicacion():
         imagenes.append({
           'source':f"https://melisidway.dnoguesdev.com.ar{imagen.pic.url}"
         })
-      imagenes.append({
-          'source':f"http://melisidway.dnoguesdev.com.ar/media/MiniApp_Images/institucional.jpeg"
-        })
       return imagenes
 
     def pub(self):    

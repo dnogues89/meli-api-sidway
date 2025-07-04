@@ -78,6 +78,7 @@ class PaginaPublicacion:
     
                 auto = {'titulo':prod.text, 'url':prod['href']}
                 autos.append(auto)
+                print(auto['titulo'])
             
             # Contar ocurrencias de cada título
             titulos = [auto['titulo'] for auto in autos]
@@ -105,7 +106,7 @@ class PaginaPublicacion:
     
     
 if __name__ == '__main__':
-    app = PaginaPublicacion('Nivus Highline','MLA2073465584')
-    print(app.atributos())
+    app = PaginaPublicacion('jeep commander blackhawk','MLA2073465584')
+    print(app.titulo())
     
         
