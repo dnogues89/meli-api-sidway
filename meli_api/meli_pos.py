@@ -6,8 +6,15 @@ class PaginaPublicacion:
     def __init__(self,modelo,publicacion='') -> None:
         self.modelo = modelo
         self.desde = 0
+        self.headers = {
+            "User-Agent": (
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/115.0.0.0 Safari/537.36"
+            )
+        }
         self.url = f"https://autos.mercadolibre.com.ar/{self.modelo.replace(' ','-')}_Desde_{self.desde}_NoIndex_True"
-        self.html = requests.get(self.url).text
+        self.html = requests.get(self.url, headers=self.headers).text
         self.soup = BeautifulSoup(self.html, 'html.parser')
         self.productos = []
         self.publicacion = publicacion
@@ -38,6 +45,7 @@ class PaginaPublicacion:
 
     def get_page_products(self):      
         self.posicion = 0
+        print(self.url)
         for producto in self.soup.find_all(class_="ui-search-result__wrapper"):
             url = self.validate_info(producto.find('a')['href'])
             id_pub = self.validate_info(url.split("MLA-")[1].split("-")[0])
@@ -61,7 +69,7 @@ class PaginaPublicacion:
                 last_page = 1
                 pass
             try:
-                self.html = requests.get(self.url).text
+                self.html = requests.get(self.url, headers=self.headers).text
                 self.soup = BeautifulSoup(self.html, 'html.parser')
             except:
                 break
@@ -78,7 +86,6 @@ class PaginaPublicacion:
     
                 auto = {'titulo':prod.text, 'url':prod['href']}
                 autos.append(auto)
-                print(auto['titulo'])
             
             # Contar ocurrencias de cada título
             titulos = [auto['titulo'] for auto in autos]
@@ -106,7 +113,7 @@ class PaginaPublicacion:
     
     
 if __name__ == '__main__':
-    app = PaginaPublicacion('jeep commander blackhawk','MLA2073465584')
-    print(app.titulo())
+    app = PaginaPublicacion('amarok highline','MLA2151677714')
+    print(app.search_page())
     
         
