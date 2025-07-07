@@ -260,9 +260,9 @@ class PublicacionAdmin(ModelAdmin):
 
     @admin.action(description="Revisar si esta ACTIVA")
     def revisar_activa(self,request,objetos):
-        cuenta = Cuenta.objects.get(user = request.user)
-        api = MeliAPI(cuenta)
         for obj in objetos:
+            cuenta = obj.cuenta
+            api = MeliAPI(cuenta)
             resp = api.consulta_pub(obj.pub_id)
             if resp_ok(resp, 'Consultando Estado de unidad'):
                 if resp.json()[0]['body']['status'] == 'active':
