@@ -48,8 +48,11 @@ class PaginaPublicacion:
         print(self.url)
         for producto in self.soup.find_all(class_="ui-search-result__wrapper"):
             url = self.validate_info(producto.find('a')['href'])
-            id_pub = self.validate_info(url.split("MLA-")[1].split("-")[0])
-            id_pub = f"MLA{id_pub}"
+            try:
+                id_pub = self.validate_info(url.split("MLA-")[1].split("-")[0])
+                id_pub = f"MLA{id_pub}"
+            except:
+                id_pub = None
             print(id_pub)
             self.posicion += 1
             if self.publicacion == id_pub:
@@ -114,7 +117,7 @@ class PaginaPublicacion:
     
     
 if __name__ == '__main__':
-    app = PaginaPublicacion('amarok highline','MLA2151677714')
+    app = PaginaPublicacion('Jeep Commander Limited','MLA1508954811')
     print(app.search_page())
     
         
