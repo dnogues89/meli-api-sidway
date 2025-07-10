@@ -50,6 +50,7 @@ class PaginaPublicacion:
             url = self.validate_info(producto.find('a')['href'])
             id_pub = self.validate_info(url.split("MLA-")[1].split("-")[0])
             id_pub = f"MLA{id_pub}"
+            print(id_pub)
             self.posicion += 1
             if self.publicacion == id_pub:
                 print('La encontre')

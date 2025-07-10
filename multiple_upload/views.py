@@ -19,6 +19,10 @@ def index(request):
     context = {'images': images}
     return render(request, "index.html", context)
 
+def image_list_view(request):
+    images = Image.objects.all()
+    return render(request, 'images/image_list.html', {'images': images})
+
 @endpoint_lock 
 def fileupload(request):
     portada_id = request.GET.get('portada_id')
