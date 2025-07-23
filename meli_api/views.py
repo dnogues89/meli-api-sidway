@@ -125,7 +125,7 @@ def preguntas(request):
         if models.resp_ok(resp, 'Levantando preguntas'):
             for preg in resp.json()['questions']:
                 if preg['status'] == "UNANSWERED":
-                    resp_q = api.responder_pregunta(preg['id'],'GRACIAS POR CONTACTARTE CON SIDWAY\nPor favor escribinos por whatsapp al 11-4185-6822 para que te podamos brindar la mejor atención. Tambien podes clickear en el icono de whatsapp de esta publicacion.\nA la brevedad uno de nuestros asesores se estará contactando en menos de 30 minutos.')
+                    resp_q = api.responder_pregunta(preg['id'],'GRACIAS POR CONTACTARTE CON SIDWAY\nPor favor escribinos por whatsapp al 11-2284-7077 para que te podamos brindar la mejor atención. Tambien podes clickear en el icono de whatsapp de esta publicacion.\nA la brevedad uno de nuestros asesores se estará contactando en menos de 30 minutos.')
                     if models.resp_ok(resp_q,f"Respondiendo pregunta{preg['id']}"):
                         pass
     return HttpResponse(f'{resp.json()}')
