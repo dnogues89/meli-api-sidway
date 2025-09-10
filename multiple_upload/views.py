@@ -83,3 +83,27 @@ def fileupload(request):
 
 def confirmacion(request):
     return render(request, 'confirmacion.html')
+
+
+def galeria(request):
+    grupos = GrupoImagenes.objects.all()
+    portadas = Portadas.objects.all()
+
+    grupo_id = request.GET.get('grupo')
+    portada_id = request.GET.get('portada')
+
+    if grupo_id:
+        imagenes = GrupoImagenes.objects.get(id=grupo_id).imagenes.all()
+    elif portada_id:
+        imagenes = Portadas.objects.get(id=portada_id).imagenes.all()
+    else:
+        imagenes = Image.objects.none()
+
+    context = {
+        'grupos': grupos,
+        'portadas': portadas,
+        'imagenes': imagenes,
+        'grupo_seleccionado': int(grupo_id) if grupo_id else None,
+        'portada_seleccionada': int(portada_id) if portada_id else None
+    }
+    return render(request, 'galeria.html', context)

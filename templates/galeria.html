@@ -1,0 +1,59 @@
+<h1>Galería de Imágenes</h1>
+
+<form method="get" id="filtroForm">
+  <label for="grupo">Grupo de imágenes:</label>
+  <select name="grupo" id="grupo" onchange="limpiarYEnviar('portada')">
+    <option value="">-- Elegí un grupo --</option>
+    {% for grupo in grupos %}
+      <option value="{{ grupo.id }}" {% if grupo.id == grupo_seleccionado %}selected{% endif %}>{{ grupo.nombre }}</option>
+    {% endfor %}
+  </select>
+
+  <br><br>
+
+  <label for="portada">Grupo de portadas:</label>
+  <select name="portada" id="portada" onchange="limpiarYEnviar('grupo')">
+    <option value="">-- Elegí una portada --</option>
+    {% for portada in portadas %}
+      <option value="{{ portada.id }}" {% if portada.id == portada_seleccionada %}selected{% endif %}>{{ portada.codigo }} | {{ portada.nombre }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<hr>
+
+<div class="galeria">
+  {% if imagenes %}
+    {% for imagen in imagenes %}
+      <div class="imagen">
+        <img src="{{ imagen.pic.url }}" alt="{{ imagen.model }}">
+        <p>{{ imagen.model }}</p>
+      </div>
+    {% endfor %}
+  {% else %}
+    <p>No hay imágenes para mostrar.</p>
+  {% endif %}
+</div>
+
+<style>
+  .galeria {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .imagen {
+    width: 200px;
+  }
+  .imagen img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+</style>
+
+<script>
+  function limpiarYEnviar(otroSelectId) {
+    document.getElementById(otroSelectId).value = "";
+    document.getElementById("filtroForm").submit();
+  }
+</script>
