@@ -145,8 +145,8 @@ class MeliAPI():
         
         return response  
         
-    def views_by_item(self, item, desde, hasta):
-        url = f"https://api.mercadolibre.com/items/visits?ids={item}&date_from={desde}&date_to={hasta}"
+    def views_by_item(self, item):
+        url = f"https://api.mercadolibre.com/items/visits/time_window?ids={item}&last=150&unit=day"
         headers = {
         'Authorization': f'Bearer {self.data.access_token}',
         } 
